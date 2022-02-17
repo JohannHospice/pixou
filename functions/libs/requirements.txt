@@ -1,0 +1,2 @@
+pandas_datareader==0.10.0
+plotly==5.6.0

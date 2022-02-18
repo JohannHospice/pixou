@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 RSI_PERIOD=14
 DAYS_INTERVAL=7
 
-start = dt.datetime.now() - relativedelta(years=2, days=RSI_PERIOD*DAYS_INTERVAL)
+start = dt.datetime.now() - relativedelta(years=3, days=RSI_PERIOD*DAYS_INTERVAL)
 end = dt.datetime.now()
 fetched_prices = pdr.DataReader('BTC-USD', 'yahoo', start, end)
 
@@ -16,6 +16,8 @@ import pandas_ta as pta
 
 import plotly.offline as py
 import plotly.graph_objs as go
+
+py.init_notebook_mode(connected=True)
 
 class Strategy:
     def __init__(self, prices, days_interval):
@@ -39,7 +41,7 @@ class Strategy:
         min_len = len(selling_closes) if len(buying_closes) > len(selling_closes) else len(buying_closes)
 
         self.ratios = [selling_closes[i] / buying_closes[i] for i in range(min_len)]
-        self.ratio = functools.reduce(lambda x, y: x * y, self.ratios)
+        self.ratio = functools.reduce(lambda x, y: x * y, self.ratios, 1)
         
     def appendSpot(self, array, i):
         return array.append([self.prices.index[i], self.prices.Close[i]])
@@ -58,7 +60,6 @@ class Strategy:
             'fake_spots': self.fake_spots,
         }
     def plot(self):
-        py.init_notebook_mode(connected=True)
 
         py.iplot(
             go.Figure(
@@ -120,7 +121,6 @@ class DawnStrategy(Strategy):
             scatter = go.Scatter(x=Strategy.getDates(strategy_spots), y=Strategy.getCloses(strategy_spots), mode='markers', marker=dict(size=5, color=strategy_color)),
             return scatter[0]
 
-        py.init_notebook_mode(connected=True)
         py.iplot(
             go.Figure(
                 data=[
@@ -134,7 +134,7 @@ class DawnStrategy(Strategy):
             filename='bitcoin_candlestick')
 
 
-        px.line(self.prices, y=["Rsi", "Ema"], title="Bitcoin RSI and EMA").show()
+        # px.line(self.prices, y=["Rsi", "Ema"], title="Bitcoin RSI and EMA").show()
 
 class AllInStrategy(Strategy): 
     def __init__(self, prices):
@@ -168,14 +168,14 @@ class AverageInvestingStrategy(Strategy):
             if j < len(self.selling_spots):
                 if self.buying_spots[i][0] < self.selling_spots[j][0]:
                     closes.append(self.buying_spots[i][1])
-                else:
-                    avg = functools.reduce(lambda x, y: x + y, closes) / len(closes)
+                elif len(closes) > 0:
+                    avg = functools.reduce(lambda x, y: x + y, closes, 0) / len(closes)
                     self.ratios.append(self.selling_spots[j][1] / avg)
 
                     j += 1
                     closes = []
 
-        self.ratio = functools.reduce(lambda x, y: x * y, self.ratios)
+        self.ratio = functools.reduce(lambda x, y: x * y, self.ratios, 1)
 
 # %%
 def perform_strategy(Strategy, *params):

@@ -278,9 +278,9 @@ def perform_profile(*params):
     profile.print()
 
 # %%
-YEARS = 2
+YEARS = 3
 YEAR_DAYS = 365
-SYMBOLE = 'BNC-USD'
+SYMBOLE = 'BTC-USD'
 days_timeperiod = 10
 fetched_prices = fetchPrices(SYMBOLE, dt.datetime.now() - relativedelta(years=YEARS - 1 if YEARS >= 1 else 0 , days=YEAR_DAYS + RSI_PERIOD*days_timeperiod), dt.datetime.now() - relativedelta(days=5))
 

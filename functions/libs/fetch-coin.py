@@ -1,15 +1,30 @@
 # %%
 import pandas_datareader as pdr
+import pandas as pd
 import datetime as dt
 from dateutil.relativedelta import relativedelta
+import os
 
 RSI_PERIOD=14
 DAYS_INTERVAL=7
-
+SAVE_DATAFRAME = True
 def fetchPrices(symbol, start, end):
-    fetch = pdr.DataReader(symbol, 'yahoo', start, end)
-    fetch.style.set_caption(symbol)
-    return fetch
+    dataframe_directory = 'data'
+    if not os.path.exists(dataframe_directory):
+        os.mkdir(dataframe_directory)
+
+    pathname = os.path.join(dataframe_directory, symbol + '.' + start.strftime("%d%m%y") + '.' + end.strftime("%d%m%y") + '.csv')   
+    try:
+        df = pd.read_csv(pathname, index_col='Date')
+        df.style.set_caption(symbol)
+        return df
+    except:
+        df = pdr.DataReader(symbol, 'yahoo', start, end)
+        df.style.set_caption(symbol)
+        if SAVE_DATAFRAME: 
+            df.to_csv(pathname)
+
+        return df
      
 
 # %%
@@ -20,7 +35,7 @@ import pandas_ta as pta
 class Strategy:
     def __init__(self, prices, days_interval):
         self.prices = prices.drop(prices.index[[i for i in range(len(prices.index)) if i % days_interval != 0]])
-        
+        self.days_interval = days_interval
         self.spots = []
         self.buying_spots =[]
         self.selling_spots = []
@@ -55,6 +70,7 @@ import math
 class DawnStrategy(Strategy): 
     def __init__(self, prices, days_interval, rsi_period):
         Strategy.__init__(self, prices, days_interval)
+        self.rsi_period=rsi_period
         self.prices["Rsi"] = pta.rsi(self.prices.Close, length=rsi_period)
         self.prices["Ema"] = pta.ema(self.prices.Rsi, length=rsi_period)
 
@@ -62,8 +78,14 @@ class DawnStrategy(Strategy):
         has_bought = False
 
         for i in range(len(self.prices.index)):
-            if i > 0 and not math.isnan(self.prices.Rsi[i]):
-                has_bought_now = False
+            #  or 
+            if not math.isnan(self.prices.Rsi[i]):
+
+                if self.prices.Rsi[i] < 50 and self.isInSellSpot(i):
+                    self.appendSpot(self.buying_spots, i)
+                # elif self.prices.Rsi[i] < 70:
+                #     self.appendSpot(self.buying_spots, i)
+
 
                 if self.isInBuySpot(i):
                     self.appendSpot(self.spots, i)
@@ -72,16 +94,12 @@ class DawnStrategy(Strategy):
                         # should BUY
                         self.appendSpot(self.buying_spots, i)
                         has_bought = True
-                        has_bought_now = True
 
                 if self.isInSellSpot(i) and has_bought: 
                     # should SELL
                     self.appendSpot(self.selling_spots, i)
                     has_bought = False
 
-                    # BUY and SELL same day
-                    if has_bought_now:
-                        self.appendSpot(self.fake_spots, i)
                         
     def isInBuySpot(self, i):
         return self.prices.Rsi[i] > self.prices.Ema[i]
@@ -147,27 +165,31 @@ class Plot:
     def __init__(self):
         py.init_notebook_mode(connected=True)
         pass
-
+    # , yaxis=dict(range=[30,70])
     def strategyRsi(self, strategy, title):
-        px.line(strategy.prices, y=["Rsi", "Ema"], title=title).show()
+        strategy.prices['UpperBand'] = [70 for i in range(len(strategy.prices.Rsi))]
+        strategy.prices['LowerBand'] = [30 for i in range(len(strategy.prices.Rsi))]
+        strategy.prices['MiddleBand'] = [50 for i in range(len(strategy.prices.Rsi))]
+        px.line(strategy.prices, y=["Rsi", "Ema", 'UpperBand', 'LowerBand', 'MiddleBand'], title=title).show()
 
     def strategy(self, strategy, title):
+        strategy_prices_dropped = strategy.prices.drop(strategy.prices.index[range(strategy.rsi_period)])
         Plot.iplot([
-            go.Line(x=strategy.prices.Close.index, y=strategy.prices.Close, name=strategy.prices.style.caption),
-            Plot.getScatter(strategy.spots, "green", "Spots"),
-            Plot.getScatter(strategy.buying_spots, 'blue', "Buying spots"),
-            Plot.getScatter(strategy.selling_spots, 'red', "Selling spots"),
-            Plot.getScatter(strategy.fake_spots, 'violet', "Fake spots"),
+            go.Scatter(x=strategy_prices_dropped.Close.index, y=strategy_prices_dropped.Close, name=strategy_prices_dropped.style.caption),
+            Plot.getDots(strategy.spots, "green", "Spots"),
+            Plot.getDots(strategy.buying_spots, 'blue', "Buying spots"),
+            Plot.getDots(strategy.selling_spots, 'red', "Selling spots"),
+            # Plot.getScatter(strategy.fake_spots, 'violet', "Fake spots"),
         ], title)
 
     def strategyBase(self, strategy, title):
         Plot.iplot([
-            go.Line(x=strategy.prices.index, y=strategy.prices.Close, name=strategy.prices.style.caption),
-            Plot.getScatter(strategy.buying_spots, "blue", "Buying spots"),
-            Plot.getScatter(strategy.selling_spots, "red", "Selling spots"),
+            go.Scatter(x=strategy.prices.index, y=strategy.prices.Close, name=strategy.prices.style.caption),
+            Plot.getDots(strategy.buying_spots, "blue", "Buying spots"),
+            Plot.getDots(strategy.selling_spots, "red", "Selling spots"),
         ], title)
 
-    def getScatter(strategy_spots, strategy_color, name):
+    def getDots(strategy_spots, strategy_color, name):
         scatter = go.Scatter(x=Strategy.getDates(strategy_spots), y=Strategy.getCloses(strategy_spots), mode='markers', marker=dict(size=5, color=strategy_color), name=name),
         return scatter[0]
 
@@ -179,7 +201,7 @@ class Plot:
             filename=title.lower().replace(' ', '_'))
 
 # %%
-
+import json
 class Profile:
     def __init__(self, strategy, interval, money_per_interval, cashout=False):
         self.money_per_interval = money_per_interval
@@ -211,7 +233,6 @@ class Profile:
                 self.fiat_accumulator += transaction[1]
             if transaction[2] == 'BUY':
                 coin = self.buy_coin(transaction[1])
-                self.fiat_accumulator = 0
                 self.coins += coin
             if transaction[2] == 'SELL':
                 if not self.cashout:
@@ -219,22 +240,28 @@ class Profile:
                 else:
                     self.fiat_accumulator += self.sell_coin(transaction[1])
 
-                self.coins = 0
-                self.coins -= self.coins
-              
     def buy_coin(self, coin_value):
-        return self.fiat_accumulator / coin_value
+        fiat_accumulator_tmp = self.fiat_accumulator
+        self.fiat_accumulator = 0
+        return fiat_accumulator_tmp / coin_value
 
     def sell_coin(self, coin_value):
-        return self.coins * coin_value  
+        coins_tmp = self.coins
+        self.coins = 0
+        return coins_tmp * coin_value  
     
     def print(self):
-        print({
+        total = round(self.fiat + self.fiat_accumulator + self.coins * self.strategy.prices.Close[len(self.strategy.prices.Close) - 1], 2)
+        print(json.dumps({
             "coins": self.coins,
+            "interval_money": self.money_per_interval,
+            "interval_days": self.interval * self.strategy.days_interval,
             "fiat": self.fiat + self.fiat_accumulator,
-            "money_injected": self.money_injected,
-            "rato": (self.fiat + self.fiat_accumulator) / self.money_injected
-        })
+            "money_output": total,
+            "money_input": self.money_injected,
+            "rato": total / self.money_injected,
+            # "ratios": self.strategy.ratios,
+        }, indent=4, sort_keys=True))
 
 def to_transaction_list(reserve_spots, buying_spots, selling_spots):
     transactions = (
@@ -251,23 +278,28 @@ def perform_profile(*params):
     profile.print()
 
 # %%
-YEARS = 4
-fetched_prices = fetchPrices('BTC-USD', dt.datetime.now() - relativedelta(years=0, days=YEARS*365 + RSI_PERIOD*DAYS_INTERVAL), dt.datetime.now() - relativedelta(days=1))
+YEARS = 2
+YEAR_DAYS = 365
+SYMBOLE = 'BNC-USD'
+days_timeperiod = 10
+fetched_prices = fetchPrices(SYMBOLE, dt.datetime.now() - relativedelta(years=YEARS - 1 if YEARS >= 1 else 0 , days=YEAR_DAYS + RSI_PERIOD*days_timeperiod), dt.datetime.now() - relativedelta(days=5))
 
-dawnStrategy = perform_strategy(DawnStrategy, fetched_prices, DAYS_INTERVAL, RSI_PERIOD)
-allInStrategy = perform_strategy(AllInStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*DAYS_INTERVAL)]]))
-aiStrategy = perform_strategy(AverageInvestingStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*DAYS_INTERVAL)]]))
+dawnStrategy = perform_strategy(DawnStrategy, fetched_prices, days_timeperiod, RSI_PERIOD)
+# allInStrategy = perform_strategy(AllInStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*days_selected)]]))
+# aiStrategy = perform_strategy(AverageInvestingStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*days_timeperiod)]]))
 
-print({"dawnStrategy": dawnStrategy.ratio, "allInStrategy": allInStrategy.ratio, "aiStrategy": aiStrategy.ratio})
+# print({"dawnStrategy": dawnStrategy.ratio, "allInStrategy": allInStrategy.ratio, "aiStrategy": aiStrategy.ratio})
 
 plot = Plot()
 plot.strategyRsi(dawnStrategy, "Rsi + Ema")
 plot.strategy(dawnStrategy, "Dawn Strategy")
-plot.strategyBase(allInStrategy, "All-In Strategy")
-plot.strategyBase(aiStrategy, "Average Investing Strategy")
 
-perform_profile(dawnStrategy, 4, 100, True)
-perform_profile(aiStrategy, 4, 100)
+# plot.strategyBase(allInStrategy, "All-In Strategy")
+# plot.strategyBase(aiStrategy, "Average Investing Strategy")
+print("coin_name : " + SYMBOLE)
+print("years : " + str(YEARS))
+perform_profile(dawnStrategy, 3, 1000, True)
+# perform_profile(aiStrategy, 3, 1500)
 
 
 # %%

@@ -64,12 +64,11 @@ class DawnStrategy(Strategy):
         ## IL est décalé !
         for i in range(len(self.prices.index)):
             if i > 0 and not math.isnan(self.prices.Rsi[i]):
-                current_i = i - 1
-                next_i = i
-                
+                current_i = i 
+                has_bought_now = False
+
                 if self.isInBuySpot(current_i):
                     self.appendSpot(self.spots, current_i)
-                    has_bought_now = False
 
                     if not has_bought:
                         # should BUY
@@ -77,14 +76,14 @@ class DawnStrategy(Strategy):
                         has_bought = True
                         has_bought_now = True
 
-                    if self.isInSellSpot(next_i):
-                        # should SELL
-                        self.appendSpot(self.selling_spots, current_i)
-                        has_bought = False
+                if self.isInSellSpot(current_i) and has_bought: 
+                    # should SELL
+                    self.appendSpot(self.selling_spots, current_i)
+                    has_bought = False
 
-                        # BUY and SELL same day
-                        if has_bought_now:
-                            self.appendSpot(self.fake_spots, current_i)
+                    # BUY and SELL same day
+                    if has_bought_now:
+                        self.appendSpot(self.fake_spots, current_i)
                         
     def isInBuySpot(self, i):
         return self.prices.Rsi[i] > self.prices.Ema[i]
@@ -254,8 +253,8 @@ def perform_profile(*params):
     profile.print()
 
 # %%
-YEARS = 1
-fetched_prices = fetchPrices('LTC-USD', dt.datetime.now() - relativedelta(years=0, days=YEARS*365 + RSI_PERIOD*DAYS_INTERVAL), dt.datetime.now() - relativedelta(days=1))
+YEARS = 4
+fetched_prices = fetchPrices('BTC-USD', dt.datetime.now() - relativedelta(years=0, days=YEARS*365 + RSI_PERIOD*DAYS_INTERVAL), dt.datetime.now() - relativedelta(days=1))
 
 dawnStrategy = perform_strategy(DawnStrategy, fetched_prices, DAYS_INTERVAL, RSI_PERIOD)
 # allInStrategy = perform_strategy(AllInStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*DAYS_INTERVAL)]]))

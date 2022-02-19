@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "projects": {
+    "application": "apps/application",
+    "api": "apps/api",
+    "api-interfaces": "libs/api-interfaces",
+    "crinapp": "apps/crinapp",
+    "crinapp-e2e": "apps/crinapp-e2e"
+  }
+}

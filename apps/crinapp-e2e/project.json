@@ -1,0 +1,28 @@
+{
+  "root": "apps/crinapp-e2e",
+  "sourceRoot": "apps/crinapp-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/crinapp-e2e/cypress.json",
+        "devServerTarget": "crinapp:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "crinapp:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/crinapp-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["crinapp"]
+}

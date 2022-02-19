@@ -61,29 +61,27 @@ class DawnStrategy(Strategy):
     def build(self):
         has_bought = False
 
-        ## IL est décalé !
         for i in range(len(self.prices.index)):
             if i > 0 and not math.isnan(self.prices.Rsi[i]):
-                current_i = i 
                 has_bought_now = False
 
-                if self.isInBuySpot(current_i):
-                    self.appendSpot(self.spots, current_i)
+                if self.isInBuySpot(i):
+                    self.appendSpot(self.spots, i)
 
                     if not has_bought:
                         # should BUY
-                        self.appendSpot(self.buying_spots, current_i)
+                        self.appendSpot(self.buying_spots, i)
                         has_bought = True
                         has_bought_now = True
 
-                if self.isInSellSpot(current_i) and has_bought: 
+                if self.isInSellSpot(i) and has_bought: 
                     # should SELL
-                    self.appendSpot(self.selling_spots, current_i)
+                    self.appendSpot(self.selling_spots, i)
                     has_bought = False
 
                     # BUY and SELL same day
                     if has_bought_now:
-                        self.appendSpot(self.fake_spots, current_i)
+                        self.appendSpot(self.fake_spots, i)
                         
     def isInBuySpot(self, i):
         return self.prices.Rsi[i] > self.prices.Ema[i]
@@ -257,18 +255,19 @@ YEARS = 4
 fetched_prices = fetchPrices('BTC-USD', dt.datetime.now() - relativedelta(years=0, days=YEARS*365 + RSI_PERIOD*DAYS_INTERVAL), dt.datetime.now() - relativedelta(days=1))
 
 dawnStrategy = perform_strategy(DawnStrategy, fetched_prices, DAYS_INTERVAL, RSI_PERIOD)
-# allInStrategy = perform_strategy(AllInStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*DAYS_INTERVAL)]]))
-# aiStrategy = perform_strategy(AverageInvestingStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*DAYS_INTERVAL)]]))
+allInStrategy = perform_strategy(AllInStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*DAYS_INTERVAL)]]))
+aiStrategy = perform_strategy(AverageInvestingStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*DAYS_INTERVAL)]]))
 
-# print({"dawnStrategy": dawnStrategy.ratio, "allInStrategy": allInStrategy.ratio, "aiStrategy": aiStrategy.ratio})
+print({"dawnStrategy": dawnStrategy.ratio, "allInStrategy": allInStrategy.ratio, "aiStrategy": aiStrategy.ratio})
 
 plot = Plot()
 plot.strategyRsi(dawnStrategy, "Rsi + Ema")
 plot.strategy(dawnStrategy, "Dawn Strategy")
-# plot.strategyBase(allInStrategy, "All-In Strategy")
-# plot.strategyBase(aiStrategy, "Average Investing Strategy")
+plot.strategyBase(allInStrategy, "All-In Strategy")
+plot.strategyBase(aiStrategy, "Average Investing Strategy")
 
 perform_profile(dawnStrategy, 4, 100, True)
+perform_profile(aiStrategy, 4, 100)
 
 
 # %%

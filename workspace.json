@@ -1,7 +1,7 @@
 {
   "version": 2,
   "projects": {
-    "application": "apps/application",
+    "firebase": "apps/firebase",
     "api": "apps/api",
     "api-interfaces": "libs/api-interfaces",
     "crinapp": "apps/crinapp",

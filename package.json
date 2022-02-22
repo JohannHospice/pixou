@@ -13,8 +13,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint": "~8.7.0",
-    "eslint-config-prettier": "8.1.0",
     "prettier": "^2.5.1",
     "turbo": "latest"
   },

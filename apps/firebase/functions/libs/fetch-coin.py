@@ -278,11 +278,14 @@ def perform_profile(*params):
     profile.print()
 
 # %%
-YEARS = 3
+YEARS = 1
 YEAR_DAYS = 365
-SYMBOLE = 'BTC-USD'
+SYMBOLE = 'LUNA1-USD'
 days_timeperiod = 10
-fetched_prices = fetchPrices(SYMBOLE, dt.datetime.now() - relativedelta(years=YEARS - 1 if YEARS >= 1 else 0 , days=YEAR_DAYS + RSI_PERIOD*days_timeperiod), dt.datetime.now() - relativedelta(days=5))
+start=dt.datetime.now()- relativedelta(years=YEARS - 1 if YEARS >= 1 else 0, days=YEAR_DAYS + RSI_PERIOD*days_timeperiod)
+end=dt.datetime.now()
+
+fetched_prices = fetchPrices(SYMBOLE, start , end)
 
 dawnStrategy = perform_strategy(DawnStrategy, fetched_prices, days_timeperiod, RSI_PERIOD)
 # allInStrategy = perform_strategy(AllInStrategy, fetched_prices.drop(fetched_prices.index[[i for i in range(RSI_PERIOD*days_selected)]]))
@@ -298,7 +301,7 @@ plot.strategy(dawnStrategy, "Dawn Strategy")
 # plot.strategyBase(aiStrategy, "Average Investing Strategy")
 print("coin_name : " + SYMBOLE)
 print("years : " + str(YEARS))
-perform_profile(dawnStrategy, 3, 1000, True)
+perform_profile(dawnStrategy, 3, 100, True)
 # perform_profile(aiStrategy, 3, 1500)
 
 

@@ -27,6 +27,6 @@
     "jsx": "preserve"
   },
   "compileOnSave": true,
-  "include": ["src", ".eslintrc.js"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

@@ -1,7 +1,7 @@
 import { Spot } from "@binance/connector";
 
 export const PERIOD_WEEKLY = "1w";
-
+export const PERIOD_DAILY = "1d";
 export function getInstance(
   key: string = "",
   secret: string = "",

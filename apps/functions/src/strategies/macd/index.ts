@@ -2,6 +2,15 @@ import Strategy, { Order, OrderType } from "..";
 import { MACD, EMA } from "technicalindicators";
 import { CrinKline } from "../../exchanges/binance";
 
+function uniformLength<X, Y, Z>(arr: [X[], Y[], Z[]]): [X[], Y[], Z[]] {
+  const [a, b, c] = arr;
+  const minLength = Math.min(a.length, b.length, c.length);
+  return [
+    a.slice(a.length - minLength),
+    b.slice(b.length - minLength),
+    c.slice(c.length - minLength),
+  ];
+}
 export default class MACDStrategy extends Strategy {
   macd: {
     MACD?: number;
@@ -11,28 +20,37 @@ export default class MACDStrategy extends Strategy {
   ema100: number[] = [];
   closes: number[] = [];
   profitTargetRatio = 1.5;
+  static periodEMA = 100;
 
   constructor(klines: CrinKline[]) {
     super(klines);
-    this.closes = this.klines.map(({ close }) => close);
-    this.macd = MACD.calculate({
-      values: this.closes,
-      fastPeriod: 12, // 5,
-      slowPeriod: 26, // 8,
-      signalPeriod: 9, // 3,
-      SimpleMAOscillator: false,
-      SimpleMASignal: false,
-    });
+    const [klinesUniform, macdUniform, emaUniform] = uniformLength([
+      klines,
+      MACD.calculate({
+        values: klines.map(({ close }) => close),
+        fastPeriod: 12, // 5,
+        slowPeriod: 26, // 8,
+        signalPeriod: 9, // 3,
+        SimpleMAOscillator: false,
+        SimpleMASignal: false,
+      }),
+      EMA.calculate({
+        values: klines.map(({ close }) => close),
+        period: MACDStrategy.periodEMA,
+      }),
+    ]);
 
-    this.ema100 = EMA.calculate({
-      values: this.closes,
-      period: 100,
-    });
+    this.closes = klinesUniform.map(({ close }) => close);
+    this.klines = klinesUniform;
+    this.macd = macdUniform;
+    this.ema100 = emaUniform;
+
+    console.log(this.closes.length, this.macd.length, this.ema100.length);
   }
 
   getOrders(): Order[] {
     const orders = [];
-    for (let i = 0; i < this.closes.length; i++) {
+    for (let i = 0; i < this.klines.length; i++) {
       const order = this.getOrder(i);
 
       if (order) {

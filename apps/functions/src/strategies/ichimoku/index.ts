@@ -34,6 +34,7 @@ export class IchimokuStrategy extends Strategy {
       return {
         type: OrderType.LONG,
         price: this.klines[index].close,
+        closeTime: this.klines[index].closeTime,
       };
     }
 
@@ -41,6 +42,7 @@ export class IchimokuStrategy extends Strategy {
       return {
         type: OrderType.SHORT,
         price: this.klines[index].close,
+        closeTime: this.klines[index].closeTime,
       };
     }
 

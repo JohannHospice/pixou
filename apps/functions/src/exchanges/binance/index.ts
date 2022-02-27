@@ -1,15 +1,42 @@
 import { Spot } from "@binance/connector";
 
-export function getInstance({ key, secret, baseURL }: any) {
-  const client = new Spot(key, secret, { baseURL });
+export const PERIOD_WEEKLY = "1w";
 
-  return client;
+export function getInstance(
+  key: string = "",
+  secret: string = "",
+  baseURL?: string
+): Spot {
+  return new Spot(key, secret, { baseURL });
 }
 
-// // Place a new order
-// client.newOrder('BNBUSDT', 'BUY', 'LIMIT', {
-//   price: '350',
-//   quantity: 1,
-//   timeInForce: 'GTC'
-// }).then(response => client.logger.log(response.data))
-//   .catch(error => client.logger.error(error))
+export type BinanceKline = any[];
+export interface CrinKline {
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+  volume: number;
+  openTime: Date;
+  closeTime: Date;
+}
+
+export function parseBinanceKlines(data: BinanceKline[]): CrinKline[] {
+  return data.map((arr) => ({
+    open: Number(arr[1]),
+    close: Number(arr[4]),
+    high: Number(arr[2]),
+    low: Number(arr[3]),
+    volume: Number(arr[5]),
+    openTime: new Date(arr[0]),
+    closeTime: new Date(arr[6]),
+  }));
+}
+
+export function getClosesFromBinanceKlines(data: BinanceKline[]): number[] {
+  return data.map((arr: any[]) => Number(arr[4]));
+}
+
+export function getClosesFromCrinKlines(data: CrinKline[]): number[] {
+  return data.map(({ close }) => close);
+}

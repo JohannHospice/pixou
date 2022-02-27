@@ -4,6 +4,7 @@ export default {
     es6: true,
     node: true,
     jest: true,
+    "jest/globals": true,
   },
   files: ["*.ts", "*.tsx", "*.js"],
   // "extends": [
@@ -19,6 +20,8 @@ export default {
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -29,9 +32,11 @@ export default {
   ignorePatterns: [
     "/lib/**/*", // Ignore built files.
   ],
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint", "import", "jest"],
   rules: {
     quotes: ["error", "double"],
     "import/no-unresolved": 0,
+    "no-unused-vars": "warn",
+    "prettier/prettier": "warn",
   },
 };

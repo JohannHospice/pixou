@@ -1,29 +1,73 @@
-import { describe, beforeAll, it } from "@jest/globals";
-import { getInstance } from "./index";
+import { describe, it } from "@jest/globals";
+import { getInstance, PERIOD_WEEKLY } from "./index";
 import dotenv from "dotenv";
-dotenv.config();
+import { RSI } from "technicalindicators";
 
-describe("Test de l'api binance", () => {
-  let client: any = undefined;
-  const SYMBOL = "BNBUSDT";
-  beforeAll(() => {
-    client = getInstance({
-      key: process.env.BINANCE_API_KEY,
-      secret: process.env.BINANCE_SECRET_KEY,
-      baseURL: process.env.BINANCE_API_URL,
+dotenv.config({ path: __dirname + ".env" });
+
+describe.skip("Test de l'api binance", () => {
+  const clientTestnet = getInstance(
+    process.env.BINANCE_API_KEY,
+    process.env.BINANCE_SECRET_KEY,
+    process.env.BINANCE_API_URL
+  );
+  const clientBinance = getInstance();
+  const SYMBOL = "BTCUSDT";
+
+  describe("marché", () => {
+    let klines: any[];
+
+    it("récupérer les informations d'une coin du marché", async () => {
+      const { data } = await clientTestnet.exchangeInfo({ symbol: SYMBOL });
+      console.log(data.symbols[0]);
+    });
+
+    it("récupérer les informations d'une coin du marché", async () => {
+      const { data } = await clientBinance.klines(SYMBOL, PERIOD_WEEKLY, {
+        startTime: new Date(2017, 0, 1).getTime(),
+        endTime: new Date().getTime(),
+      });
+
+      console.log(
+        data.map((arr: any[]) => ({
+          open: arr[1],
+          close: arr[4],
+          high: arr[2],
+          low: arr[3],
+          volume: arr[5],
+          openTime: new Date(arr[0]).toUTCString(),
+          closeTime: new Date(arr[6]).toUTCString(),
+        }))
+      );
+      console.log(new Date(2022, 1, 20).toUTCString());
+
+      klines = data;
+    });
+
+    describe("analyse technique", () => {
+      it("should calculate the rsi of a binance kline call", async () => {
+        const rsi = RSI.calculate({
+          period: 14,
+          values: klines.map((arr: any[]) => Number(arr[4])),
+        });
+
+        console.log(rsi);
+      });
     });
   });
 
-  it("récupération des informations de compte", async () => {
-    const { data } = await client.account();
+  describe("compte", () => {
+    it("récupération des informations de compte", async () => {
+      const { data } = await clientTestnet.account();
 
-    console.log(data);
+      console.log(data);
+    });
   });
 
   describe("ordre", () => {
     it("assigner un ordre", async () => {
-      const { data } = await client.newOrder(SYMBOL, "BUY", "LIMIT", {
-        price: "350",
+      const { data } = await clientTestnet.newOrder(SYMBOL, "BUY", "LIMIT", {
+        price: 350,
         quantity: 1,
         timeInForce: "GTC",
       });
@@ -32,19 +76,19 @@ describe("Test de l'api binance", () => {
     });
 
     it("annuler les ordres ouvert", async () => {
-      const { data } = await client.cancelOpenOrders(SYMBOL);
+      const { data } = await clientTestnet.cancelOpenOrders(SYMBOL);
 
       console.log(data);
     });
 
     it("lister les ordres ouverts", async () => {
-      const { data } = await client.openOrders();
+      const { data } = await clientTestnet.openOrders();
 
       console.log(data);
     });
 
-    it.skip("lister les ordres", async () => {
-      const { data } = await client.allOrders(SYMBOL);
+    it("lister les ordres", async () => {
+      const { data } = await clientTestnet.allOrders(SYMBOL);
 
       console.log(data);
     });

@@ -5,4 +5,5 @@ module.exports = {
     verbose: true,
   },
   setupFile: ["./jest.setup.ts"],
+  rootDir: "./src",
 };

@@ -1,5 +1,5 @@
 import { describe, it } from "@jest/globals";
-import { getInstance, PERIOD_WEEKLY } from "./index";
+import { getInstance, TIME_PERIOD } from "./index";
 import { RSI } from "technicalindicators";
 
 describe.skip("Test de l'api binance", () => {
@@ -20,7 +20,7 @@ describe.skip("Test de l'api binance", () => {
     });
 
     it("récupérer les informations d'une coin du marché", async () => {
-      const { data } = await clientBinance.klines(SYMBOL, PERIOD_WEEKLY, {
+      const { data } = await clientBinance.klines(SYMBOL, TIME_PERIOD.WEEKLY, {
         startTime: new Date(2017, 0, 1).getTime(),
         endTime: new Date().getTime(),
       });

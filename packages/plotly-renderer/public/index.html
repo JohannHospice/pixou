@@ -1,0 +1,39 @@
+<head>
+  <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    #gd {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <title>Plot renderer</title>
+</head>
+<body>
+  <div id="gd"></div>
+  <script>
+    openSocket();
+    updatePlot()
+
+    function openSocket() {
+      const socket = io();
+
+      socket.on("update", (msg) => {
+        console.log("Message from server ", msg);
+        updatePlot();
+      });
+    }
+
+    function updatePlot() {
+      fetch("/plot.json")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          Plotly.newPlot("gd", { ...data, config: { responsive: true } });
+        });
+    }
+  </script>
+</body>

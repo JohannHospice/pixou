@@ -21,14 +21,14 @@ export default class MACDStrategy extends Strategy {
   closes: number[] = [];
   profitTargetRatio = 1.5;
   static periodEMA = 100;
-
+  static fastPeriod = 12;
   constructor(klines: CrinKline[]) {
     super(klines);
     const [klinesUniform, macdUniform, emaUniform] = uniformLength([
       klines,
       MACD.calculate({
         values: klines.map(({ close }) => close),
-        fastPeriod: 12, // 5,
+        fastPeriod: MACDStrategy.fastPeriod, // 5,
         slowPeriod: 26, // 8,
         signalPeriod: 9, // 3,
         SimpleMAOscillator: false,
@@ -65,7 +65,11 @@ export default class MACDStrategy extends Strategy {
       return undefined;
     }
 
-    if (this.isTrendUp(index) && this.isMACDBullish(index)) {
+    if (
+      this.isTrendUp(index) &&
+      this.isMACDBullish(index) &&
+      this.isMACDBearish(index - 1)
+    ) {
       const swingLowIndex = this.nearestSwingLowIndex(index);
       if (!swingLowIndex) return undefined;
       return {
@@ -80,7 +84,11 @@ export default class MACDStrategy extends Strategy {
       };
     }
 
-    if (this.isTrendDown(index) && this.isMACDBearish(index)) {
+    if (
+      this.isTrendDown(index) &&
+      this.isMACDBearish(index) &&
+      this.isMACDBullish(index - 1)
+    ) {
       const swingHighIndex = this.nearestSwingHighIndex(index);
       if (!swingHighIndex) return undefined;
       return {
@@ -128,20 +136,78 @@ export default class MACDStrategy extends Strategy {
   }
 
   nearestSwingLowIndex(index: number): number | undefined {
-    for (let swingLowIndex = index; swingLowIndex > 0; swingLowIndex--) {
-      if (this.closes[swingLowIndex] < this.closes[swingLowIndex - 1]) {
-        return swingLowIndex;
+    let swingLowIndex = index;
+    for (let j = index; j > 0 && j > index - MACDStrategy.fastPeriod; j--) {
+      if (this.closes[j] < this.closes[swingLowIndex]) {
+        swingLowIndex = j;
       }
     }
-    return undefined;
+    return swingLowIndex === index ? undefined : swingLowIndex;
   }
 
   nearestSwingHighIndex(index: number): number | undefined {
-    for (let swingLowIndex = index; swingLowIndex > 0; swingLowIndex--) {
-      if (this.closes[swingLowIndex] > this.closes[swingLowIndex - 1]) {
-        return swingLowIndex;
+    let swingHighIndex = index;
+    for (let j = index; j > 0 && j > index - MACDStrategy.fastPeriod; j--) {
+      if (this.closes[j] > this.closes[swingHighIndex]) {
+        swingHighIndex = j;
       }
     }
-    return undefined;
+    return swingHighIndex === index ? undefined : swingHighIndex;
+  }
+
+  getTraces() {
+    return [
+      ...super.getTraces(),
+      {
+        x: this.klines.map(({ closeTime }) => closeTime),
+        y: this.ema100,
+        name: "EMA100",
+        type: "scatter",
+      },
+      {
+        x: this.klines.map(({ closeTime }) => closeTime),
+        y: this.macd.map(({ MACD }) => MACD),
+        yaxis: "y2",
+        name: "MACD",
+        type: "scatter",
+      },
+      {
+        x: this.klines.map(({ closeTime }) => closeTime),
+        y: this.macd.map(({ signal }) => signal),
+        yaxis: "y2",
+        name: "SIGNAL",
+        type: "scatter",
+      },
+      {
+        x: this.klines.map(({ closeTime }) => closeTime),
+        y: this.macd.map(({ histogram }) => histogram),
+        yaxis: "y2",
+        name: "histogram",
+        type: "bar",
+      },
+    ];
+  }
+
+  getPlotLayout() {
+    const ysection = 0.25;
+    const ymargin = 0.05;
+    return {
+      yaxis: {
+        domain: [ysection + ymargin / 2, 1],
+        type: "log",
+        autorange: true,
+      },
+      xaxis: {
+        domain: [0, 1],
+      },
+      yaxis2: {
+        domain: [0, ysection - ymargin / 2],
+        anchor: "x2",
+      },
+      xaxis2: {
+        domain: [0, 1],
+        anchor: "y2",
+      },
+    };
   }
 }

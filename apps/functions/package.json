@@ -38,6 +38,7 @@
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-import": "^2.22.0",
+    "express": "^4.17.3",
     "firebase-functions-test": "^0.3.3",
     "jest": "^27.5.1",
     "plotly": "^1.0.6",

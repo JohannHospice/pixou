@@ -1,9 +1,6 @@
 import { describe, it } from "@jest/globals";
 import { getInstance, PERIOD_WEEKLY } from "./index";
-import dotenv from "dotenv";
 import { RSI } from "technicalindicators";
-
-dotenv.config({ path: __dirname + ".env" });
 
 describe.skip("Test de l'api binance", () => {
   const clientTestnet = getInstance(

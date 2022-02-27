@@ -4,4 +4,5 @@ module.exports = {
   jest: {
     verbose: true,
   },
+  setupFile: ["./jest.setup.ts"],
 };

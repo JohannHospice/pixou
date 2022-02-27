@@ -16,7 +16,7 @@
   <div id="gd"></div>
   <script>
     openSocket();
-    updatePlot()
+    updatePlot();
 
     function openSocket() {
       const socket = io();
@@ -30,9 +30,20 @@
     function updatePlot() {
       fetch("/plot.json")
         .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          Plotly.newPlot("gd", { ...data, config: { responsive: true } });
+        .then((data) =>
+          Plotly.newPlot("gd", {
+            ...data,
+            config: { responsive: true },
+          })
+        )
+        .then((plot) => {
+          plot.on("plotly_hover", function (eventdata) {
+            Plotly.Fx.hover(
+              plot,
+              { xval: eventdata.xvals[0] },
+              Object.keys(plot._fullLayout._plots)
+            );
+          });
         });
     }
   </script>

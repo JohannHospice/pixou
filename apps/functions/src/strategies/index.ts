@@ -120,6 +120,7 @@ export default class Strategy {
         marker: {
           color: "green",
         },
+        // hovertemplate = "%{label}: <br>Popularity: %{percent} </br> %{text}")
       },
       {
         x: shortOrders.map(({ closeTime }) => closeTime),
@@ -145,7 +146,7 @@ export default class Strategy {
     ];
   }
 
-  getPlotLayout(): { [x: string]: { [x: string]: any } } {
+  getPlotLayout(): { [x: string]: string | { [x: string]: any } } {
     throw new Error("Function not implemented.");
   }
 }

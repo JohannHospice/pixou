@@ -14,14 +14,10 @@ describe("Stratégie MACD", () => {
   let macdStrategy: MACDStrategy;
 
   beforeAll(async () => {
-    const { data } = await getInstance().klines(
-      SYMBOL,
-      TIME_PERIOD.FOUR_HOURLY,
-      {
-        endTime: new Date().getTime(),
-        limit: 2000,
-      }
-    );
+    const { data } = await getInstance().klines(SYMBOL, TIME_PERIOD.WEEKLY, {
+      endTime: new Date().getTime(),
+      limit: 2000,
+    });
 
     klines = parseBinanceKlines(data);
   });

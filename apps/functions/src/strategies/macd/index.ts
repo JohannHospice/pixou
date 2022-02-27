@@ -61,7 +61,7 @@ export default class MACDStrategy extends Strategy {
   }
 
   getOrder(index: number): Order | undefined {
-    if (this.isInMACDRange(index) || this.isMACDUndefined(index)) {
+    if (index < 1 || this.isInMACDRange(index) || this.isMACDUndefined(index)) {
       return undefined;
     }
 
@@ -182,7 +182,7 @@ export default class MACDStrategy extends Strategy {
         x: this.klines.map(({ closeTime }) => closeTime),
         y: this.macd.map(({ histogram }) => histogram),
         yaxis: "y2",
-        name: "histogram",
+        name: "HISTOGRAM",
         type: "bar",
       },
     ];
@@ -192,6 +192,16 @@ export default class MACDStrategy extends Strategy {
     const ysection = 0.25;
     const ymargin = 0.05;
     return {
+      title: {
+        text: "Strategy MACD",
+        font: {
+          family: "Open sans, verdana, Roboto, Courier New, Arial, monospace",
+          size: 24,
+        },
+        xref: "paper",
+        x: 0.05,
+      },
+      hovermode: "x",
       yaxis: {
         domain: [ysection + ymargin / 2, 1],
         type: "log",

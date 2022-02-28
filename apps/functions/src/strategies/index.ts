@@ -164,3 +164,52 @@ export interface Order {
   closeTime: Date;
   bet?: number;
 }
+
+export function uniformLength2<X, Y>(arr: [X[], Y[]]): [X[], Y[]] {
+  const [a, b] = arr;
+  const minLength = Math.min(a.length, b.length);
+  return [a.slice(a.length - minLength), b.slice(b.length - minLength)];
+}
+
+export function uniformLength3<X, Y, Z>(arr: [X[], Y[], Z[]]): [X[], Y[], Z[]] {
+  const [a, b, c] = arr;
+  const minLength = Math.min(a.length, b.length, c.length);
+  return [
+    a.slice(a.length - minLength),
+    b.slice(b.length - minLength),
+    c.slice(c.length - minLength),
+  ];
+}
+
+export function uniformLength4<X, Y, Z, O>(
+  arr: [X[], Y[], Z[], O[]]
+): [X[], Y[], Z[], O[]] {
+  const [a, b, c, o] = arr;
+  const minLength = Math.min(a.length, b.length, c.length);
+  return [
+    a.slice(a.length - minLength),
+    b.slice(b.length - minLength),
+    c.slice(c.length - minLength),
+    o.slice(o.length - minLength),
+  ];
+}
+export function uniformLength5<X, Y, Z, O, P>(
+  arr: [X[], Y[], Z[], O[], P[]]
+): [X[], Y[], Z[], O[], P[]] {
+  const [a, b, c, o, p] = arr;
+  const minLength = Math.min(a.length, b.length, c.length);
+  return [
+    a.slice(a.length - minLength),
+    b.slice(b.length - minLength),
+    c.slice(c.length - minLength),
+    o.slice(o.length - minLength),
+    p.slice(p.length - minLength),
+  ];
+}
+
+export function uniformLength(arr: any[][]) {
+  const minLength = Math.min(...arr.map((a) => a.length));
+  console.log("removed " + minLength + " periods");
+
+  return arr.map((a) => a.slice(a.length - minLength));
+}

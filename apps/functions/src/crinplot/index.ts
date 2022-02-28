@@ -33,3 +33,14 @@ export function savePlot(data: any[], layout: any) {
   fs.mkdirSync("build", { recursive: true });
   fs.writeFileSync("build/plot.json", JSON.stringify({ data, layout }));
 }
+
+export function saveStrategy(strategy: Strategy) {
+  fs.mkdirSync("build", { recursive: true });
+  fs.writeFileSync(
+    "build/plot.json",
+    JSON.stringify({
+      data: strategy.getTraces(),
+      layout: strategy.getPlotLayout(),
+    })
+  );
+}

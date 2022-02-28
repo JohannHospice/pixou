@@ -1,16 +1,7 @@
-import Strategy, { Order, OrderType } from "..";
+import Strategy, { Order, OrderType, uniformLength3 } from "..";
 import { MACD, EMA } from "technicalindicators";
 import { CrinKline } from "../../exchanges/binance";
 
-function uniformLength<X, Y, Z>(arr: [X[], Y[], Z[]]): [X[], Y[], Z[]] {
-  const [a, b, c] = arr;
-  const minLength = Math.min(a.length, b.length, c.length);
-  return [
-    a.slice(a.length - minLength),
-    b.slice(b.length - minLength),
-    c.slice(c.length - minLength),
-  ];
-}
 export default class MACDStrategy extends Strategy {
   macd: {
     MACD?: number;
@@ -24,7 +15,7 @@ export default class MACDStrategy extends Strategy {
   static fastPeriod = 12;
   constructor(klines: CrinKline[]) {
     super(klines);
-    const [klinesUniform, macdUniform, emaUniform] = uniformLength([
+    const [klinesUniform, macdUniform, emaUniform] = uniformLength3([
       klines,
       MACD.calculate({
         values: klines.map(({ close }) => close),

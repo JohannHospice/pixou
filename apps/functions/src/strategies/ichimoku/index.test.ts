@@ -1,5 +1,5 @@
 import { describe, it, beforeAll } from "@jest/globals";
-import MACDStrategy from "./index";
+import IchimokuStrategy from "./index";
 import { plotStrategy } from "../../crinplot";
 import {
   getInstance,
@@ -8,13 +8,13 @@ import {
   TIME_PERIOD,
 } from "../../exchanges/binance";
 
-describe.skip("Stratégie MACD", () => {
+describe("Stratégie Ichimoku", () => {
   const SYMBOL = "BTCUSDT";
   let klines: CrinKline[];
-  let macdStrategy: MACDStrategy;
+  let ichimokuStrategy: IchimokuStrategy;
 
   beforeAll(async () => {
-    const { data } = await getInstance().klines(SYMBOL, TIME_PERIOD.HOURLY, {
+    const { data } = await getInstance().klines(SYMBOL, TIME_PERIOD.DAILY, {
       endTime: new Date().getTime(),
       limit: 2000,
     });
@@ -22,16 +22,15 @@ describe.skip("Stratégie MACD", () => {
     klines = parseBinanceKlines(data);
   });
 
-  it("should build macd", () => {
-    macdStrategy = new MACDStrategy(klines);
+  it("should build Ichimoku", () => {
+    ichimokuStrategy = new IchimokuStrategy(klines);
   });
 
   it.skip("should give results", () => {
-    console.log(macdStrategy.result());
+    console.log(ichimokuStrategy.result());
   });
 
   it("should display strategy", async () => {
-    const url = await plotStrategy(macdStrategy);
-    console.log({ url });
+    plotStrategy(ichimokuStrategy);
   });
 });

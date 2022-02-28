@@ -9,7 +9,7 @@ import {
 } from "../../exchanges/binance";
 
 describe("Stratégie Super Ichimoku", () => {
-  const SYMBOL = "BTCUSDT";
+  const SYMBOL = "ETHUSDT";
   let klines: CrinKline[];
   let ichimokuStrategy: SuperIchimokuStrategy;
 

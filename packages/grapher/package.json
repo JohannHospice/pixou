@@ -1,18 +1,20 @@
 {
   "name": "grapher",
-  "version": "0.1.0",
+  "version": "0.1.8",
   "author": "Johann Hospice",
   "license": "MIT",
   "private": true,
+  "files": ["src", "public/index.html"],
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
+    "build": "tsc && sed -i '1 i\\#!/usr/bin/env node' out/index.js",
     "start": "npx ts-node src/index.ts"
   },
   "engines": {
     "node": "16"
   },
-  "main": "index.js",
+  "bin": "./out/index.js",
+  "main": "./out/index.js",
   "dependencies": {
     "express": "^4.17.3",
     "socket.io": "^4.4.1",

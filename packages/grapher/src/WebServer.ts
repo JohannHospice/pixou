@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import { Server } from "socket.io";
 import http from "http";
+import path from "path";
 
 export default class WebServer {
   app: Express;
@@ -12,7 +13,7 @@ export default class WebServer {
     this.server = http.createServer(this.app);
     this.io = new Server(this.server);
 
-    this.app.use(express.static(process.cwd() + "/public"));
+    this.app.use(express.static(path.join(__dirname, "../public")));
 
     this.io.on("connection", (socket) => {
       console.log("a user connected");

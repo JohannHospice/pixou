@@ -1,6 +1,6 @@
 {
-  "name": "plotly-renderer",
-  "version": "0.0.1",
+  "name": "grapher",
+  "version": "0.1.0",
   "author": "Johann Hospice",
   "license": "MIT",
   "private": true,

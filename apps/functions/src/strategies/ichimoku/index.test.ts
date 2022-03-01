@@ -8,7 +8,7 @@ import {
   TIME_PERIOD,
 } from "../../exchanges/binance";
 
-describe("Stratégie Ichimoku", () => {
+describe.skip("Stratégie Ichimoku", () => {
   const SYMBOL = "BTCUSDT";
   let klines: CrinKline[];
   let ichimokuStrategy: IchimokuStrategy;

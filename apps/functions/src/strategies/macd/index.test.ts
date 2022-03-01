@@ -27,7 +27,7 @@ describe.skip("Stratégie MACD", () => {
   });
 
   it.skip("should give results", () => {
-    console.log(macdStrategy.result());
+    // console.log(macdStrategy.result());
   });
 
   it("should display strategy", async () => {

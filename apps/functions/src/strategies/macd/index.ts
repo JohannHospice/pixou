@@ -1,7 +1,7 @@
-import Strategy, { Order, OrderType, uniformLength3 } from "..";
+import Strategy, { uniformLength } from "..";
 import { MACD, EMA } from "technicalindicators";
 import { CrinKline } from "../../exchanges/binance";
-
+import { Order, TransactionType } from "../../order";
 export default class MACDStrategy extends Strategy {
   macd: {
     MACD?: number;
@@ -15,7 +15,7 @@ export default class MACDStrategy extends Strategy {
   static fastPeriod = 12;
   constructor(klines: CrinKline[]) {
     super(klines);
-    const [klinesUniform, macdUniform, emaUniform] = uniformLength3([
+    const [klinesUniform, macdUniform, emaUniform] = uniformLength([
       klines,
       MACD.calculate({
         values: klines.map(({ close }) => close),
@@ -65,7 +65,7 @@ export default class MACDStrategy extends Strategy {
       if (!swingLowIndex) return undefined;
       return {
         closeTime: this.klines[index].closeTime,
-        type: OrderType.LONG,
+        type: TransactionType.LONG,
         price: this.closes[index],
         stoploss: this.closes[swingLowIndex],
         profitTarget:
@@ -84,7 +84,7 @@ export default class MACDStrategy extends Strategy {
       if (!swingHighIndex) return undefined;
       return {
         closeTime: this.klines[index].closeTime,
-        type: OrderType.SHORT,
+        type: TransactionType.SHORT,
         price: this.closes[index],
         stoploss: this.closes[swingHighIndex],
         profitTarget:

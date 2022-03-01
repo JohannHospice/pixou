@@ -1,7 +1,8 @@
 import { EMA, IchimokuCloud, MACD, RSI } from "technicalindicators";
-import Strategy, { Order, OrderType, uniformLength } from "..";
+import Strategy, { uniformLength } from "..";
 import { CrinKline } from "../../exchanges/binance";
 import MACDStrategy from "../macd";
+import { Order, TransactionType } from "../../order";
 
 export default class SuperIchimokuStrategy extends Strategy {
   ichimoku: {
@@ -94,7 +95,7 @@ export default class SuperIchimokuStrategy extends Strategy {
       //  && this.isCloseBehindTheCloud(index - 1)
     ) {
       return {
-        type: OrderType.LONG,
+        type: TransactionType.LONG,
         price: this.klines[index].close,
         closeTime: this.klines[index].closeTime,
       };
@@ -105,7 +106,7 @@ export default class SuperIchimokuStrategy extends Strategy {
       // && this.isCloseAboveTheCloud(index - 1)
     ) {
       return {
-        type: OrderType.SHORT,
+        type: TransactionType.SHORT,
         price: this.klines[index].close,
         closeTime: this.klines[index].closeTime,
       };
@@ -141,56 +142,57 @@ export default class SuperIchimokuStrategy extends Strategy {
   }
 
   getTraces(): any[] {
+    const closeTimes = this.klines.map(({ closeTime }) => closeTime);
     return [
       super.getTraces()[0],
       {
-        x: this.klines.map((kline) => kline.closeTime),
+        x: closeTimes,
         y: this.ichimoku.map((ichimoku) => ichimoku.spanA),
         type: "scatter",
         name: "spanA",
       },
       {
-        x: this.klines.map((kline) => kline.closeTime),
+        x: closeTimes,
         y: this.ichimoku.map((ichimoku) => ichimoku.spanB),
         type: "scatter",
         name: "spanB",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.ema100,
         name: "EMA100",
         type: "scatter",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.macd.map(({ MACD }) => MACD),
         yaxis: "y2",
         name: "MACD",
         type: "scatter",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.macd.map(({ signal }) => signal),
         yaxis: "y2",
         name: "SIGNAL",
         type: "scatter",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.macd.map(({ histogram }) => histogram),
         yaxis: "y2",
         name: "HISTOGRAM",
         type: "bar",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.rsi,
         yaxis: "y3",
         name: "RSI",
         type: "scatter",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.klines.map(() => 70),
         yaxis: "y3",
         type: "scatter",
@@ -198,7 +200,7 @@ export default class SuperIchimokuStrategy extends Strategy {
         mode: "lines",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.klines.map(() => 50),
         yaxis: "y3",
         type: "scatter",
@@ -206,7 +208,7 @@ export default class SuperIchimokuStrategy extends Strategy {
         mode: "lines",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.klines.map(() => 30),
         yaxis: "y3",
         type: "scatter",
@@ -214,7 +216,7 @@ export default class SuperIchimokuStrategy extends Strategy {
         mode: "lines",
       },
       {
-        x: this.klines.map(({ closeTime }) => closeTime),
+        x: closeTimes,
         y: this.ema14,
         name: "EMA14",
         type: "scatter",

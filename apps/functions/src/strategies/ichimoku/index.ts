@@ -1,7 +1,7 @@
 import { IchimokuCloud } from "technicalindicators";
-import Strategy, { Order, OrderType, uniformLength2 } from "..";
+import Strategy, { uniformLength } from "..";
 import { CrinKline } from "../../exchanges/binance";
-
+import { Order, TransactionType } from "../../order";
 export default class IchimokuStrategy extends Strategy {
   ichimoku: {
     conversion: number;
@@ -12,7 +12,7 @@ export default class IchimokuStrategy extends Strategy {
 
   constructor(klines: CrinKline[]) {
     super(klines);
-    const [klinesUniform, ichimokuUniform] = uniformLength2([
+    const [klinesUniform, ichimokuUniform] = uniformLength([
       klines,
       IchimokuCloud.calculate({
         high: this.klines.map((kline) => kline.high),
@@ -48,7 +48,7 @@ export default class IchimokuStrategy extends Strategy {
       //  && this.isCloseBehindTheCloud(index - 1)
     ) {
       return {
-        type: OrderType.LONG,
+        type: TransactionType.LONG,
         price: this.klines[index].close,
         closeTime: this.klines[index].closeTime,
       };
@@ -59,7 +59,7 @@ export default class IchimokuStrategy extends Strategy {
       // && this.isCloseAboveTheCloud(index - 1)
     ) {
       return {
-        type: OrderType.SHORT,
+        type: TransactionType.SHORT,
         price: this.klines[index].close,
         closeTime: this.klines[index].closeTime,
       };

@@ -1,3 +1,9 @@
+import {
+  longOperation,
+  Order,
+  shortOperation,
+  TransactionType,
+} from "../order";
 import Strategy from "../strategies";
 
 export default class Portfolio {

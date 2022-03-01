@@ -28,6 +28,12 @@
     }
 
     function updatePlot() {
+      const d1 = new Date()
+      setInterval(() => {
+        const d2 = new Date();
+        window.document.title = Math.floor((d2 - d1.getTime()) / 1000 )+ "s Yeah buddy !";
+      }, 1000);
+      
       fetch("/plot.json")
         .then((response) => response.json())
         .then((data) =>

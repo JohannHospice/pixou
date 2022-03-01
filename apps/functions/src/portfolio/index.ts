@@ -6,6 +6,7 @@ import {
 } from "../order";
 import Strategy from "../strategies";
 
+// invest each period
 export default class Portfolio {
   constructor(
     public strategy: Strategy,

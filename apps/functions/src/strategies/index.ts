@@ -17,13 +17,16 @@ export default class Strategy {
     throw new Error("Function not implemented.");
   }
 
+  build() {
+    this.orders = this.getOrders();
+  }
+
   // plot
   getTraces(): any[] {
-    const orders = this.getOrders();
-    const longOrders = orders.filter(
+    const longOrders = this.orders.filter(
       ({ type }) => type === TransactionType.LONG
     );
-    const shortOrders = orders.filter(
+    const shortOrders = this.orders.filter(
       ({ type }) => type === TransactionType.SHORT
     );
     return [
@@ -80,7 +83,9 @@ export default class Strategy {
   }
 
   getPlotLayout(): { [x: string]: string | { [x: string]: any } } {
-    throw new Error("Function not implemented.");
+    // console.log("median " + median(this.orders.map((order) => order.price)));
+
+    return {};
   }
 }
 
@@ -90,3 +95,17 @@ export function uniformLength(arr: any[][]) {
 
   return arr.map((a) => a.slice(a.length - minLength));
 }
+
+// function median(values: number[]): number {
+//   if (values.length === 0) return NaN;
+
+//   values.sort(function (a, b) {
+//     return a - b;
+//   });
+
+//   var half = Math.floor(values.length / 2);
+
+//   if (values.length % 2) return values[half];
+
+//   return (values[half - 1] + values[half]) / 2.0;
+// }

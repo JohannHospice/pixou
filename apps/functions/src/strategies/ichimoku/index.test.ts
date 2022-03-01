@@ -27,7 +27,7 @@ describe.skip("Stratégie Ichimoku", () => {
   });
 
   it.skip("should give results", () => {
-    console.log(ichimokuStrategy.result());
+    // console.log(ichimokuStrategy.result());
   });
 
   it("should display strategy", async () => {

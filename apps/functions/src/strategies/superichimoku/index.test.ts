@@ -14,10 +14,14 @@ describe("Stratégie Super Ichimoku", () => {
   let ichimokuStrategy: SuperIchimokuStrategy;
 
   beforeAll(async () => {
-    const { data } = await getInstance().klines(SYMBOL, TIME_PERIOD.DAILY, {
-      endTime: new Date().getTime(),
-      limit: 2000,
-    });
+    const { data } = await getInstance().klines(
+      SYMBOL,
+      TIME_PERIOD.THREE_DAILY,
+      {
+        endTime: new Date().getTime(),
+        limit: 2000,
+      }
+    );
 
     klines = parseBinanceKlines(data);
   });

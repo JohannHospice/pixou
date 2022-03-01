@@ -88,38 +88,66 @@ export default class SuperIchimokuStrategy extends Strategy {
 
   getOrder(index: number): Order | undefined {
     if (index === 0) return undefined;
-
+    let once = false;
     if (
-      this.isCloseAboveTheCloud(index) &&
-      this.isIchimokuBullish(index)
-      //  && this.isCloseBehindTheCloud(index - 1)
+      this.isRSIBehindEma(index) &&
+      // this.isCloseBehindTheCloud(index) &&
+      // this.isMACDBehindSignal(index) &&
+      this.rsi[index] > 50 &&
+      this.isMACDBehindSignal(index)
     ) {
-      return {
-        type: TransactionType.LONG,
-        price: this.klines[index].close,
-        closeTime: this.klines[index].closeTime,
-      };
-    }
-
-    if (
-      this.isCloseBehindTheCloud(index)
-      // && this.isCloseAboveTheCloud(index - 1)
-    ) {
-      return {
-        type: TransactionType.SHORT,
-        price: this.klines[index].close,
-        closeTime: this.klines[index].closeTime,
-      };
+      if (!once) return this.createShort(index);
+      once = true;
+    } else {
+      once = false;
+      if (
+        index % 3 === 0 &&
+        this.isCloseAboveTheCloud(index) &&
+        this.isCloseAboveEMA100(index)
+      ) {
+        return this.createLong(index);
+      }
     }
 
     return undefined;
   }
 
+  createShort(index: number): Order {
+    return {
+      type: TransactionType.SHORT,
+      price: this.klines[index].close,
+      closeTime: this.klines[index].closeTime,
+    };
+  }
+  createLong(index: number): Order {
+    return {
+      type: TransactionType.LONG,
+      price: this.klines[index].close,
+      closeTime: this.klines[index].closeTime,
+    };
+  }
+
+  isCloseAboveEMA100(index: number): boolean {
+    return this.ema100[index] > this.klines[index].close;
+  }
+
+  isMACDBehindSignal(index: number): boolean {
+    const { MACD, signal } = this.macd[index];
+    if (MACD && signal) {
+      return MACD < signal;
+    }
+    return false;
+  }
+
+  isRSIBehindEma(index: number): boolean {
+    return this.rsi[index] < this.ema14[index];
+  }
+
   isCloseBehindTheCloud(index: number): boolean {
     if (!this.ichimoku[index]) return false;
-    const { spanA } = this.ichimoku[index];
+    const { spanA, spanB } = this.ichimoku[index];
     const { close } = this.klines[index];
-    return close < spanA;
+    return close < spanA || close < spanB;
   }
 
   isCloseAboveTheCloud(index: number): boolean {
@@ -144,7 +172,7 @@ export default class SuperIchimokuStrategy extends Strategy {
   getTraces(): any[] {
     const closeTimes = this.klines.map(({ closeTime }) => closeTime);
     return [
-      super.getTraces()[0],
+      ...super.getTraces(),
       {
         x: closeTimes,
         y: this.ichimoku.map((ichimoku) => ichimoku.spanA),
@@ -229,6 +257,7 @@ export default class SuperIchimokuStrategy extends Strategy {
     const ysection = 0.3;
     const ymargin = 0.1;
     return {
+      ...super.getPlotLayout(),
       title: {
         text: "Ichimoku Cloud",
         font: {

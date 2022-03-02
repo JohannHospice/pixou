@@ -1,5 +1,5 @@
-import functions from 'firebase-functions';
-import admin from 'firebase-admin';
+import functions from "firebase-functions";
+import admin from "firebase-admin";
 // This import is needed by admin.initializeApp() to get the project info (Database url, project id, etc)
 
 admin.initializeApp();
@@ -11,7 +11,17 @@ console.log(functions.config());
 //
 export const helloWorld = functions.https.onRequest(
   (request: any, response: any) => {
-    functions.logger.info('Hello logs!', { structuredData: true });
-    response.send('Hello from Firebase!');
+    functions.logger.info("Hello logs!", { structuredData: true });
+    response.send("Hello from Firebase!");
   }
 );
+
+export const eachPeriod = functions.https.onRequest(
+  (request: any, response: any) => {}
+);
+
+export const everyThreeDays = functions.pubsub
+  .schedule("every 3 days")
+  .onRun((context) => {
+    return null;
+  });

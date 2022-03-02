@@ -19,7 +19,7 @@ describe("Stratégie Super Ichimoku", () => {
       SYMBOL,
       TIME_PERIOD.THREE_DAILY,
       {
-        // startTime: new Date(2021, 1, 1).getTime(),
+        // startTime: ,
         endTime: new Date().getTime(),
         limit: 2000,
       }

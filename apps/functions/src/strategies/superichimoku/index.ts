@@ -1,7 +1,6 @@
 import { EMA, IchimokuCloud, MACD, RSI } from "technicalindicators";
 import Strategy, { uniformLength } from "..";
 import { CrinKline } from "../../exchanges/binance";
-import MACDStrategy from "../macd";
 import { Order, TransactionType } from "../../order";
 
 export default class SuperIchimokuStrategy extends Strategy {
@@ -16,12 +15,13 @@ export default class SuperIchimokuStrategy extends Strategy {
     signal?: number;
     histogram?: number;
   }[] = [];
+  ema21: number[] = [];
+  ema50: number[] = [];
   ema100: number[] = [];
+  ema200: number[] = [];
+
   rsiEma14: number[] = [];
   closes: number[] = [];
-  profitTargetRatio = 1.5;
-  static periodEMA = 100;
-  static fastPeriod = 12;
   rsi: number[] = [];
 
   constructor(klines: CrinKline[]) {
@@ -33,7 +33,10 @@ export default class SuperIchimokuStrategy extends Strategy {
     const [
       klinesUniform,
       macdUniform,
-      emaUniform,
+      ema21Uniform,
+      ema50Uniform,
+      ema100Uniform,
+      // ema200Uniform,
       ichimokuUniform,
       rsiUniform,
       ema14Uniform,
@@ -41,7 +44,7 @@ export default class SuperIchimokuStrategy extends Strategy {
       klines,
       MACD.calculate({
         values: klines.map(({ close }) => close),
-        fastPeriod: MACDStrategy.fastPeriod, // 5,
+        fastPeriod: 12, // 5,
         slowPeriod: 26, // 8,
         signalPeriod: 9, // 3,
         SimpleMAOscillator: false,
@@ -49,8 +52,20 @@ export default class SuperIchimokuStrategy extends Strategy {
       }),
       EMA.calculate({
         values: klines.map(({ close }) => close),
-        period: MACDStrategy.periodEMA,
+        period: 21,
       }),
+      EMA.calculate({
+        values: klines.map(({ close }) => close),
+        period: 50,
+      }),
+      EMA.calculate({
+        values: klines.map(({ close }) => close),
+        period: 100,
+      }),
+      // EMA.calculate({
+      //   values: klines.map(({ close }) => close),
+      //   period: 200,
+      // }),
       IchimokuCloud.calculate({
         high: this.klines.map((kline) => kline.high),
         low: this.klines.map((kline) => kline.low),
@@ -66,9 +81,13 @@ export default class SuperIchimokuStrategy extends Strategy {
       }),
     ]);
 
+    this.ema21 = ema21Uniform;
+    this.ema50 = ema50Uniform;
+    this.ema100 = ema100Uniform;
+    // this.ema200 = ema200Uniform;
+
     this.klines = klinesUniform;
     this.macd = macdUniform;
-    this.ema100 = emaUniform;
     this.rsi = rsiUniform;
     this.ichimoku = ichimokuUniform;
     this.klines = klinesUniform;
@@ -85,31 +104,26 @@ export default class SuperIchimokuStrategy extends Strategy {
     }
     return orders;
   }
-  lastShortCondition: any;
-  decaleLong: number = 0;
   getOrder(index: number): Order | undefined {
-    const conditions = [
-      this.isMACDBehindSignal(index),
-      this.isRSIBehindEma(index),
-      //
-      // this.isIchimokuBullish(index),
-      this.isCloseOutsideTheCloud(index),
-      //
+    const canLong = this.isIndexMod(index, 10); // THREEDAILY
 
-      this.isRSIAbove(index, 36),
-      this.isMACDHistogramGapReduced(index),
-    ];
-    const canLong = this.isIndexMod(index - this.decaleLong, 9);
-    if (canLong && this.rsi[index] < 36) return this.createLong(index);
-
-    // eth fire on that
-    // if (this.rsi[index] > 80) return this.createShort(index);
-    if (conditions.every(Boolean)) {
-      this.lastShortCondition = conditions;
-      if (this.decaleLong > 0) {
-        this.decaleLong = 0;
+    // bypass sell
+    if (this.isRSIBehind(index, 36)) {
+      if (canLong) {
+        return this.createLong(index);
       }
-      this.decaleLong += 1;
+      return undefined;
+    }
+
+    if (
+      this.isMACDBehindSignal(index) &&
+      this.isRSIBehindEma(index) &&
+      this.isCloseOutsideTheCloud(index) &&
+      this.isMACDHistogramGapReduced(index) &&
+      this.isInsideTheCloud(index, this.ema21[index]) &&
+      this.isInsideTheCloud(index, this.ema50[index]) &&
+      !this.isInsideTheCloud(index, this.ema100[index])
+    ) {
       return this.createShort(index);
     }
 
@@ -165,9 +179,15 @@ export default class SuperIchimokuStrategy extends Strategy {
 
   // ichimoku
   isCloseOutsideTheCloud(index: number): boolean {
+    const { close } = this.klines[index];
+    return this.isOutsideTheCloud(index, close);
+  }
+  isInsideTheCloud(index: number, close: number): boolean {
+    return !this.isOutsideTheCloud(index, close);
+  }
+  isOutsideTheCloud(index: number, close: number): boolean {
     if (!this.ichimoku[index]) return false;
     const { spanA, spanB } = this.ichimoku[index];
-    const { close } = this.klines[index];
     return (
       (spanA > spanB && spanB > close) ||
       (spanB > spanA && spanA > close) ||
@@ -295,6 +315,24 @@ export default class SuperIchimokuStrategy extends Strategy {
         name: "EMA14",
         type: "scatter",
         yaxis: "y3",
+      },
+      {
+        x: closeTimes,
+        y: this.ema200,
+        name: "EMA200",
+        type: "scatter",
+      },
+      {
+        x: closeTimes,
+        y: this.ema50,
+        name: "EMA500",
+        type: "scatter",
+      },
+      {
+        x: closeTimes,
+        y: this.ema21,
+        name: "EMA21",
+        type: "scatter",
       },
     ];
   }

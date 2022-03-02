@@ -7,10 +7,11 @@ import {
   parseBinanceKlines,
   CrinKline,
   TIME_PERIOD,
+  BinanceSpot,
 } from "../../exchanges/binance";
 
 describe("Stratégie Super Ichimoku", () => {
-  const SYMBOL = "BTCUSDT";
+  const SYMBOL = "ETHUSDT";
   let klines: CrinKline[];
   let ichimokuStrategy: SuperIchimokuStrategy;
 
@@ -52,8 +53,13 @@ describe("Stratégie Super Ichimoku", () => {
   it.skip("should give results", () => {
     // console.log(ichimokuStrategy.result());
   });
-
   it("should display strategy", async () => {
     plotStrategy(ichimokuStrategy);
+  });
+  it.skip("should display btc dom", async () => {
+    // const spot = new BinanceSpot();
+    const { data } = await new BinanceSpot().exchangeInfo();
+
+    console.log(data);
   });
 });

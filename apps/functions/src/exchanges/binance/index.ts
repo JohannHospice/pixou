@@ -20,10 +20,19 @@ export enum TIME_PERIOD {
 const TIME_INTERVAL: { [x: string]: number } = {
   "3d": 3600 * 1000 * 24 * 3,
 };
-class BinanceSpot extends Spot {
+export class BinanceSpot extends Spot {
   dirname: string = "./build/klines";
+
   constructor(key: string = "", secret: string = "", baseURL?: string) {
     super(key, secret, { baseURL });
+    this.exchangeInfo()
+      .then(({ data }: { data: any }) =>
+        fs.writeFileSync(
+          "./build/exchange-info.json",
+          JSON.stringify(data, null, 4)
+        )
+      )
+      .catch(() => {});
   }
 
   async klines(
@@ -38,7 +47,7 @@ class BinanceSpot extends Spot {
       const klines = await this.readKlines(symbol, interval, options);
       return klines;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return this.fetchKlines(symbol, interval, options);
     }
   }
@@ -68,17 +77,19 @@ class BinanceSpot extends Spot {
   writeKlines(symbol: string, interval: string, data: any[]) {
     const filename = this.getFileName(symbol, interval);
     let dataToWrite = data;
+    try {
+      if (fs.existsSync(filename)) {
+        dataToWrite = JSON.parse(fs.readFileSync(filename, "utf-8"));
 
-    if (fs.existsSync(filename)) {
-      dataToWrite = JSON.parse(fs.readFileSync(filename, "utf-8"));
-
-      data.forEach((element: any[]) => {
-        if (!dataToWrite.some((up: any[]) => up[0] === element[0])) {
-          dataToWrite.push(element);
-        }
-      });
+        data.forEach((element: any[]) => {
+          if (!dataToWrite.some((up: any[]) => up[0] === element[0])) {
+            dataToWrite.push(element);
+          }
+        });
+      }
+    } catch (err) {
+      console.error(err);
     }
-
     fs.writeFileSync(filename, JSON.stringify(dataToWrite));
   }
 
@@ -94,12 +105,7 @@ class BinanceSpot extends Spot {
       fs.readFileSync(this.getFileName(symbol, interval), "utf-8")
     );
 
-    if (
-      (options?.endTime &&
-        options?.endTime >
-          klines[klines.length - 1][0] + TIME_INTERVAL[interval]) ||
-      (options?.startTime && options?.startTime < klines[0][0])
-    ) {
+    if (this.notEnoughtData(klines, interval, options)) {
       throw {
         message: "Data need to be updated",
         data: {
@@ -120,7 +126,14 @@ class BinanceSpot extends Spot {
       }),
     };
   }
-
+  notEnoughtData(klines: any, interval: string, options: any): boolean {
+    return (
+      (options?.endTime &&
+        options?.endTime >
+          klines[klines.length - 1][0] + TIME_INTERVAL[interval]) ||
+      (options?.startTime && options?.startTime < klines[0][0])
+    );
+  }
   getFileName(symbol: string, interval: string) {
     return `${this.dirname}/${symbol}-${interval}.json`;
   }

@@ -9,7 +9,6 @@ import Strategy from "../strategies";
 // invest each period
 export default class Portfolio {
   totalInjected: number = 0;
-
   constructor(
     public strategy: Strategy,
     public coin: number = 0,

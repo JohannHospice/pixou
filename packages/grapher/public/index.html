@@ -15,42 +15,69 @@
 <body>
   <div id="gd"></div>
   <script>
-    openSocket();
-    updatePlot();
-
-    function openSocket() {
+    function openSocket(fetcher) {
       const socket = io();
 
       socket.on("update", (msg) => {
         console.log("Message from server ", msg);
-        updatePlot();
+        fetcher.updatePlot();
       });
     }
 
-    function updatePlot() {
-      const d1 = new Date()
-      setInterval(() => {
-        const d2 = new Date();
-        window.document.title = Math.floor((d2 - d1.getTime()) / 1000 )+ "s Yeah buddy !";
-      }, 1000);
-      
-      fetch("/plot.json")
-        .then((response) => response.json())
-        .then((data) =>
-          Plotly.newPlot("gd", {
-            ...data,
-            config: { responsive: true },
-          })
-        )
-        .then((plot) => {
-          plot.on("plotly_hover", function (eventdata) {
-            Plotly.Fx.hover(
-              plot,
-              { xval: eventdata.xvals[0] },
-              Object.keys(plot._fullLayout._plots)
-            );
+    class Fetcher {
+      lastUpdate = undefined;
+      titleInterval = 1000;
+
+      constructor() {
+        setInterval(() => {
+          this.updateWindowTitle();
+        }, this.titleInterval);
+      }
+
+      updateWindowTitle() {
+        if (this.lastUpdate !== undefined) {
+          const d2 = new Date();
+
+          const timeSinceLastUpdate = Math.floor(
+            (d2.getTime() - this.lastUpdate.getTime()) / 1000
+          );
+
+          window.document.title = timeSinceLastUpdate + "s Yeah buddy !";
+        }
+      }
+
+      updatePlot() {
+        this.lastUpdate = new Date();
+
+        fetch("/plot.json")
+          .then((response) => response.json())
+          .then((data) =>
+          window.p =  Plotly.newPlot("gd", {
+              ...data,
+              config: {
+                responsive: true,
+                scrollZoom: true,
+                modeBarButtonsToAdd: ["drawline"],
+              },
+            })
+          )
+          .then((plot) => {
+            plot.on("plotly_hover", function (eventdata) {
+              Plotly.Fx.hover(
+                plot,
+                { xval: eventdata.xvals[0] },
+                Object.keys(plot._fullLayout._plots)
+              );
+            });
           });
-        });
+      }
     }
+
+    (function main() {
+      const fetcher = new Fetcher();
+      openSocket(fetcher);
+
+      fetcher.updatePlot();
+    })();
   </script>
 </body>

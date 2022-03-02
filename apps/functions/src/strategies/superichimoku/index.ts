@@ -17,7 +17,7 @@ export default class SuperIchimokuStrategy extends Strategy {
     histogram?: number;
   }[] = [];
   ema100: number[] = [];
-  ema14: number[] = [];
+  rsiEma14: number[] = [];
   closes: number[] = [];
   profitTargetRatio = 1.5;
   static periodEMA = 100;
@@ -72,7 +72,7 @@ export default class SuperIchimokuStrategy extends Strategy {
     this.rsi = rsiUniform;
     this.ichimoku = ichimokuUniform;
     this.klines = klinesUniform;
-    this.ema14 = ema14Uniform;
+    this.rsiEma14 = ema14Uniform;
   }
 
   getOrders(): Order[] {
@@ -85,33 +85,121 @@ export default class SuperIchimokuStrategy extends Strategy {
     }
     return orders;
   }
-
+  lastShortCondition: any;
+  decaleLong: number = 0;
   getOrder(index: number): Order | undefined {
-    if (index === 0) return undefined;
-    let once = false;
-    if (
-      this.isRSIBehindEma(index) &&
-      // this.isCloseBehindTheCloud(index) &&
-      // this.isMACDBehindSignal(index) &&
-      this.rsi[index] > 50 &&
-      this.isMACDBehindSignal(index)
-    ) {
-      if (!once) return this.createShort(index);
-      once = true;
-    } else {
-      once = false;
-      if (
-        index % 3 === 0 &&
-        this.isCloseAboveTheCloud(index) &&
-        this.isCloseAboveEMA100(index)
-      ) {
-        return this.createLong(index);
+    const conditions = [
+      this.isMACDBehindSignal(index),
+      this.isRSIBehindEma(index),
+      //
+      // this.isIchimokuBullish(index),
+      this.isCloseOutsideTheCloud(index),
+      //
+
+      this.isRSIAbove(index, 36),
+      this.isMACDHistogramGapReduced(index),
+    ];
+    const canLong = this.isIndexMod(index - this.decaleLong, 9);
+    if (canLong && this.rsi[index] < 36) return this.createLong(index);
+
+    // eth fire on that
+    // if (this.rsi[index] > 80) return this.createShort(index);
+    if (conditions.every(Boolean)) {
+      this.lastShortCondition = conditions;
+      if (this.decaleLong > 0) {
+        this.decaleLong = 0;
       }
+      this.decaleLong += 1;
+      return this.createShort(index);
     }
 
+    if (canLong) {
+      return this.createLong(index);
+    }
     return undefined;
   }
 
+  // index
+  isIndexMod(index: number, n: number): boolean {
+    return index % n === 0;
+  }
+  // rsi
+  isRSIDifferenceNeglectible(index: number) {
+    return (
+      (this.rsi[index] > this.rsiEma14[index]
+        ? this.rsi[index] - this.rsiEma14[index]
+        : this.rsiEma14[index] - this.rsi[index]) < 0.5
+    );
+  }
+  isRSIAbove(index: number, value: number): boolean {
+    return this.rsi[index] > value;
+  }
+  isRSIBehind(index: number, value: number): boolean {
+    return this.rsi[index] < value;
+  }
+  isRSIAboveEma(index: number): boolean {
+    return this.rsi[index] > this.rsiEma14[index];
+  }
+  isRSIBehindEma(index: number): boolean {
+    return this.rsi[index] < this.rsiEma14[index];
+  }
+  // ema100
+  isCloseBehindEMA100(index: number): boolean {
+    return this.ema100[index] > this.klines[index].close;
+  }
+
+  // macd
+  isMACDBehindSignal(index: number): boolean {
+    const { MACD, signal } = this.macd[index];
+    return MACD && signal ? MACD < signal : false;
+  }
+  isMACDAboveSignal(index: number): boolean {
+    return !this.isMACDBehindSignal(index);
+  }
+  isMACDHistogramGapReduced(index: number): boolean {
+    if (index === 0) return false;
+    const { histogram: h1 } = this.macd[index];
+    const { histogram: h2 } = this.macd[index - 1];
+    return h1 && h2 ? Math.abs(h1) < Math.abs(h2) : false;
+  }
+
+  // ichimoku
+  isCloseOutsideTheCloud(index: number): boolean {
+    if (!this.ichimoku[index]) return false;
+    const { spanA, spanB } = this.ichimoku[index];
+    const { close } = this.klines[index];
+    return (
+      (spanA > spanB && spanB > close) ||
+      (spanB > spanA && spanA > close) ||
+      (spanA < spanB && spanB < close) ||
+      (spanB < spanA && spanA < close)
+    );
+  }
+
+  isCloseAboveTheCloud(index: number): boolean {
+    if (!this.ichimoku[index]) return false;
+    const { spanA, spanB } = this.ichimoku[index];
+    const { close } = this.klines[index];
+    return close > spanA && close > spanB;
+  }
+  isCloseBehindTheCloud(index: number): boolean {
+    if (!this.ichimoku[index]) return false;
+    const { spanA, spanB } = this.ichimoku[index];
+    const { close } = this.klines[index];
+    return close < spanA || close < spanB;
+  }
+  isIchimokuBullish(index: number): boolean {
+    if (!this.ichimoku[index]) return false;
+    const { spanA, spanB } = this.ichimoku[index];
+    return spanA > spanB;
+  }
+  isIchimokuBearish(index: number): boolean {
+    if (!this.ichimoku[index]) return false;
+    const { spanA, spanB } = this.ichimoku[index];
+    return spanA < spanB;
+  }
+
+  // order
   createShort(index: number): Order {
     return {
       type: TransactionType.SHORT,
@@ -125,48 +213,6 @@ export default class SuperIchimokuStrategy extends Strategy {
       price: this.klines[index].close,
       closeTime: this.klines[index].closeTime,
     };
-  }
-
-  isCloseAboveEMA100(index: number): boolean {
-    return this.ema100[index] > this.klines[index].close;
-  }
-
-  isMACDBehindSignal(index: number): boolean {
-    const { MACD, signal } = this.macd[index];
-    if (MACD && signal) {
-      return MACD < signal;
-    }
-    return false;
-  }
-
-  isRSIBehindEma(index: number): boolean {
-    return this.rsi[index] < this.ema14[index];
-  }
-
-  isCloseBehindTheCloud(index: number): boolean {
-    if (!this.ichimoku[index]) return false;
-    const { spanA, spanB } = this.ichimoku[index];
-    const { close } = this.klines[index];
-    return close < spanA || close < spanB;
-  }
-
-  isCloseAboveTheCloud(index: number): boolean {
-    if (!this.ichimoku[index]) return false;
-    const { spanA, spanB } = this.ichimoku[index];
-    const { close } = this.klines[index];
-    return close > spanA && close > spanB;
-  }
-
-  isIchimokuBullish(index: number): boolean {
-    if (!this.ichimoku[index]) return false;
-    const { spanA, spanB } = this.ichimoku[index];
-    return spanA > spanB;
-  }
-
-  isIchimokuBearish(index: number): boolean {
-    if (!this.ichimoku[index]) return false;
-    const { spanA, spanB } = this.ichimoku[index];
-    return spanA < spanB;
   }
 
   getTraces(): any[] {
@@ -245,19 +291,21 @@ export default class SuperIchimokuStrategy extends Strategy {
       },
       {
         x: closeTimes,
-        y: this.ema14,
+        y: this.rsiEma14,
         name: "EMA14",
         type: "scatter",
         yaxis: "y3",
       },
     ];
   }
-
-  getPlotLayout(): { [x: string]: string | { [x: string]: any } } {
+  getPlotLayout(): { [x: string]: any } {
     const ysection = 0.3;
     const ymargin = 0.1;
     return {
       ...super.getPlotLayout(),
+      dragmode: "pan",
+      hovermode: "x",
+      autosize: true,
       title: {
         text: "Ichimoku Cloud",
         font: {
@@ -267,10 +315,10 @@ export default class SuperIchimokuStrategy extends Strategy {
         xref: "paper",
         x: 0.05,
       },
-      hovermode: "x",
       yaxis: {
         domain: [ysection * 2 + ymargin, 1],
         type: "log",
+        dragmode: "pan",
         autorange: true,
       },
       xaxis: {

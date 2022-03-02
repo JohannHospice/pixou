@@ -82,9 +82,8 @@ export default class Strategy {
     ];
   }
 
-  getPlotLayout(): { [x: string]: string | { [x: string]: any } } {
+  getPlotLayout(): { [x: string]: any } {
     // console.log("median " + median(this.orders.map((order) => order.price)));
-
     return {};
   }
 }

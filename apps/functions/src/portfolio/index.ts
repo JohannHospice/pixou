@@ -8,15 +8,18 @@ import Strategy from "../strategies";
 
 // invest each period
 export default class Portfolio {
+  totalInjected: number = 0;
+
   constructor(
     public strategy: Strategy,
     public coin: number = 0,
     public reserve: number = 0
   ) {}
 
-  applyPerKliner(injectPerKline: number) {
+  apply(injectPerKline: number) {
     for (let index = 0; index < this.strategy.klines.length; index++) {
-      this.reserve += injectPerKline;
+      this.computeReserve(injectPerKline);
+      this.totalInjected += injectPerKline;
 
       const order = this.strategy.getOrder(index);
       if (order) {
@@ -35,12 +38,23 @@ export default class Portfolio {
   }
 
   short(price: number, amount: number) {
-    this.reserve += shortOperation(price, amount);
-    this.coin -= amount;
+    this.computeReserve(shortOperation(price, amount));
+    this.computeCoin(-amount);
   }
 
   long(price: number, amount: number) {
-    this.coin += longOperation(price, amount);
-    this.reserve -= amount;
+    this.computeCoin(longOperation(price, amount));
+    this.computeReserve(-amount);
+  }
+
+  computeReserve(amount: number) {
+    this.reserve += amount;
+  }
+  computeCoin(amount: number) {
+    this.coin += amount;
+  }
+
+  getTotal(lastPrice: number) {
+    return shortOperation(lastPrice, this.coin) + this.reserve;
   }
 }

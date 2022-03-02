@@ -90,7 +90,7 @@ export default class Strategy {
 
 export function uniformLength(arr: any[][]) {
   const minLength = Math.min(...arr.map((a) => a.length));
-  console.log("removed " + minLength + " periods");
+  console.log("Remain " + minLength + " periods");
 
   return arr.map((a) => a.slice(a.length - minLength));
 }

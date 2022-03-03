@@ -1,5 +1,6 @@
 import { Spot } from "@binance/connector";
 import fs from "fs";
+import Exchange from "..";
 export enum TIME_PERIOD {
   ONE_MINUTE = "1m",
   THREE_MINUTES = "3m",
@@ -20,19 +21,19 @@ export enum TIME_PERIOD {
 const TIME_INTERVAL: { [x: string]: number } = {
   "3d": 3600 * 1000 * 24 * 3,
 };
-export class BinanceSpot extends Spot {
+export class BinanceSpot extends Spot implements Exchange {
   dirname: string = "./build/klines";
 
   constructor(key: string = "", secret: string = "", baseURL?: string) {
     super(key, secret, { baseURL });
-    this.exchangeInfo()
-      .then(({ data }: { data: any }) =>
-        fs.writeFileSync(
-          "./build/exchange-info.json",
-          JSON.stringify(data, null, 4)
-        )
-      )
-      .catch(() => {});
+    // this.exchangeInfo()
+    //   .then(({ data }: { data: any }) =>
+    //     fs.writeFileSync(
+    //       "./build/exchange-info.json",
+    //       JSON.stringify(data, null, 4)
+    //     )
+    //   )
+    //   .catch(() => {});
   }
 
   async klines(
@@ -137,6 +138,32 @@ export class BinanceSpot extends Spot {
   getFileName(symbol: string, interval: string) {
     return `${this.dirname}/${symbol}-${interval}.json`;
   }
+
+  /**
+   * Unofficial market information<br>
+   *
+   * GET /exchange-api/v2/public/asset-service/product/get-products<br>
+   *
+   * Current exchange trading rules and symbol information<br>
+   * {@link https://binance-docs.github.io/apidocs/spot/en/#exchange-information}
+   *
+   * @param {object} [options]
+   * @param {string} [options.symbol] - symbol
+   * @param {Array} [options.symbols] - an array of symbols
+   *
+   */
+  products() {
+    return fetch(
+      "https://www.binance.com/exchange-api/v2/public/asset-service/product/get-products",
+      { method: "GET" }
+    );
+  }
+
+  async marketCap(symbol?: string) {
+    const { data: products } = await (await this.products()).json();
+    const symbolMarket = products.find((product: any) => product.s === symbol);
+    return symbolMarket.cs * symbolMarket.s;
+  }
 }
 
 export function getInstance(
@@ -148,6 +175,7 @@ export function getInstance(
 }
 
 export type BinanceKline = any[];
+
 export interface CrinKline {
   open: number;
   close: number;

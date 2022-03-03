@@ -11,7 +11,7 @@ import {
 } from "../../exchanges/binance";
 
 describe("Stratégie Super Ichimoku", () => {
-  const SYMBOL = "BTCUSDT";
+  const SYMBOL = "XRPUSDT";
   let klines: CrinKline[];
   let ichimokuStrategy: SuperIchimokuStrategy;
 
@@ -21,7 +21,7 @@ describe("Stratégie Super Ichimoku", () => {
       TIME_PERIOD.THREE_DAILY,
       {
         // startTime: ,
-        endTime: new Date().getTime(),
+        endTime: new Date().getTime() - 3600 * 1000 * 24,
         limit: 2000,
       }
     );

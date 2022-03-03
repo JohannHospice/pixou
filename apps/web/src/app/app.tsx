@@ -1,26 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Message } from '@workspace/api-interfaces';
+import React, { useEffect } from "react";
 
 export const App = () => {
-  const [m, setMessage] = useState<Message>({ message: '' });
-
-  useEffect(() => {
-    fetch('/api')
-      .then((r) => r.json())
-      .then(setMessage);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
-      <div style={{ textAlign: 'center' }}>
-        <h1>Welcome to crinapp!</h1>
-        <img
-          width="450"
-          src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png"
-          alt="Nx - Smart, Fast and Extensible Build System"
-        />
+      <div style={{ textAlign: "center" }}>
+        <h1>Welcome!</h1>
       </div>
-      <div>{m.message}</div>
     </>
   );
 };

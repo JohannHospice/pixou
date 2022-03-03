@@ -15,13 +15,3 @@ export const helloWorld = functions.https.onRequest(
     response.send("Hello from Firebase!");
   }
 );
-
-export const eachPeriod = functions.https.onRequest(
-  (request: any, response: any) => {}
-);
-
-export const everyThreeDays = functions.pubsub
-  .schedule("every 3 days")
-  .onRun((context) => {
-    return null;
-  });

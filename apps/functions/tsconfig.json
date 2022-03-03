@@ -10,7 +10,7 @@
     "target": "es2017",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "typeRoots": [ "./types", "./node_modules/@types"]
+    "typeRoots": [ "./node_modules/@types"]
     // "composite": false,
     // "declaration": true,
     // "declarationMap": true,

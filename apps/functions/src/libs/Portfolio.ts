@@ -1,10 +1,5 @@
-import {
-  longOperation,
-  Order,
-  shortOperation,
-  TransactionType,
-} from "../order";
-import Strategy from "../strategies";
+import { longOperation, Order, shortOperation, TransactionType } from "./order";
+import Strategy from "./strategies";
 
 // invest each period
 export default class Portfolio {

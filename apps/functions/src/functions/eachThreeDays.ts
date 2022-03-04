@@ -4,7 +4,9 @@ import admin from "firebase-admin";
 
 import { getActionFromBehavior, getCoinBehaviors } from "../libs/coinBehavior";
 import { TransactionType } from "../libs/order";
-import { ORDER_SIDE } from "../libs/exchanges";
+import Exchange, { ORDER_SIDE } from "../libs/exchanges";
+
+const app = admin.initializeApp();
 
 export default functions.pubsub
   .schedule("every 3 days")
@@ -13,49 +15,56 @@ export default functions.pubsub
 
     const coinBehaviors = getCoinBehaviors();
 
-    const actionsForToday = await Promise.all(
+    const portfolios = await firestore(app).collection(`/users/`).get();
+
+    await Promise.all(
       coinBehaviors.map(async (coinBehavior) => {
-        return {
-          coinBehavior,
-          order: await getActionFromBehavior(coinBehavior),
-        };
+        const order = await getActionFromBehavior(coinBehavior);
+        if (!order) return;
+
+        portfolios.forEach(async (document) => {
+          const { reserve, coin } = await document
+            .get(`portfolios/${coinBehavior.symbole}`)
+            .data();
+
+          const result = await newOrder({
+            reserve,
+            coin,
+            symbole: coinBehavior.symbole,
+            type: order.type,
+            spot: coinBehavior.spot,
+          });
+
+          console.log({ result });
+        });
       })
     );
-
-    console.log({ actionsForToday });
-
-    const app = admin.initializeApp();
-
-    const finances = await firestore(app).collection(`/finance/`).get();
-
-    finances.forEach(async (document) => {
-      const { reserve }: { reserve: number } = Object(document.data());
-      actionsForToday.forEach((action) => {
-        if (action.order) {
-          if (action.order.type === TransactionType.LONG) {
-            action.coinBehavior.spot.newOrder(
-              action.coinBehavior.symbole,
-              ORDER_SIDE.MARKET,
-              action.order.type,
-              {
-                quantity: reserve,
-              }
-            );
-          }
-        }
-      });
-    });
   });
 
-async function getUserFinance(userId: string) {
-  const app = admin.initializeApp();
+async function newOrder({
+  reserve,
+  coin,
+  symbole,
+  type,
+  spot,
+}: {
+  reserve: number;
+  coin: number;
+  symbole: string;
+  type: string;
+  spot: Exchange;
+}) {
+  let quantity = 0;
 
-  const userFinanceData = await firestore(app)
-    .doc(`/finance/${userId}/`)
-    .get()
-    .then((doc) => doc.data());
+  if (type === TransactionType.LONG) {
+    quantity = reserve;
+  }
 
-  if (!userFinanceData) throw new Error(`No user finance on '${userId}'`);
+  if (type === TransactionType.SHORT) {
+    quantity = coin;
+  }
 
-  return userFinanceData;
+  return spot.newOrder(symbole, ORDER_SIDE.MARKET, type, {
+    quantity,
+  });
 }

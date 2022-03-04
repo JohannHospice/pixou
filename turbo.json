@@ -13,7 +13,7 @@
       "dependsOn": ["lint", "build"]
     },
     "deploy": {
-      "dependsOn": ["build", "test"]
+      "dependsOn": ["build"]
     },
     "dev": {
       "cache": false

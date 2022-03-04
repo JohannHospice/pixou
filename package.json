@@ -9,10 +9,10 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "deploy": "turbo run deploy",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,html}\"",
-    "deploy": "turbo run deploy"
+    "format": "prettier --write \"**/*.{ts,tsx,md,html}\""
   },
   "devDependencies": {
     "prettier": "^2.5.1",

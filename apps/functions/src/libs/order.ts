@@ -40,7 +40,7 @@ export const transaction = {
   }),
   [TransactionType.SHORT]: (price: number, balance: Balance) => ({
     coin: 0,
-    reserve: shortOperation(price, balance.coin),
+    reserve: balance.reserve + shortOperation(price, balance.coin),
   }),
 };
 

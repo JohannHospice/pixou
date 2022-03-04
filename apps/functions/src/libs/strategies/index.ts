@@ -79,6 +79,47 @@ export default class Strategy {
           color: "red",
         },
       },
+      {
+        x: this.orders.map((v) => v.closeTime),
+        y: (() => {
+          let sum = 0;
+          let short = 0;
+          let longI = 1;
+          return this.orders.map(({ type, price }, i) => {
+            if (type === TransactionType.LONG) {
+              if (short !== 0) {
+                sum += (short + price) / 2;
+                short = 0;
+              } else {
+                sum += price;
+              }
+              longI++;
+            }
+            if (type === TransactionType.SHORT && short !== 0) {
+              short = price;
+            }
+            return sum / longI;
+          });
+        })(),
+        name: "Strat",
+        type: "scatter",
+        fill: "tozeroy",
+        yaxis: "y4",
+      },
+      {
+        x: this.klines.map(({ closeTime }) => closeTime),
+        y: (() => {
+          let sum = 0;
+          return this.klines.map(({ close }, i) => {
+            sum += close;
+            return sum / (i + 1);
+          });
+        })(),
+        name: "SimpleHLD",
+        type: "scatter",
+        fill: "tozeroy",
+        yaxis: "y4",
+      },
     ];
   }
 
@@ -90,7 +131,12 @@ export default class Strategy {
 
 export function uniformLength(arr: any[][]) {
   const minLength = Math.min(...arr.map((a) => a.length));
-  console.log("Remain " + minLength + " periods");
+  console.log(
+    "Remain " +
+      minLength +
+      " periods from " +
+      Math.max(...arr.map((a) => a.length))
+  );
 
   return arr.map((a) => a.slice(a.length - minLength));
 }

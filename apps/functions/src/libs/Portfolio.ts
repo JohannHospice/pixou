@@ -1,7 +1,6 @@
 import {
   Balance,
   longOperation,
-  Order,
   shortOperation,
   TransactionType,
 } from "./order";
@@ -10,7 +9,13 @@ import Strategy from "./strategies";
 // invest each period
 export default class Portfolio {
   totalInjected: number = 0;
-  constructor(public strategy: Strategy, public balance: Balance) {}
+  constructor(
+    public strategy: Strategy,
+    public balance: Balance = {
+      coin: 0,
+      reserve: 0,
+    }
+  ) {}
 
   apply(injectPerKline: number) {
     for (let index = 0; index < this.strategy.klines.length; index++) {
@@ -19,13 +24,9 @@ export default class Portfolio {
 
       const order = this.strategy.getOrder(index);
       if (order) {
-        this.executeOrder(order);
+        this.balance = order.execute(this.balance);
       }
     }
-  }
-
-  executeOrder(order: Order) {
-    this.balance = order.execute(this.balance);
   }
 
   short(price: number, amount: number) {

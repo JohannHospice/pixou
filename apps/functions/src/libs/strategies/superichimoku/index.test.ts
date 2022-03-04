@@ -1,4 +1,5 @@
 import { describe, it, beforeAll } from "@jest/globals";
+import moment from "moment";
 import SuperIchimokuStrategy from "./index";
 import { plotStrategy } from "../../crinplot";
 import Portfolio from "../../portfolio";
@@ -9,19 +10,24 @@ import {
   TIME_PERIOD,
   BinanceSpot,
 } from "../../exchanges/binance";
-
 describe("Stratégie Super Ichimoku", () => {
-  const SYMBOL = "XRPUSDT";
+  const SYMBOL = "ETHUSDT";
   let klines: CrinKline[];
   let ichimokuStrategy: SuperIchimokuStrategy;
 
   beforeAll(async () => {
+    const momentNow = moment().subtract(3, "years");
+    console.log(momentNow);
+
     const { data } = await getInstance().klines(
       SYMBOL,
       TIME_PERIOD.THREE_DAILY,
       {
-        // startTime: ,
-        endTime: new Date().getTime() - 3600 * 1000 * 24,
+        startTime: momentNow
+          .clone()
+          .subtract(1 * 360 + 99 * 3, "days")
+          .toDate(),
+        endTime: momentNow.toDate(),
         limit: 2000,
       }
     );
@@ -37,16 +43,20 @@ describe("Stratégie Super Ichimoku", () => {
   it("apply portfolio", () => {
     const portfolio = new Portfolio(ichimokuStrategy);
     portfolio.apply(100);
+    const total = portfolio.getTotal(
+      ichimokuStrategy.klines[ichimokuStrategy.klines.length - 1].close
+    );
     console.log(
-      `coin: ${portfolio.coin}\nreserve: ${portfolio.reserve}\ntotalInjected: ${
-        portfolio.totalInjected
-      }\ntotal: ${portfolio.getTotal(
-        ichimokuStrategy.klines[ichimokuStrategy.klines.length - 1].close
-      )}\nratio: ${
-        portfolio.getTotal(
-          ichimokuStrategy.klines[ichimokuStrategy.klines.length - 1].close
-        ) / portfolio.totalInjected
-      }`
+      JSON.stringify(
+        {
+          balance: portfolio.balance,
+          total,
+          totalInjected: portfolio.totalInjected,
+          ratio: total / portfolio.totalInjected,
+        },
+        null,
+        2
+      )
     );
   });
 

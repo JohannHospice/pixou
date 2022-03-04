@@ -1,3 +1,4 @@
+import moment from "moment";
 import { EMA, IchimokuCloud, MACD, RSI } from "technicalindicators";
 import Strategy, { uniformLength } from "..";
 import { CrinKline } from "../../exchanges/binance";
@@ -23,11 +24,17 @@ export default class SuperIchimokuStrategy extends Strategy {
   rsiEma14: number[] = [];
   closes: number[] = [];
   rsi: number[] = [];
-
+  dayInterval: number;
   constructor(klines: CrinKline[]) {
     super(klines);
+    this.dayInterval = moment(this.klines[1].closeTime).diff(
+      this.klines[0].closeTime,
+      "days"
+    );
+
+    const closes = klines.map(({ close }) => close);
     this.rsi = RSI.calculate({
-      values: klines.map(({ close }) => close),
+      values: closes,
       period: 14,
     });
     const [
@@ -35,7 +42,7 @@ export default class SuperIchimokuStrategy extends Strategy {
       macdUniform,
       ema21Uniform,
       ema50Uniform,
-      ema100Uniform,
+      // ema100Uniform,
       // ema200Uniform,
       ichimokuUniform,
       rsiUniform,
@@ -43,7 +50,7 @@ export default class SuperIchimokuStrategy extends Strategy {
     ] = uniformLength([
       klines,
       MACD.calculate({
-        values: klines.map(({ close }) => close),
+        values: closes,
         fastPeriod: 12, // 5,
         slowPeriod: 26, // 8,
         signalPeriod: 9, // 3,
@@ -51,19 +58,19 @@ export default class SuperIchimokuStrategy extends Strategy {
         SimpleMASignal: false,
       }),
       EMA.calculate({
-        values: klines.map(({ close }) => close),
+        values: closes,
         period: 21,
       }),
       EMA.calculate({
-        values: klines.map(({ close }) => close),
+        values: closes,
         period: 50,
       }),
-      EMA.calculate({
-        values: klines.map(({ close }) => close),
-        period: 100,
-      }),
       // EMA.calculate({
-      //   values: klines.map(({ close }) => close),
+      //   values: closes,
+      //   period: 100,
+      // }),
+      // EMA.calculate({
+      //   values: closes,
       //   period: 200,
       // }),
       IchimokuCloud.calculate({
@@ -83,7 +90,7 @@ export default class SuperIchimokuStrategy extends Strategy {
 
     this.ema21 = ema21Uniform;
     this.ema50 = ema50Uniform;
-    this.ema100 = ema100Uniform;
+    // this.ema100 = ema100Uniform;
     // this.ema200 = ema200Uniform;
 
     this.klines = klinesUniform;
@@ -105,31 +112,24 @@ export default class SuperIchimokuStrategy extends Strategy {
     return orders;
   }
   getOrder(index: number): Order | undefined {
-    const canLong = this.isIndexMod(index, 10); // THREEDAILY
+    const canLong = (i: number) =>
+      (index > 0 && canShort(index - 1)) ||
+      (i % (30 / this.dayInterval) === 0 &&
+        (this.ema21[i] < this.klines[i].close || this.isMACDAboveSignal(i)));
 
-    // bypass sell
-    if (this.isRSIBehind(index, 36)) {
-      if (canLong) {
-        return this.createLong(index);
-      }
-      return undefined;
-    }
-
-    if (
+    const canShort = (index: number) =>
       this.isMACDBehindSignal(index) &&
       this.isRSIBehindEma(index) &&
-      this.isCloseOutsideTheCloud(index) &&
-      this.isMACDHistogramGapReduced(index) &&
-      this.isInsideTheCloud(index, this.ema21[index]) &&
-      this.isInsideTheCloud(index, this.ema50[index]) &&
-      !this.isInsideTheCloud(index, this.ema100[index])
-    ) {
+      this.ema21[index] > this.ema50[index];
+
+    if (canShort(index)) {
       return this.createShort(index);
     }
 
-    if (canLong) {
+    if (canLong(index)) {
       return this.createLong(index);
     }
+
     return undefined;
   }
 
@@ -221,18 +221,18 @@ export default class SuperIchimokuStrategy extends Strategy {
 
   // order
   createShort(index: number): Order {
-    return {
+    return new Order({
       type: TransactionType.SHORT,
       price: this.klines[index].close,
       closeTime: this.klines[index].closeTime,
-    };
+    });
   }
   createLong(index: number): Order {
-    return {
+    return new Order({
       type: TransactionType.LONG,
       price: this.klines[index].close,
       closeTime: this.klines[index].closeTime,
-    };
+    });
   }
 
   getTraces(): any[] {
@@ -253,10 +253,37 @@ export default class SuperIchimokuStrategy extends Strategy {
       },
       {
         x: closeTimes,
+        y: this.rsiEma14,
+        name: "EMA14",
+        type: "scatter",
+        yaxis: "y3",
+      },
+      {
+        x: closeTimes,
+        y: this.ema21,
+        name: "EMA21",
+        type: "scatter",
+      },
+      {
+        x: closeTimes,
+        y: this.ema50,
+        name: "EMA50",
+        type: "scatter",
+      },
+      {
+        x: closeTimes,
         y: this.ema100,
         name: "EMA100",
         type: "scatter",
       },
+      {
+        x: closeTimes,
+        y: this.ema200,
+        name: "EMA200",
+        type: "scatter",
+        visible: "legendonly",
+      },
+      //
       {
         x: closeTimes,
         y: this.macd.map(({ MACD }) => MACD),
@@ -278,6 +305,7 @@ export default class SuperIchimokuStrategy extends Strategy {
         name: "HISTOGRAM",
         type: "bar",
       },
+      //
       {
         x: closeTimes,
         y: this.rsi,
@@ -309,36 +337,22 @@ export default class SuperIchimokuStrategy extends Strategy {
         name: "LowerBand",
         mode: "lines",
       },
-      {
-        x: closeTimes,
-        y: this.rsiEma14,
-        name: "EMA14",
-        type: "scatter",
-        yaxis: "y3",
-      },
-      {
-        x: closeTimes,
-        y: this.ema200,
-        name: "EMA200",
-        type: "scatter",
-      },
-      {
-        x: closeTimes,
-        y: this.ema50,
-        name: "EMA500",
-        type: "scatter",
-      },
-      {
-        x: closeTimes,
-        y: this.ema21,
-        name: "EMA21",
-        type: "scatter",
-      },
     ];
   }
   getPlotLayout(): { [x: string]: any } {
-    const ysection = 0.3;
-    const ymargin = 0.1;
+    const ymargin = 0.02;
+    const layouts = [
+      {
+        type: "log",
+        autorange: true,
+      },
+      {},
+      {},
+      {
+        // type: "log",
+        // autorange: false,
+      },
+    ];
     return {
       ...super.getPlotLayout(),
       dragmode: "pan",
@@ -353,31 +367,31 @@ export default class SuperIchimokuStrategy extends Strategy {
         xref: "paper",
         x: 0.05,
       },
-      yaxis: {
-        domain: [ysection * 2 + ymargin, 1],
-        type: "log",
-        dragmode: "pan",
-        autorange: true,
-      },
-      xaxis: {
-        domain: [0, 1],
-      },
-      yaxis2: {
-        domain: [ysection + ymargin / 2, ysection * 2 + ymargin / 2],
-        anchor: "x2",
-      },
-      xaxis2: {
-        domain: [0, 1],
-        anchor: "y2",
-      },
-      yaxis3: {
-        domain: [0, ysection],
-        anchor: "x3",
-      },
-      xaxis3: {
-        domain: [0, 1],
-        anchor: "y3",
-      },
+      ...layouts.reduce((acc, config, i) => {
+        const id = i + 1;
+        return {
+          ...acc,
+          [`yaxis${i === 0 ? "" : id}`]: {
+            domain: getDomainY(
+              Math.abs(i - layouts.length) - 1,
+              layouts.length,
+              ymargin
+            ),
+            anchor: i === 0 ? undefined : `x${id}`,
+            ...config,
+          },
+          [`xaxis${i === 0 ? "" : id}`]: {
+            domain: [0, 1],
+            anchor: i === 0 ? undefined : `y${id}`,
+          },
+        };
+      }, {}),
     };
   }
+}
+
+function getDomainY(index: number, size: number, margin: number) {
+  if (index >= size - 1) return [index / size + margin, 1];
+  if (index === 0) return [0, (index + 1) / size];
+  return [index / size + margin, (index + 1) / size];
 }

@@ -11,7 +11,8 @@
     "dev": "turbo run dev --parallel",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,html}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md,html}\"",
+    "deploy": "turbo run deploy"
   },
   "devDependencies": {
     "prettier": "^2.5.1",

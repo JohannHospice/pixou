@@ -1,0 +1,11 @@
+{
+  "name": "firebase",
+  "version": "0.0.1",
+  "author": "Johann Hospice",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "",
+    "deploy": "firebase deploy --only firestore,storage"
+  }
+}

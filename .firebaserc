@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "crin-production",
+    "development": "crin-development"
+  }
+}

@@ -21,3 +21,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+environments/**
+
+**/*/environment.prod.ts
+*.ts
+environment.ts
+/src/environments/**

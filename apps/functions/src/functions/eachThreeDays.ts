@@ -1,70 +1,106 @@
 import { firestore } from "firebase-admin";
 import functions from "firebase-functions";
 import admin from "firebase-admin";
-
-import { getActionFromBehavior, getCoinBehaviors } from "../libs/coinBehavior";
 import { TransactionType } from "../libs/order";
-import Exchange, { ORDER_SIDE } from "../libs/exchanges";
+import { ORDER_SIDE } from "../libs/exchanges";
+import { BinanceSpot, TIME_PERIOD } from "../libs/exchanges/binance";
+import SuperIchimokuStrategy from "../libs/strategies/superichimoku";
 
 const app = admin.initializeApp();
 
-export default functions.pubsub
-  .schedule("every 3 days")
-  .onRun(async (context) => {
-    console.log({ context });
+export default functions.pubsub.schedule("every 3 days").onRun(eachThreeDays);
 
-    const coinBehaviors = getCoinBehaviors();
+export async function eachThreeDays(context: any) {
+  console.log({ context });
+  const now = Date.now();
 
-    const portfolios = await firestore(app).collection(`/users/`).get();
+  const cryptoConfigs = [
+    {
+      symbole: "BTCUSDT",
+      interval: TIME_PERIOD.THREE_DAILY,
+      options: {
+        startTime: now - 1000 * 3600 * 24 * 7,
+        endTime: now,
+      },
+      Strategy: SuperIchimokuStrategy,
+      spot: new BinanceSpot(),
+      exchange: new BinanceSpot(
+        process.env.BINANCE_API_KEY,
+        process.env.BINANCE_SECRET_KEY,
+        process.env.BINANCE_API_URL
+      ),
+    },
+  ];
 
-    await Promise.all(
-      coinBehaviors.map(async (coinBehavior) => {
-        const order = await getActionFromBehavior(coinBehavior);
+  const fiatsCollection = await firestore(app)
+    .collection(`/fiat-wallet/`)
+    .get();
+  const cryptosCollection = firestore(app).collection(`/crypto-wallet/`);
+
+  await Promise.all(
+    cryptoConfigs.map(
+      async ({ spot, symbole, interval, options, Strategy, exchange }) => {
+        const { data: klines } = await spot.klines(symbole, interval, options);
+        const strategy = new Strategy(klines);
+
+        const order = strategy.getOrder(klines.length - 1);
         if (!order) return;
 
-        portfolios.forEach(async (document) => {
-          const { reserve, coin } = await document
-            .get(`portfolios/${coinBehavior.symbole}`)
-            .data();
+        return fiatsCollection.docs.map(async (fiatDocument) => {
+          const fiatData = fiatDocument.data();
+          const cryptoWalletRef = cryptosCollection.doc(
+            `${fiatDocument.id}-${symbole}`
+          );
+          const cryptoData = (await cryptoWalletRef.get()).data();
+          if (!cryptoData) {
+            throw new Error("No CRYPTO");
+          }
 
-          const result = await newOrder({
-            reserve,
-            coin,
-            symbole: coinBehavior.symbole,
-            type: order.type,
-            spot: coinBehavior.spot,
-          });
+          if (order.type === TransactionType.LONG) {
+            const response = await exchange.newOrder(
+              symbole,
+              ORDER_SIDE.MARKET,
+              "LONG",
+              {
+                quantity: fiatData.amount,
+              }
+            );
 
-          console.log({ result });
+            console.log(response);
+
+            fiatDocument.ref.set({
+              ...fiatData,
+              amount: 0,
+            });
+            cryptoWalletRef.set({
+              ...cryptoData,
+              amount: 0,
+            });
+          }
+
+          if (order.type === TransactionType.SHORT) {
+            const response = exchange.newOrder(
+              symbole,
+              ORDER_SIDE.MARKET,
+              order.type,
+              {
+                quantity: cryptoData.amount,
+              }
+            );
+
+            console.log(response);
+
+            cryptoWalletRef.set({
+              ...cryptoData,
+              amount: 0,
+            });
+            fiatDocument.ref.set({
+              ...fiatData,
+              amount: 0,
+            });
+          }
         });
-      })
-    );
-  });
-
-async function newOrder({
-  reserve,
-  coin,
-  symbole,
-  type,
-  spot,
-}: {
-  reserve: number;
-  coin: number;
-  symbole: string;
-  type: string;
-  spot: Exchange;
-}) {
-  let quantity = 0;
-
-  if (type === TransactionType.LONG) {
-    quantity = reserve;
-  }
-
-  if (type === TransactionType.SHORT) {
-    quantity = coin;
-  }
-
-  return spot.newOrder(symbole, ORDER_SIDE.MARKET, type, {
-    quantity,
-  });
+      }
+    )
+  );
 }

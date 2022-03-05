@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "",
+    "serve": "firebase emulators:start",
     "deploy": "firebase deploy --only firestore,storage"
   }
 }

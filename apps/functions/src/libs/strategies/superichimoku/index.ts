@@ -120,6 +120,8 @@ export default class SuperIchimokuStrategy extends Strategy {
     const canShort = (index: number) =>
       this.isMACDBehindSignal(index) &&
       this.isRSIBehindEma(index) &&
+      // !this.isCloseOutsideTheCloud(index) &&
+      this.rsi[index] > 35 &&
       this.ema21[index] > this.ema50[index];
 
     if (canShort(index)) {

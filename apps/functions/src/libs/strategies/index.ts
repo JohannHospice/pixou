@@ -98,7 +98,8 @@ export default class Strategy {
             if (type === TransactionType.SHORT && short !== 0) {
               short = price;
             }
-            return sum / longI;
+            const avg = sum / longI;
+            return (price - avg) / price;
           });
         })(),
         name: "Strat",
@@ -106,20 +107,20 @@ export default class Strategy {
         fill: "tozeroy",
         yaxis: "y4",
       },
-      {
-        x: this.klines.map(({ closeTime }) => closeTime),
-        y: (() => {
-          let sum = 0;
-          return this.klines.map(({ close }, i) => {
-            sum += close;
-            return sum / (i + 1);
-          });
-        })(),
-        name: "SimpleHLD",
-        type: "scatter",
-        fill: "tozeroy",
-        yaxis: "y4",
-      },
+      // {
+      //   x: this.klines.map(({ closeTime }) => closeTime),
+      //   y: (() => {
+      //     let sum = 0;
+      //     return this.klines.map(({ close }, i) => {
+      //       sum += close;
+      //       return sum / (i + 1);
+      //     });
+      //   })(),
+      //   name: "SimpleHLD",
+      //   type: "scatter",
+      //   fill: "tozeroy",
+      //   yaxis: "y4",
+      // },
     ];
   }
 

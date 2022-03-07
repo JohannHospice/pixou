@@ -4,36 +4,27 @@ import {
   Avatar,
   Box,
   Button,
-  Grid,
-  Link,
-  Paper,
+  Card,
+  CardActions,
+  CardContent,
   TextField,
   Typography,
 } from "@mui/material";
+import { Link } from "react-router-dom";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { login } from "../../api/authentification";
+import LayoutSplited from "../../components/LayoutSplited";
 import { toast } from "react-toastify";
 
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      © {new Date().getFullYear()}{" "}
-      <Link color="inherit" href="https://crin.com/">
-        Crin.com
-      </Link>
-      . Tous droits réservés.
-    </Typography>
-  );
-}
 export default function LoginPage() {
   const formik = useFormik({
-    onSubmit: ({ email, password }) => {
-      toast("Login");
+    onSubmit: async ({ email, password }) => {
+      try {
+        await login(email, password);
+        toast("Connexion réussi !");
+      } catch (err) {
+        toast(JSON.stringify(err));
+      }
     },
     initialValues: {
       email: "",
@@ -46,39 +37,37 @@ export default function LoginPage() {
   });
 
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random)",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: (t) =>
-            t.palette.mode === "light"
-              ? t.palette.grey[50]
-              : t.palette.grey[900],
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+    <LayoutSplited>
+      <Card
+        variant="outlined"
+        style={{
+          maxWidth: "400px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box
-          sx={{
-            my: 8,
-            mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+      >
+        <CardContent
+          style={{
+            padding: "48px 36px 0 36px ",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Connexion au compte Crin
-          </Typography>
+          <Box
+            alignItems={"center"}
+            justifyContent={"center"}
+            display={"flex"}
+            flexDirection="column"
+          >
+            <Avatar sx={{ mb: 1, bgcolor: "primary.main" }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Connexion
+            </Typography>
+            <Typography component="h2" variant="body2">
+              Utiliser votre compte Crin
+            </Typography>
+          </Box>
           <Box
             component="form"
             noValidate
@@ -90,7 +79,7 @@ export default function LoginPage() {
               required
               fullWidth
               id="email"
-              label="Adresse email"
+              label="Adresse e-mail"
               name="email"
               autoComplete="email"
               autoFocus
@@ -108,29 +97,40 @@ export default function LoginPage() {
               onChange={formik.handleChange}
             />
             <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              size="small"
+              component={Link}
+              to="/reset-password"
+              color="primary"
+              style={{
+                paddingLeft: "0",
+              }}
             >
-              Se connecter
+              Mot de passe oublié ?
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="/reset-password" variant="body2">
-                  Mot de passe oublié ?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Vous n'avez pas de compte ? Inscrivez-vous maintenant"}
-                </Link>
-              </Grid>
-            </Grid>
-            <Copyright sx={{ mt: 5 }} />
+            <Typography
+              component="h2"
+              variant="body2"
+              color="text.secondary"
+              mt={3}
+            >
+              Utiliser votre compte Crin
+            </Typography>
           </Box>
-        </Box>
-      </Grid>
-    </Grid>
+        </CardContent>
+        <CardActions
+          style={{
+            padding: "28px 36px 48px 28px",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button component={Link} to="/register" color="primary">
+            Créer un compte
+          </Button>
+          <Button type="submit" variant="contained">
+            Se connecter
+          </Button>
+        </CardActions>
+      </Card>
+    </LayoutSplited>
   );
 }

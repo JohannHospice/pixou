@@ -1,7 +1,7 @@
-import { getAnalytics, logEvent } from "firebase/analytics";
+import { logEvent, getAnalytics } from "firebase/analytics";
+import app from "./app";
+export const analytics = getAnalytics(app);
 
-const analytics = getAnalytics();
-
-export function sign(title: string) {
-  logEvent(analytics, title);
+export function logLogin() {
+  logEvent(analytics, "login-email-password");
 }

@@ -25,6 +25,5 @@ yarn-error.log*
 environments/**
 
 **/*/environment.prod.ts
-*.ts
 environment.ts
-/src/environments/**
+src/environments/**

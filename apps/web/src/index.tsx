@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import "react-toastify/dist/ReactToastify.css";
-import theme from "./theme";
+import getTheme, { THEME_MODE } from "./theme";
 import LoginPage from "./pages/Login";
 import {
   AuthentifiedOnlyRoute,
@@ -36,7 +36,7 @@ function ResetPasswordPage() {
 }
 ReactDOM.render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={getTheme(THEME_MODE)}>
       <CssBaseline />
       <BrowserRouter>
         <Routes>

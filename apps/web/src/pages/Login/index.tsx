@@ -65,7 +65,7 @@ export default function LoginPage() {
               Connexion
             </Typography>
             <Typography component="h2" variant="body2">
-              Utiliser votre compte Crin
+              Utiliser votre compte Pixou
             </Typography>
           </Box>
           <Box
@@ -113,7 +113,7 @@ export default function LoginPage() {
               color="text.secondary"
               mt={3}
             >
-              Utiliser votre compte Crin
+              Utiliser votre compte Pixou
             </Typography>
           </Box>
         </CardContent>

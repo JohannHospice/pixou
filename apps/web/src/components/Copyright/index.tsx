@@ -10,7 +10,7 @@ export default function Copyright(props: any) {
     >
       © {new Date().getFullYear()}{" "}
       <Link color="inherit" href={process.env["PUBLIC_URL"]}>
-        Crin.com
+        Pixou.com
       </Link>
       . Tous droits réservés.
     </Typography>

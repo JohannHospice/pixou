@@ -1,54 +1,94 @@
 // import { red } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
+export const THEME_MODE = "dark";
+export const THEME_MODE_ALT = "light";
+const THEME_TYPOGRAPHY = {
+  button: {
+    textTransform: "inherit",
+    paddingLeft: "24px",
+    paddingRight: "24px",
+  },
+};
+const THEME_COMPONENTS = {
+  MuiCard: {
+    styleOverrides: {
+      root: { borderRadius: "8px" },
+    },
+  },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      input: {
+        padding: "13px 15px",
+      },
+    },
+  },
+  MuiInputLabel: {
+    styleOverrides: {
+      outlined: {
+        top: "-2px",
+      },
+    },
+  },
+  MuiFormHelperText: {
+    styleOverrides: {
+      root: {
+        "&.Mui-error": {
+          marginLeft: 0,
+        },
+      },
+    },
+    defaultProps: {},
+  },
+};
 // A custom theme for this app
-const theme = createTheme({
+const themeLight = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     primary: {
-      main: "#DDC3A5",
-      light: "#fff6d6",
-      dark: "#ab9376",
+      main: "#D9B977",
+      light: "#ffeba7",
+      dark: "#a6894a",
       contrastText: "#000",
     },
     secondary: {
-      main: "#A6B1E1",
-      light: "#d8e3ff",
-      dark: "#7682af",
-      contrastText: "#000",
+      main: "#8C001A",
+      light: "#c34041",
+      dark: "#580000",
+      contrastText: "#fff",
     },
     background: {
-      // default: "#201E20",
+      // paper: "#fff",
+      // default: "#DCD9E8",
     },
   },
-  typography: {
-    button: {
-      textTransform: "inherit",
-      paddingLeft: "24px",
-      paddingRight: "24px",
+  components: THEME_COMPONENTS,
+  typography: THEME_TYPOGRAPHY,
+});
+const themeDark = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#D9B977",
+      light: "#ffeba7",
+      dark: "#a6894a",
+      contrastText: "#000",
+    },
+    secondary: {
+      main: "#8C001A",
+      light: "#c34041",
+      dark: "#580000",
+      contrastText: "#fff",
+    },
+    background: {
+      paper: "#28243b",
+      default: "#28243b",
     },
   },
-  components: {
-    MuiCard: {
-      styleOverrides: {
-        root: { borderRadius: "8px" },
-      },
-    },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        input: {
-          padding: "13px 15px",
-        },
-      },
-    },
-    MuiInputLabel: {
-      styleOverrides: {
-        outlined: {
-          top: "-2px",
-        },
-      },
-    },
-  },
+  components: THEME_COMPONENTS,
+  typography: THEME_TYPOGRAPHY,
 });
 
-export default theme;
+export default function getTheme(mode) {
+  return mode === "dark" ? themeDark : themeLight;
+}

@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import Copyright from "../Copyright";
-
+import { styled } from "@mui/material/styles";
+import "./index.css";
 export default function LayoutSplited({ children }: { children: any }) {
   return (
     <Box
@@ -12,6 +13,7 @@ export default function LayoutSplited({ children }: { children: any }) {
         alignItems: "center",
         justifyContent: "center",
       }}
+      className="css-selector"
     >
       {children}
       <Copyright sx={{ mt: 5 }} />

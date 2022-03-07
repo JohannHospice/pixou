@@ -16,7 +16,7 @@ describe("Stratégie Super Ichimoku", () => {
   let ichimokuStrategy: SuperIchimokuStrategy;
 
   beforeAll(async () => {
-    const momentNow = moment().subtract(3, "years");
+    const momentNow = moment().subtract(0, "years");
     console.log(momentNow);
 
     const { data } = await getInstance().klines(
@@ -25,7 +25,7 @@ describe("Stratégie Super Ichimoku", () => {
       {
         startTime: momentNow
           .clone()
-          .subtract(1 * 360 + 99 * 3, "days")
+          .subtract(2 * 360 + 99 * 3, "days")
           .toDate(),
         endTime: momentNow.toDate(),
         limit: 2000,
@@ -42,7 +42,7 @@ describe("Stratégie Super Ichimoku", () => {
 
   it("apply portfolio", () => {
     const portfolio = new Portfolio(ichimokuStrategy);
-    portfolio.apply(100);
+    portfolio.apply(500);
     const total = portfolio.getTotal(
       ichimokuStrategy.klines[ichimokuStrategy.klines.length - 1].close
     );

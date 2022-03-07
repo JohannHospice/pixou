@@ -19,9 +19,10 @@ export default class Portfolio {
 
   apply(injectPerKline: number) {
     for (let index = 0; index < this.strategy.klines.length; index++) {
-      this.computeReserve(injectPerKline);
-      this.totalInjected += injectPerKline;
-
+      if (index % (30 / 3) === 0) {
+        this.computeReserve(injectPerKline);
+        this.totalInjected += injectPerKline;
+      }
       const order = this.strategy.getOrder(index);
       if (order) {
         this.balance = order.execute(this.balance);

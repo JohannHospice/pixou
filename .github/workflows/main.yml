@@ -29,7 +29,6 @@ jobs:
       - name: Run installation
         run: |
           yarn install
-          yarn install -g firebase-tools
           
 
       # Runs a set of commands using the runners shell
@@ -37,4 +36,6 @@ jobs:
         run: yarn test
 
       - name: Run deployment
-        run: yarn deploy
+        run: |
+          yarn add -g firebase-tools
+          yarn deploy

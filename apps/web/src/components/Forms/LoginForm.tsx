@@ -2,7 +2,6 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  Avatar,
   Box,
   Button,
   CardActions,
@@ -10,15 +9,15 @@ import {
   FormHelperText,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { Link } from "react-router-dom";
 import { login } from "../../api/authentification";
 import { useState } from "react";
 import { REGISTER_ROUTE, RESET_PASSWORD_ROUTE } from "../../constants/routes";
-import { ReactComponent as Logo } from "../../assets/logo.svg";
-import { useTheme } from "@emotion/react";
+import { ReactComponent as LogoImg } from "../../assets/logos/logo-img.svg";
+import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
 export default function LoginForm() {
   const [error, setError] = useState<string | undefined>();
@@ -59,7 +58,15 @@ export default function LoginForm() {
           display={"flex"}
           flexDirection="column"
         >
-          <Logo
+          <LogoImg
+            style={{
+              fill: theme.palette.primary.main,
+              width: "fit-content",
+              height: "32px",
+              marginBottom: "8px",
+            }}
+          />
+          <LogoText
             style={{
               fill: theme.palette.primary.main,
               width: "fit-content",

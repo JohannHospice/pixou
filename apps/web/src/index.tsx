@@ -16,31 +16,14 @@ import {
   LOGIN_ROUTE,
   HOME_ROUTE,
   AUTH_ROUTE,
+  ACCOUNT_ROUTE,
+  SETTINGS_ROUTE,
 } from "./constants/routes";
-import { logout } from "./api/authentification";
+import DashboardPage from "./pages/DashboardPage";
+import AccountPage from "./pages/AccountPage";
+import SettingsPage from "./pages/SettingsPage";
+import HomePage from "./pages/HomePage";
 
-function DashboardPage() {
-  return (
-    <>
-      dashboard
-      <button
-        onClick={() => {
-          logout();
-        }}
-      >
-        logout()
-      </button>
-    </>
-  );
-}
-function HomePage() {
-  return (
-    <>
-      home
-      <a href={LOGIN_ROUTE}>login page</a>
-    </>
-  );
-}
 ReactDOM.render(
   <StrictMode>
     <ThemeProvider theme={getTheme(THEME_MODE)}>
@@ -58,6 +41,8 @@ ReactDOM.render(
 
           <Route path={"/"} element={<AuthentifiedOnlyRoute />}>
             <Route path={DASHBOARD_ROUTE} element={<DashboardPage />} />
+            <Route path={ACCOUNT_ROUTE} element={<AccountPage />} />
+            <Route path={SETTINGS_ROUTE} element={<SettingsPage />} />
           </Route>
 
           <Route path={"*"} element={<Navigate to={HOME_ROUTE} />} />

@@ -9,13 +9,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+
+import LoadingButton from "@mui/lab/LoadingButton";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { Link, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../api/authentification";
 import { useState } from "react";
 import { LOGIN_ROUTE } from "../../constants/routes";
 import { toast } from "react-toastify";
-import { ReactComponent as Logo } from "../../assets/logo.svg";
+import { ReactComponent as LogoImg } from "../../assets/logos/logo-img.svg";
+import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 import { useTheme } from "@emotion/react";
 
 export default function LoginForm() {
@@ -62,7 +65,15 @@ export default function LoginForm() {
           display={"flex"}
           flexDirection="column"
         >
-          <Logo
+          <LogoImg
+            style={{
+              fill: theme.palette.primary.main,
+              width: "fit-content",
+              height: "32px",
+              marginBottom: "8px",
+            }}
+          />
+          <LogoText
             style={{
               fill: theme.palette.primary.main,
               width: "fit-content",
@@ -123,9 +134,14 @@ export default function LoginForm() {
         <Button component={Link} to={LOGIN_ROUTE} color="primary">
           Annuler
         </Button>
-        <Button variant="contained" onClick={formik.submitForm}>
+        <LoadingButton
+          loading={formik.isSubmitting}
+          loadingPosition="start"
+          variant="contained"
+          onClick={formik.submitForm}
+        >
           Se connecter
-        </Button>
+        </LoadingButton>
       </CardActions>
     </>
   );

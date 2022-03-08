@@ -1,21 +1,42 @@
 import React, { useContext, useEffect, useState } from "react";
 import { getLoggedUser } from "../../api/authentification";
 
-type UserData = any;
-type UserStatus = {
+interface UserFirestore {
+  firstName: string;
+  lastName: string;
+}
+interface UserData {
+  email: string;
+  displayName: string;
+  photoURL: string;
+  emailVerified: boolean;
+  phoneNumber: string;
+}
+interface UserStatus {
   loaded: boolean;
   logged: boolean;
-};
-export type User = {
+}
+export interface User {
   userStatus: UserStatus;
   userData: UserData;
-};
+  userFirestore: UserFirestore;
+}
 const defaultUserContext = {
   userStatus: {
     loaded: false,
     logged: false,
   },
-  userData: {},
+  userData: {
+    email: "",
+    displayName: "",
+    photoURL: "",
+    emailVerified: false,
+    phoneNumber: "",
+  },
+  userFirestore: {
+    firstName: "",
+    lastName: "",
+  },
 };
 
 const UserContext = React.createContext(defaultUserContext);
@@ -27,9 +48,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const [userData, setUserData] = useState<UserData>(
     defaultUserContext.userData
   );
+  const [userFirestore, setUserFirestore] = useState<UserFirestore>(
+    defaultUserContext.userFirestore
+  );
   const [userStatus, setUserStatus] = useState<UserStatus>(
     defaultUserContext.userStatus
   );
+
   useEffect(() => {
     getLoggedUser((user: any) => {
       console.log(user);
@@ -40,14 +65,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           logged: true,
         });
       } else {
-        setUserData(user);
+        setUserData(defaultUserContext.userData);
         setUserStatus({
           loaded: true,
           logged: false,
         });
       }
+      setUserFirestore(defaultUserContext.userFirestore);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -55,6 +80,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         userData,
         userStatus,
+        userFirestore,
       }}
     >
       {children}

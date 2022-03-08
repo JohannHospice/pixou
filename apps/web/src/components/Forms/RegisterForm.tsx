@@ -1,7 +1,6 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  Avatar,
   Box,
   Button,
   CardActions,
@@ -16,13 +15,12 @@ import {
   useTheme,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-// import { ReactComponent as IllustrationCryptoPortfolio } from "../../assets/illustrations/crypto-portfolio-gold.svg";
-import { ReactComponent as Logo } from "../../assets/logos/logo-text.svg";
 import { register } from "../../api/authentification";
 import React, { useState } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { useEffect } from "react";
 import { LOGIN_ROUTE } from "../../constants/routes";
+import { ReactComponent as Logo } from "../../assets/logos/logo-text-img.svg";
 
 export default function RegisterForm() {
   const [passwordFieldType, setPasswordFieldType] = useState("password");
@@ -89,7 +87,7 @@ export default function RegisterForm() {
               style={{
                 fill: theme.palette.primary.main,
                 width: "fit-content",
-                height: "24px",
+                height: "32px",
                 marginBottom: "16px",
               }}
             />

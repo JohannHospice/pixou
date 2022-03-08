@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 // import { ReactComponent as IllustrationCryptoPortfolio } from "../../assets/illustrations/crypto-portfolio-gold.svg";
-import { ReactComponent as Logo } from "../../assets/logo.svg";
+import { ReactComponent as Logo } from "../../assets/logos/logo-text.svg";
 import { register } from "../../api/authentification";
 import React, { useState } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";

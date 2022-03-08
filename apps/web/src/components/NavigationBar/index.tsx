@@ -6,11 +6,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  ACCOUNT_ROUTE,
-  DASHBOARD_ROUTE,
-  SETTINGS_ROUTE,
-} from "../../constants/routes";
+import { DASHBOARD_ROUTE, SETTINGS_ROUTE } from "../../constants/routes";
 import { ReactComponent as Logo } from "../../assets/logos/logo-img.svg";
 import {
   alpha,
@@ -19,12 +15,14 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Tooltip,
   useTheme,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { logout } from "../../api/authentification";
 import { useUser } from "../../contexts/UserContext";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
 export default function NavigationBar({
   action,
@@ -93,8 +91,16 @@ export default function NavigationBar({
             <Logo height="36px" width="36px" />
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>
-          {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          </Typography> */}
+          <Tooltip title="Déposer">
+            <IconButton
+              size="large"
+              color="inherit"
+              onClick={() => {}}
+              sx={{ ml: 2 }}
+            >
+              <AddOutlinedIcon width="100%" />
+            </IconButton>
+          </Tooltip>
           <IconButton
             size="large"
             aria-label="account of current user"

@@ -18,8 +18,15 @@ export const GuestOnlyRoute = withUser(() => (
 
 function Loading() {
   return (
-    <Box sx={{ display: "flex" }}>
-      <CircularProgress />
+    <Box
+      sx={{
+        display: "flex",
+        height: "100vh",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <CircularProgress size={80} />
     </Box>
   );
 }

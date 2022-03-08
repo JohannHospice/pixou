@@ -6,6 +6,9 @@ export default function Copyright(props: any) {
       variant="body2"
       color="text.secondary"
       align="center"
+      style={{
+        marginBottom: "12px",
+      }}
       {...props}
     >
       © {new Date().getFullYear()}{" "}

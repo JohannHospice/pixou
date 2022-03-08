@@ -88,7 +88,6 @@ export default function LoginForm() {
             label="Adresse e-mail"
             name="email"
             autoComplete="email"
-            autoFocus
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.email}

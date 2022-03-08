@@ -2,7 +2,6 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  Avatar,
   Box,
   Button,
   CardActions,
@@ -10,7 +9,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { Link, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../api/authentification";

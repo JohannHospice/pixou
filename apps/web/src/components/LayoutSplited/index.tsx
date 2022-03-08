@@ -60,11 +60,14 @@ export default function LayoutSplited({ children }: { children: any }) {
     <Box
       component="main"
       sx={{
-        height: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: { xs: "start", sm: "center" },
+
+        // width: "100vw",
+        // minHeight: "-webkit-fill-available",
+        height: "100vh",
       }}
       ref={myRef}
     >

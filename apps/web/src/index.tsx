@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import "react-toastify/dist/ReactToastify.css";
 import getTheme, { THEME_MODE } from "./theme";
-import LoginPage from "./pages/Login";
+import AuthentificationPage from "./pages/Authentification";
 import {
   AuthentifiedOnlyRoute,
   GuestOnlyRoute,
@@ -14,7 +14,6 @@ import {
 import {
   DASHBOARD_ROUTE,
   LOGIN_ROUTE,
-  RESET_PASSWORD_ROUTE,
   HOME_ROUTE,
   AUTH_ROUTE,
 } from "./constants/routes";
@@ -24,13 +23,13 @@ function DashboardPage() {
   return (
     <>
       dashboard
-      <a
+      <button
         onClick={() => {
           logout();
         }}
       >
         logout()
-      </a>
+      </button>
     </>
   );
 }
@@ -42,9 +41,6 @@ function HomePage() {
     </>
   );
 }
-function ResetPasswordPage() {
-  return <>ResetPasswordPage</>;
-}
 ReactDOM.render(
   <StrictMode>
     <ThemeProvider theme={getTheme(THEME_MODE)}>
@@ -53,19 +49,18 @@ ReactDOM.render(
         <Routes>
           <Route path={HOME_ROUTE} element={<HomePage />} />
 
-          <Route path={HOME_ROUTE} element={<GuestOnlyRoute />}>
+          <Route path={"/"} element={<GuestOnlyRoute />}>
             <Route
-              path={RESET_PASSWORD_ROUTE}
-              element={<ResetPasswordPage />}
+              path={`${AUTH_ROUTE}/*`}
+              element={<AuthentificationPage />}
             />
-            <Route path={AUTH_ROUTE + "/*"} element={<LoginPage />} />
           </Route>
 
-          <Route path={HOME_ROUTE} element={<AuthentifiedOnlyRoute />}>
+          <Route path={"/"} element={<AuthentifiedOnlyRoute />}>
             <Route path={DASHBOARD_ROUTE} element={<DashboardPage />} />
           </Route>
 
-          {/* <Route path={"*"} element={<Navigate to={"/"} />} /> */}
+          <Route path={"*"} element={<Navigate to={HOME_ROUTE} />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

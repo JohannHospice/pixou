@@ -24,7 +24,7 @@ import { useEffect } from "react";
 import { LOGIN_ROUTE } from "../../constants/routes";
 
 export default function RegisterForm() {
-  const [passwordFieldType, setPasswordFieldType] = useState("2px");
+  const [passwordFieldType, setPasswordFieldType] = useState("password");
   const [error, setError] = useState<string | undefined>();
 
   const formik = useFormik({

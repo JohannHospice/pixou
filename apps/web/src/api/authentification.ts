@@ -5,6 +5,8 @@ import {
   User,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
+  confirmPasswordReset,
 } from "firebase/auth";
 import app from "./app";
 import { createUser } from "./firestore";
@@ -58,6 +60,23 @@ export function getLoggedUser(userObserver: (user: User | null) => void) {
 
 export function logout() {
   return signOut(auth);
+}
+
+export async function resetPassword({ email }: { email: string }) {
+  return sendPasswordResetEmail(auth, email, {
+    url: "https://www.example.com/?email=" + email,
+    handleCodeInApp: true,
+  });
+}
+
+export async function confirmResetPassword({
+  oobCode,
+  password,
+}: {
+  oobCode: string;
+  password: string;
+}) {
+  return confirmPasswordReset(auth, oobCode, password);
 }
 
 export default auth;

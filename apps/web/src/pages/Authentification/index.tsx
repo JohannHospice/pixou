@@ -6,10 +6,12 @@ import {
   AUTH_ROUTE,
   LOGIN_ROUTE,
   REGISTER_ROUTE,
+  RESET_PASSWORD_ROUTE,
 } from "../../constants/routes";
 import RegisterForm from "../../components/Forms/RegisterForm";
+import ResetPasswordForm from "../../components/Forms/ResetPasswordForm";
 
-export default function LoginPage() {
+export default function AuthentificationPage() {
   let { pathname } = useLocation();
   return (
     <LayoutSplited>
@@ -23,7 +25,11 @@ export default function LoginPage() {
             path={REGISTER_ROUTE.split(AUTH_ROUTE)[1]}
             element={<RegisterForm />}
           />
-          {/* <Route path={"*"} element={<Navigate to={"/"} />} /> */}
+          <Route
+            path={RESET_PASSWORD_ROUTE.split(AUTH_ROUTE)[1]}
+            element={<ResetPasswordForm />}
+          />
+          <Route path="*" element={<Navigate to={LOGIN_ROUTE} />} />
         </Routes>
       </Card>
     </LayoutSplited>

@@ -16,7 +16,7 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { Link } from "react-router-dom";
 import { login } from "../../api/authentification";
 import { useState } from "react";
-import { REGISTER_ROUTE } from "../../constants/routes";
+import { REGISTER_ROUTE, RESET_PASSWORD_ROUTE } from "../../constants/routes";
 
 export default function LoginForm() {
   const [error, setError] = useState<string | undefined>();
@@ -146,7 +146,7 @@ export default function LoginForm() {
         <Button
           size="small"
           component={Link}
-          to="/reset-password"
+          to={RESET_PASSWORD_ROUTE}
           color="primary"
           style={{
             paddingLeft: "0",

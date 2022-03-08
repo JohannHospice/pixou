@@ -20,19 +20,28 @@ import { ReactComponent as IllustrationCryptoPortfolio } from "../../assets/illu
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { register } from "../../api/authentification";
 import LayoutSplited from "../../components/LayoutSplited";
-import { toast } from "react-toastify";
 import React, { useState } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
+import { useEffect } from "react";
+
 export default function RegisterPage() {
   const [passwordFieldType, setPasswordFieldType] = useState("2px");
+  const [error, setError] = useState<string | undefined>();
 
   const formik = useFormik({
     onSubmit: async ({ email, password, firstName, lastName }) => {
       try {
         await register({ email, password, firstName, lastName });
-        toast("Connexion réussi !");
       } catch (err) {
-        toast(JSON.stringify(err));
+        if (err.code === "auth/email-already-in-use") {
+          formik.setFieldError(
+            "email",
+            "Cette adresse e-mail est déjà utilisé. Essayer une autre adresse."
+          );
+          setError(undefined);
+        } else {
+          setError("Impossible de créer votre compte Pixou");
+        }
       }
     },
     initialValues: {
@@ -60,24 +69,23 @@ export default function RegisterPage() {
     }),
   });
 
+  useEffect(() => {
+    if (formik.isSubmitting && error) {
+      setError(undefined);
+    }
+  }, [formik, error]);
+
   return (
     <LayoutSplited>
-      <Card
-        variant="outlined"
-        style={{
-          maxWidth: "748px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
+      <Card variant="outlined">
         <CardContent
           style={{
+            maxWidth: "748px",
             padding: "48px 36px 0 36px",
           }}
         >
           <Grid container spacing={5}>
-            <Grid item xs={false} sm={4} md={7}>
+            <Grid item xs={false} sm={12} md={7}>
               <Box display={"flex"} flexDirection="column">
                 <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
                   <LockOutlinedIcon />
@@ -105,7 +113,8 @@ export default function RegisterPage() {
                       onBlur={formik.handleBlur}
                       value={formik.values.firstName}
                       error={Boolean(
-                        formik.errors.firstName && formik.touched.firstName
+                        error ||
+                          (formik.errors.firstName && formik.touched.firstName)
                       )}
                       fullWidth
                       style={{
@@ -123,7 +132,8 @@ export default function RegisterPage() {
                       onBlur={formik.handleBlur}
                       value={formik.values.lastName}
                       error={Boolean(
-                        formik.errors.lastName && formik.touched.lastName
+                        error ||
+                          (formik.errors.lastName && formik.touched.lastName)
                       )}
                       fullWidth
                       style={{
@@ -169,7 +179,9 @@ export default function RegisterPage() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
-                  error={Boolean(formik.errors.email && formik.touched.email)}
+                  error={Boolean(
+                    error || (formik.errors.email && formik.touched.email)
+                  )}
                   helperText={
                     formik.errors.email &&
                     formik.touched.email && (
@@ -185,7 +197,7 @@ export default function RegisterPage() {
                   }
                 />
 
-                <FormControl margin="normal">
+                <FormControl margin="normal" fullWidth>
                   <Box display={"flex"}>
                     <TextField
                       margin="none"
@@ -200,7 +212,8 @@ export default function RegisterPage() {
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
                       error={Boolean(
-                        formik.errors.password && formik.touched.password
+                        error ||
+                          (formik.errors.password && formik.touched.password)
                       )}
                       style={{
                         marginRight: "7px",
@@ -218,8 +231,9 @@ export default function RegisterPage() {
                       onBlur={formik.handleBlur}
                       value={formik.values.passwordConfirm}
                       error={Boolean(
-                        formik.errors.passwordConfirm &&
-                          formik.touched.passwordConfirm
+                        error ||
+                          (formik.errors.passwordConfirm &&
+                            formik.touched.passwordConfirm)
                       )}
                       style={{
                         marginLeft: "7px",
@@ -229,13 +243,15 @@ export default function RegisterPage() {
                   <FormHelperText
                     id="my-helper-text"
                     error={Boolean(
-                      (formik.errors.password && formik.touched.password) ||
+                      error ||
+                        (formik.errors.password && formik.touched.password) ||
                         (formik.errors.passwordConfirm &&
                           formik.touched.passwordConfirm)
                     )}
                     hidden={
                       !Boolean(
-                        (formik.errors.password && formik.touched.password) ||
+                        error ||
+                          (formik.errors.password && formik.touched.password) ||
                           (formik.errors.passwordConfirm &&
                             formik.touched.passwordConfirm)
                       )
@@ -247,9 +263,10 @@ export default function RegisterPage() {
                       fontSize="inherit"
                       style={{ marginRight: "2px" }}
                     />
-                    {(formik.errors.password &&
-                      formik.touched.password &&
-                      formik.errors.password) ||
+                    {error ||
+                      (formik.errors.password &&
+                        formik.touched.password &&
+                        formik.errors.password) ||
                       (formik.errors.passwordConfirm &&
                         formik.touched.passwordConfirm &&
                         formik.errors.passwordConfirm)}
@@ -297,14 +314,13 @@ export default function RegisterPage() {
               </CardActions>
             </Grid>
             <Grid
-              xs={12}
-              sm={8}
               md={5}
               item
               display={"flex"}
               flexDirection="column"
               alignItems="center"
               justifyContent={"center"}
+              sx={{ display: { xs: "none", sm: "none", md: "flex" } }}
             >
               <IllustrationCryptoPortfolio
                 style={{ width: "100%", height: "fit-content" }}

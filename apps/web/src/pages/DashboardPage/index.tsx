@@ -1,11 +1,9 @@
-import { logout } from "../../api/authentification";
 import Layout from "../../components/Layout";
-import { ReactComponent as Logo } from "../../assets/logos/logo-text-img.svg";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
 export default function DashboardPage() {
   return (
-    <Layout title={<Logo />}>
+    <Layout>
       <Card>
         <CardContent>
           <Box display="flex" flexDirection={"column"}>

@@ -5,22 +5,26 @@ import topology from "vanta/dist/vanta.topology.min";
 import fog from "vanta/dist/vanta.fog.min";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-const mode = "topology";
-
-export default function LayoutSplited({ children }: { children: any }) {
+export default function LayoutSplited({
+  children,
+  vantaMode = "topology",
+}: {
+  children: any;
+  vantaMode: "fog" | "topology";
+}) {
   const [vantaEffect, setVantaEffect] = useState<any>();
   const myRef = useRef(null);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
-    if (!vantaEffect && myRef && !matches) {
+    if (!vantaEffect && myRef && !matches && vantaMode) {
       setVantaEffect(
-        mode === "fog"
+        vantaMode === "fog"
           ? fog({
               el: myRef.current,
-              mouseControls: true,
-              touchControls: true,
+              mouseControls: false,
+              touchControls: false,
               gyroControls: false,
               minHeight: 200.0,
               minWidth: 200.0,
@@ -34,15 +38,13 @@ export default function LayoutSplited({ children }: { children: any }) {
             })
           : topology({
               el: myRef.current,
-              mouseControls: true,
-              touchControls: true,
+              mouseControls: false,
+              touchControls: false,
               gyroControls: false,
               minHeight: 200.0,
               minWidth: 200.0,
               scale: 1.0,
               scaleMobile: 1.0,
-              spacing: 10.0,
-              chaos: 3.0,
               color: theme.palette.primary.main,
               backgroundColor: theme.palette.background.default,
             })
@@ -55,7 +57,7 @@ export default function LayoutSplited({ children }: { children: any }) {
     return () => {
       if (vantaEffect) vantaEffect.destroy();
     };
-  }, [vantaEffect, myRef, matches, theme]);
+  }, [vantaEffect, myRef, matches, theme, vantaMode]);
   return (
     <Box
       component="main"

@@ -17,10 +17,13 @@ import { resetPassword } from "../../api/authentification";
 import { useState } from "react";
 import { LOGIN_ROUTE } from "../../constants/routes";
 import { toast } from "react-toastify";
+import { ReactComponent as Logo } from "../../assets/logo.svg";
+import { useTheme } from "@emotion/react";
 
 export default function LoginForm() {
   const [error, setError] = useState<string | undefined>();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const formik = useFormik({
     onSubmit: async ({ email }) => {
@@ -61,9 +64,14 @@ export default function LoginForm() {
           display={"flex"}
           flexDirection="column"
         >
-          <Avatar sx={{ mb: 1, bgcolor: "primary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Logo
+            style={{
+              fill: theme.palette.primary.main,
+              width: "fit-content",
+              height: "24px",
+              marginBottom: "16px",
+            }}
+          />
           <Typography component="h1" variant="h5">
             Récupération de compte
           </Typography>

@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Card, useMediaQuery } from "@mui/material";
 import LayoutSplited from "../../components/LayoutSplited";
 import LoginForm from "../../components/Forms/LoginForm";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
@@ -10,12 +10,38 @@ import {
 } from "../../constants/routes";
 import RegisterForm from "../../components/Forms/RegisterForm";
 import ResetPasswordForm from "../../components/Forms/ResetPasswordForm";
+import img from "../../assets/illustrations/business-3d-290.png";
+import { useTheme } from "@mui/system";
 
 export default function AuthentificationPage() {
   let { pathname } = useLocation();
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
+  const isRegister = pathname === REGISTER_ROUTE;
   return (
     <LayoutSplited>
-      <Card variant="outlined">
+      <Card
+        square={matches}
+        variant="outlined"
+        sx={
+          isRegister
+            ? {
+                background: {
+                  xs: "#393E46",
+                  md: "#393E46 url(" + img + ") no-repeat scroll 341px 17px",
+                },
+                backgroundSize: {
+                  md: "contain",
+                },
+              }
+            : {
+                background: {
+                  xs: "#393E46",
+                  md: "#393E46",
+                },
+              }
+        }
+      >
         <Routes location={pathname}>
           <Route
             path={LOGIN_ROUTE.split(AUTH_ROUTE)[1]}

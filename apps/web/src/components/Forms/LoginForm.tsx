@@ -17,9 +17,13 @@ import { Link } from "react-router-dom";
 import { login } from "../../api/authentification";
 import { useState } from "react";
 import { REGISTER_ROUTE, RESET_PASSWORD_ROUTE } from "../../constants/routes";
+import { ReactComponent as Logo } from "../../assets/logo.svg";
+import { useTheme } from "@emotion/react";
 
 export default function LoginForm() {
   const [error, setError] = useState<string | undefined>();
+  const theme = useTheme();
+
   const formik = useFormik({
     onSubmit: async ({ email, password }) => {
       try {
@@ -55,9 +59,14 @@ export default function LoginForm() {
           display={"flex"}
           flexDirection="column"
         >
-          <Avatar sx={{ mb: 1, bgcolor: "primary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Logo
+            style={{
+              fill: theme.palette.primary.main,
+              width: "fit-content",
+              height: "24px",
+              marginBottom: "16px",
+            }}
+          />
           <Typography component="h1" variant="h5">
             Connexion
           </Typography>

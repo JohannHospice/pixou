@@ -1,17 +1,22 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import Copyright from "../Copyright";
 import topology from "vanta/dist/vanta.topology.min";
 import fog from "vanta/dist/vanta.fog.min";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
+const mode = "topology";
 
 export default function LayoutSplited({ children }: { children: any }) {
   const [vantaEffect, setVantaEffect] = useState<any>();
   const myRef = useRef(null);
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
-    if (!vantaEffect && myRef) {
+    if (!vantaEffect && myRef && !matches) {
       setVantaEffect(
-        false
+        mode === "fog"
           ? fog({
               el: myRef.current,
               mouseControls: true,
@@ -19,12 +24,12 @@ export default function LayoutSplited({ children }: { children: any }) {
               gyroControls: false,
               minHeight: 200.0,
               minWidth: 200.0,
-              highlightColor: "#d9b977",
-              midtoneColor: "#28243b",
-              lowlightColor: "#28243b",
-              baseColor: "#28243b",
+              highlightColor: theme.palette.primary.main,
+              midtoneColor: theme.palette.background.default,
+              lowlightColor: theme.palette.background.default,
+              baseColor: theme.palette.background.default,
               blurFactor: 0.31,
-              speed: 0.1,
+              speed: 0.5,
               zoom: 1.5,
             })
           : topology({
@@ -38,15 +43,19 @@ export default function LayoutSplited({ children }: { children: any }) {
               scaleMobile: 1.0,
               spacing: 10.0,
               chaos: 3.0,
-              color: "#d9b977",
-              backgroundColor: "#28243b",
+              color: theme.palette.primary.main,
+              backgroundColor: theme.palette.background.default,
             })
       );
+    }
+    if (vantaEffect && matches) {
+      vantaEffect.destroy();
+      setVantaEffect(undefined);
     }
     return () => {
       if (vantaEffect) vantaEffect.destroy();
     };
-  }, [vantaEffect, myRef]);
+  }, [vantaEffect, myRef, matches]);
   return (
     <Box
       component="main"
@@ -55,7 +64,7 @@ export default function LayoutSplited({ children }: { children: any }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: { xs: "start", sm: "center" },
       }}
       ref={myRef}
     >

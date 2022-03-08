@@ -13,10 +13,11 @@ import {
   Grid,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { ReactComponent as IllustrationCryptoPortfolio } from "../../assets/illustrations/crypto-portfolio-gold.svg";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+// import { ReactComponent as IllustrationCryptoPortfolio } from "../../assets/illustrations/crypto-portfolio-gold.svg";
+import { ReactComponent as Logo } from "../../assets/logo.svg";
 import { register } from "../../api/authentification";
 import React, { useState } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
@@ -26,7 +27,7 @@ import { LOGIN_ROUTE } from "../../constants/routes";
 export default function RegisterForm() {
   const [passwordFieldType, setPasswordFieldType] = useState("password");
   const [error, setError] = useState<string | undefined>();
-
+  const theme = useTheme();
   const formik = useFormik({
     onSubmit: async ({ email, password, firstName, lastName }) => {
       try {
@@ -84,9 +85,14 @@ export default function RegisterForm() {
       <Grid container spacing={5}>
         <Grid item xs={false} sm={12} md={7}>
           <Box display={"flex"} flexDirection="column">
-            <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
+            <Logo
+              style={{
+                fill: theme.palette.primary.main,
+                width: "fit-content",
+                height: "24px",
+                marginBottom: "16px",
+              }}
+            />
             <Typography component="h1" variant="h5">
               Créer votre compte Pixou
             </Typography>
@@ -315,14 +321,14 @@ export default function RegisterForm() {
           flexDirection="column"
           alignItems="center"
           justifyContent={"center"}
-          sx={{ display: { xs: "none", sm: "none", md: "flex" } }}
+          sx={{
+            display: { xs: "none", sm: "none", md: "flex" },
+            justifyContent: "flex-end",
+          }}
         >
-          <IllustrationCryptoPortfolio
-            style={{ width: "100%", height: "fit-content" }}
-          />
-          <Typography variant="caption" textAlign={"center"} mt={2}>
+          {/* <Typography variant="caption" textAlign={"center"} mt={2}>
             L'investissement en cryptomonnaie n'aura jamais été aussi simple.
-          </Typography>
+          </Typography> */}
         </Grid>
       </Grid>
     </CardContent>

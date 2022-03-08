@@ -1,4 +1,3 @@
-// import { red } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 export const THEME_MODE = "dark";
@@ -11,9 +10,9 @@ const THEME_TYPOGRAPHY = {
   },
 };
 const THEME_COMPONENTS = {
-  MuiCard: {
+  MuiPaper: {
     styleOverrides: {
-      root: { borderRadius: "8px" },
+      rounded: { borderRadius: "8px" },
     },
   },
   MuiInputBase: {
@@ -76,20 +75,20 @@ const themeDark = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#D9B977",
-      light: "#ffeba7",
-      dark: "#a6894a",
-      contrastText: "#000",
+      main: "#FFD369",
+      // light: "#ffeba7",
+      // dark: "#a6894a",
+      // contrastText: "#000",
     },
     secondary: {
-      main: "#8C001A",
-      light: "#c34041",
-      dark: "#580000",
-      contrastText: "#fff",
+      main: "#EEEEEE",
+      // light: "#c34041",
+      // dark: "#580000",
+      // contrastText: "#fff",
     },
     background: {
-      paper: "#28243b",
-      default: "#28243b",
+      paper: "#393E46",
+      default: "#222831",
     },
   },
   components: THEME_COMPONENTS,

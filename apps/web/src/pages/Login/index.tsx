@@ -7,23 +7,25 @@ import {
   Card,
   CardActions,
   CardContent,
+  FormHelperText,
   TextField,
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { login } from "../../api/authentification";
 import LayoutSplited from "../../components/LayoutSplited";
-import { toast } from "react-toastify";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [error, setError] = useState<string | undefined>();
   const formik = useFormik({
     onSubmit: async ({ email, password }) => {
       try {
         await login(email, password);
-        toast("Connexion réussi !");
       } catch (err) {
-        toast(JSON.stringify(err));
+        setError("Impossible de trouver votre compte Pixou");
       }
     },
     initialValues: {
@@ -31,8 +33,12 @@ export default function LoginPage() {
       password: "",
     },
     validationSchema: Yup.object().shape({
-      email: Yup.string(),
-      password: Yup.string(),
+      email: Yup.string()
+        .email("Saisissez une adresse e-mail valide.")
+        .required("E-mail obligatoire"),
+      password: Yup.string()
+        .min(8, "Utilisez 8 caractères ou plus pour votre mot de passe.")
+        .required("Mot de passe obligatoire"),
     }),
   });
 
@@ -84,6 +90,24 @@ export default function LoginPage() {
               autoComplete="email"
               autoFocus
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              error={Boolean(
+                error || (formik.errors.email && formik.touched.email)
+              )}
+              helperText={
+                formik.errors.email &&
+                formik.touched.email && (
+                  <>
+                    <ErrorOutlinedIcon
+                      color="inherit"
+                      fontSize="inherit"
+                      style={{ marginRight: "2px" }}
+                    />
+                    {formik.errors.email}
+                  </>
+                )
+              }
             />
             <TextField
               margin="normal"
@@ -95,27 +119,59 @@ export default function LoginPage() {
               id="password"
               autoComplete="current-password"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+              error={Boolean(
+                error || (formik.errors.password && formik.touched.password)
+              )}
+              helperText={
+                formik.errors.password &&
+                formik.touched.password && (
+                  <>
+                    <ErrorOutlinedIcon
+                      color="inherit"
+                      fontSize="inherit"
+                      style={{ marginRight: "2px" }}
+                    />
+                    {formik.errors.password}
+                  </>
+                )
+              }
             />
-            <Button
-              size="small"
-              component={Link}
-              to="/reset-password"
-              color="primary"
-              style={{
-                paddingLeft: "0",
-              }}
+            <FormHelperText
+              id="my-helper-text"
+              error={Boolean(error)}
+              hidden={!Boolean(error)}
+              style={{ marginLeft: 0 }}
             >
-              Mot de passe oublié ?
-            </Button>
-            <Typography
-              component="h2"
-              variant="body2"
-              color="text.secondary"
-              mt={3}
-            >
-              Utiliser votre compte Pixou
-            </Typography>
+              <ErrorOutlinedIcon
+                color="inherit"
+                fontSize="inherit"
+                style={{ marginRight: "2px" }}
+              />
+              {error}
+            </FormHelperText>
           </Box>
+          <Button
+            size="small"
+            component={Link}
+            to="/reset-password"
+            color="primary"
+            style={{
+              paddingLeft: "0",
+            }}
+          >
+            Mot de passe oublié ?
+          </Button>
+          <Typography
+            component="h2"
+            variant="caption"
+            color="text.secondary"
+            mt={3}
+          >
+            L’argent n’est pas le but. L’argent n’a aucune valeur. La valeur
+            vient des rêves que l’argent aide à réaliser.
+          </Typography>
         </CardContent>
         <CardActions
           style={{
@@ -126,7 +182,7 @@ export default function LoginPage() {
           <Button component={Link} to="/register" color="primary">
             Créer un compte
           </Button>
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" onClick={formik.submitForm}>
             Se connecter
           </Button>
         </CardActions>

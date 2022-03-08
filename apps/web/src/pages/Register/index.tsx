@@ -13,7 +13,6 @@ import {
   FormHelperText,
   Grid,
   TextField,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -24,7 +23,6 @@ import LayoutSplited from "../../components/LayoutSplited";
 import { toast } from "react-toastify";
 import React, { useState } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
-import getTheme, { THEME_MODE, THEME_MODE_ALT } from "../../theme";
 export default function RegisterPage() {
   const [passwordFieldType, setPasswordFieldType] = useState("2px");
 
@@ -94,7 +92,7 @@ export default function RegisterPage() {
                 sx={{ mt: 2 }}
                 onSubmit={formik.handleSubmit}
               >
-                <FormControl margin="normal">
+                <FormControl margin="normal" fullWidth>
                   <Box display={"flex"}>
                     <TextField
                       margin="none"

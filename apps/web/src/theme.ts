@@ -16,17 +16,24 @@ const THEME_COMPONENTS = {
       root: { borderRadius: "8px" },
     },
   },
+  MuiInputBase: {
+    styleOverrides: {
+      root: { borderRadius: "8px" },
+    },
+  },
   MuiOutlinedInput: {
     styleOverrides: {
       input: {
-        padding: "13px 15px",
+        "&:-webkit-autofill": {
+          "-webkit-box-shadow": "0 0 0 100px rgb(40 36 59 / 80%) inset",
+        },
       },
     },
   },
   MuiInputLabel: {
     styleOverrides: {
       outlined: {
-        top: "-2px",
+        top: "0px",
       },
     },
   },

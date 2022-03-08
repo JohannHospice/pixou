@@ -13,7 +13,6 @@ import {
 } from "./router/UserLoggedRoute";
 import {
   DASHBOARD_ROUTE,
-  LOGIN_ROUTE,
   HOME_ROUTE,
   AUTH_ROUTE,
   ACCOUNT_ROUTE,

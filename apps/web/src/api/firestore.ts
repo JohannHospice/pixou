@@ -1,25 +1,25 @@
-import app from "./app";
 import {
   getFirestore,
-  collection,
-  getDocs,
   doc,
   setDoc,
+  getDoc,
+  updateDoc,
 } from "firebase/firestore/lite";
+import app from "./app";
 
 const firestore = getFirestore(app);
 
-export async function getCities() {
-  const citySnapshot = await getDocs(collection(firestore, "cities"));
-  return citySnapshot.docs.map((doc) => doc.data());
+// user
+
+export async function getUser(uid: string) {
+  const docSnap = await getDoc(doc(firestore, "users", uid));
+  return docSnap.data();
 }
 
-export async function getUser() {
-  // getDoc(collection(firestore, "users")).
-  const citySnapshot = await getDocs(collection(firestore, "users"));
-  // citySnapshot.query.
-  return citySnapshot.docs.map((doc) => doc.data());
+export async function updateUser(uid: string, data: any) {
+  return updateDoc(doc(firestore, "users/" + uid), data);
 }
+
 export async function createUser({
   email,
   firstName,
@@ -35,5 +35,8 @@ export async function createUser({
     email,
     firstName,
     lastName,
+    createdAt: new Date(),
   });
 }
+
+//

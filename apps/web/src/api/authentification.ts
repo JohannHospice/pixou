@@ -9,7 +9,7 @@ import {
   confirmPasswordReset,
 } from "firebase/auth";
 import app from "./app";
-import { createUser } from "./firestore";
+import { createUser, getUser } from "./firestore";
 
 const auth = getAuth(app);
 auth.useDeviceLanguage();
@@ -21,9 +21,12 @@ export async function login(email: string, password: string) {
     password
   );
 
-  console.log(userCredential);
+  const userFirestore = await getUser(userCredential.user.uid);
 
-  return userCredential.user;
+  return {
+    ...userFirestore,
+    ...userCredential.user,
+  };
 }
 
 // in backend
@@ -44,14 +47,19 @@ export async function register({
     password
   );
 
-  await createUser({
+  const userFirestore = {
     uid: userCredential.user.uid,
     email: userCredential.user.email || "",
     firstName,
     lastName,
-  });
+  };
 
-  return userCredential.user;
+  await createUser(userFirestore);
+
+  return {
+    ...userFirestore,
+    ...userCredential.user,
+  };
 }
 
 export function getLoggedUser(userObserver: (user: User | null) => void) {
@@ -63,10 +71,12 @@ export function logout() {
 }
 
 export async function resetPassword({ email }: { email: string }) {
-  return sendPasswordResetEmail(auth, email, {
-    url: "https://www.example.com/?email=" + email,
-    handleCodeInApp: true,
-  });
+  const actionCodeSettings = undefined;
+  // {
+  //   url: "https://www.example.com/?email=" + email,
+  //   handleCodeInApp: true,
+  // }
+  return sendPasswordResetEmail(auth, email, actionCodeSettings);
 }
 
 export async function confirmResetPassword({

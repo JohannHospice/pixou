@@ -9,11 +9,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run installation
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
         run: |
           yarn install
 
       - name: Run deployment
+        timeout-minutes: 3
         run: yarn deploy:ci
         env:
           FIREBASE_TOKEN: '${{ secrets.FIREBASE_TOKEN }}'

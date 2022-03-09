@@ -1,8 +1,8 @@
-name: Deploy to Firebase on develop push
+name: Deploy to Firebase on main push
 'on':
   push:
     branches:
-      - develop
+      - main
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -23,6 +23,6 @@ jobs:
         run: yarn deploy:ci
         env:
           FIREBASE_TOKEN: '${{ secrets.FIREBASE_TOKEN }}'
-          FIREBASE_PROJECT_ID: '${{ secrets.FIREBASE_DEV_PROJECT_ID }}'
+          FIREBASE_PROJECT_ID: '${{ secrets.FIREBASE_TEST_PROJECT_ID }}'
 
-          REACT_APP_FIREBASE_CONFIG: '${{ secrets.REACT_APP_FIREBASE_DEV_CONFIG }}'
+          REACT_APP_FIREBASE_CONFIG: '${{ secrets.REACT_APP_FIREBASE_TEST_CONFIG }}'

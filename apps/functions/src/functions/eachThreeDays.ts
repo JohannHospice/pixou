@@ -15,8 +15,8 @@ interface Config {
   spot: BinanceSpot;
   exchange: BinanceSpot;
 }
-export default async function (context: any) {
-  console.log({ context });
+
+export default async function (): Promise<void> {
   const now = Date.now();
 
   const cryptoConfigs: Config[] = [

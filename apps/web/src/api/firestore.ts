@@ -1,14 +1,18 @@
 import {
-  getFirestore,
+  // getFirestore,
   doc,
   setDoc,
   getDoc,
   updateDoc,
 } from "firebase/firestore/lite";
 import app from "./app";
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 
-const firestore = getFirestore(app);
+// const firestore = getFirestore(app);
 
+const firestore = initializeFirestore(app, {
+  cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+});
 // user
 
 export async function getUser(uid: string) {

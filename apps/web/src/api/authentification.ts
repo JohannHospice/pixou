@@ -10,9 +10,11 @@ import {
 } from "firebase/auth";
 import app from "./app";
 import { createUser, getUser } from "./firestore";
+import { browserSessionPersistence } from "firebase/auth";
 
 const auth = getAuth(app);
 auth.useDeviceLanguage();
+auth.setPersistence(browserSessionPersistence);
 
 export async function login(email: string, password: string) {
   const userCredential = await signInWithEmailAndPassword(

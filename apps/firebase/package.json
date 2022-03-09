@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "serve": "firebase emulators:start",
-    "deploy": "firebase deploy"
+    "deploy": "firebase deploy",
+    "deploy:ci": "firebase deploy -P $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN"
   }
 }

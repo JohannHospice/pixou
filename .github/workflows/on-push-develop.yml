@@ -1,0 +1,29 @@
+name: Deploy to Firebase on develop push
+'on':
+  push:
+    branches:
+      - develop
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run installation
+        run: |
+          yarn add -g firebase-tools
+          yarn install
+
+      - name: Run deployment
+        run: yarn deploy
+        env:
+          FIREBASE_TOKEN: '${{ secrets.FIREBASE_TOKEN }}'
+          FIREBASE_PROJECT_ID: '${{ secrets.FIREBASE_DEV_PROJECT_ID }}'
+
+          REACT_APP_FIREBASE_APIKEY: '${{ secrets.REACT_APP_FIREBASE_DEV_APIKEY }}'
+          REACT_APP_FIREBASE_AUTH_DOMAIN: '${{ secrets.REACT_APP_FIREBASE_DEV_AUTH_DOMAIN }}'
+          REACT_APP_FIREBASE_PROJECT_ID: '${{ secrets.REACT_APP_FIREBASE_DEV_PROJECT_ID }}'
+          REACT_APP_FIREBASE_STORAGE_BUCKET: '${{ secrets.REACT_APP_FIREBASE_DEV_STORAGE_BUCKET }}'
+          REACT_APP_FIREBASE_MESSAGING_SENDER_ID: '${{ secrets.REACT_APP_FIREBASE_DEV_MESSAGING_SENDER_ID }}'
+          REACT_APP_FIREBASE_APP_ID: '${{ secrets.REACT_APP_FIREBASE_DEV_APP_ID }}'
+          REACT_APP_FIREBASE_MEASURMENT_ID: '${{ secrets.REACT_APP_FIREBASE_DEV_MEASURMENT_ID }}'

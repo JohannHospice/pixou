@@ -4,7 +4,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", "build/**"]
     },
     "lint": {
       "outputs": []
@@ -13,6 +13,9 @@
       "dependsOn": ["lint", "build"]
     },
     "deploy": {
+      "dependsOn": ["build"]
+    },
+    "deploy:ci": {
       "dependsOn": ["build"]
     },
     "dev": {

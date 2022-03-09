@@ -63,7 +63,7 @@ export default class MACDStrategy extends Strategy {
     ) {
       const swingLowIndex = this.nearestSwingLowIndex(index);
       if (!swingLowIndex) return undefined;
-      return {
+      return new Order({
         closeTime: this.klines[index].closeTime,
         type: TransactionType.LONG,
         price: this.closes[index],
@@ -72,7 +72,7 @@ export default class MACDStrategy extends Strategy {
           this.closes[index] +
           (this.closes[index] - this.closes[swingLowIndex]) *
             this.profitTargetRatio,
-      };
+      });
     }
 
     if (
@@ -82,7 +82,7 @@ export default class MACDStrategy extends Strategy {
     ) {
       const swingHighIndex = this.nearestSwingHighIndex(index);
       if (!swingHighIndex) return undefined;
-      return {
+      return new Order({
         closeTime: this.klines[index].closeTime,
         type: TransactionType.SHORT,
         price: this.closes[index],
@@ -91,7 +91,7 @@ export default class MACDStrategy extends Strategy {
           this.closes[index] -
           (this.closes[swingHighIndex] - this.closes[index]) *
             this.profitTargetRatio,
-      };
+      });
     }
 
     return undefined;

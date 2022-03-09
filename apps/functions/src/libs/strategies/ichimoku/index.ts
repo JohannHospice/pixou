@@ -47,22 +47,22 @@ export default class IchimokuStrategy extends Strategy {
       this.isIchimokuBullish(index)
       //  && this.isCloseBehindTheCloud(index - 1)
     ) {
-      return {
+      return new Order({
         type: TransactionType.LONG,
         price: this.klines[index].close,
         closeTime: this.klines[index].closeTime,
-      };
+      });
     }
 
     if (
       this.isCloseBehindTheCloud(index)
       // && this.isCloseAboveTheCloud(index - 1)
     ) {
-      return {
+      return new Order({
         type: TransactionType.SHORT,
         price: this.klines[index].close,
         closeTime: this.klines[index].closeTime,
-      };
+      });
     }
 
     return undefined;

@@ -1,9 +1,4 @@
-import {
-  Balance,
-  longOperation,
-  shortOperation,
-  TransactionType,
-} from "./order";
+import { Balance, longOperation, shortOperation } from "./order";
 import Strategy from "./strategies";
 
 // invest each period

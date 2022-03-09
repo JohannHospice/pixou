@@ -1,6 +1,6 @@
-import Exchange from "..";
+// import Exchange from "..";
 class Market {}
-class CoinGeko extends Market {
+export class CoinGeko extends Market {
   async ohlc(
     symbol: string,
     interval: string,

@@ -1,4 +1,4 @@
-import { Card, useMediaQuery } from "@mui/material";
+import { Card, useMediaQuery, useTheme } from "@mui/material";
 import LayoutSplited from "../../components/LayoutSplited";
 import LoginForm from "../../components/Forms/LoginForm";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
@@ -11,13 +11,13 @@ import {
 import RegisterForm from "../../components/Forms/RegisterForm";
 import ResetPasswordForm from "../../components/Forms/ResetPasswordForm";
 import img from "../../assets/illustrations/business-3d-290.png";
-import { useTheme } from "@mui/system";
 
 export default function AuthentificationPage() {
   let { pathname } = useLocation();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
   const isRegister = pathname === REGISTER_ROUTE;
+
   return (
     <LayoutSplited>
       <Card
@@ -27,8 +27,8 @@ export default function AuthentificationPage() {
           isRegister
             ? {
                 background: {
-                  xs: "#393E46",
-                  md: "#393E46 url(" + img + ") no-repeat scroll 341px 17px",
+                  xs: theme.palette.background.paper,
+                  md: `${theme.palette.background.paper} url(${img}) no-repeat scroll 341px 17px`,
                 },
                 backgroundSize: {
                   md: "contain",
@@ -36,8 +36,8 @@ export default function AuthentificationPage() {
               }
             : {
                 background: {
-                  xs: "#393E46",
-                  md: "#393E46",
+                  xs: theme.palette.background.paper,
+                  md: theme.palette.background.paper,
                 },
               }
         }

@@ -4,6 +4,8 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
+
+import "./polyfills";
 import "react-toastify/dist/ReactToastify.css";
 import getTheme, { THEME_MODE } from "./theme";
 import AuthentificationPage from "./pages/Authentification";

@@ -10,7 +10,7 @@ export default function LayoutSplited({
   vantaMode = "topology",
 }: {
   children: any;
-  vantaMode: "fog" | "topology";
+  vantaMode?: "fog" | "topology";
 }) {
   const [vantaEffect, setVantaEffect] = useState<any>();
   const myRef = useRef(null);
@@ -69,7 +69,7 @@ export default function LayoutSplited({
 
         // width: "100vw",
         // minHeight: "-webkit-fill-available",
-        height: "100vh",
+        minHeight: "100vh",
       }}
       ref={myRef}
     >

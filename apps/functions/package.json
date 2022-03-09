@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"grapher build/plot.json\" \"npm run test\"",
-    "lint": "eslint --ext .js,.ts .",
+    "lint:todo": "eslint --ext .js,.ts .",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",

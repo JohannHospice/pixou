@@ -19,7 +19,7 @@ jobs:
         run: yarn install
 
       - name: Run deployment
-        timeout-minutes: 2
+        timeout-minutes: 10
         run: yarn deploy:ci
         env:
           FIREBASE_TOKEN: '${{ secrets.FIREBASE_TOKEN }}'

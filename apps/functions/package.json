@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "concurrently \"grapher build/plot.json\" \"npm run test\"",
     "lint": "tslint --project tsconfig.json",
-    "prebuild": "rm -rf build",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",

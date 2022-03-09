@@ -9,4 +9,4 @@ import helloWorldHandler from "./functions/helloWorld";
 
 export const helloWorld = functions
   .region("europe-west1")
-  .https.onCall(helloWorldHandler);
+  .https.onRequest(helloWorldHandler);

@@ -2,7 +2,7 @@
   "projects": {
     "default": "pixou-dev",
     "development": "pixou-dev",
-    "production": "crin-production"
+    "production": "pixou-test"
   },
   "targets": {}
 }

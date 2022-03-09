@@ -12,7 +12,7 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy",
-    "deploy:ci": "firebase deploy -P $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN",
+    "deploy:ci": "firebase deploy -P $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN -f",
     "logs": "firebase functions:log",
     "test": "jest --maxWorkers=1 --setupFiles dotenv/config --watchAll"
   },

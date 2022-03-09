@@ -11,7 +11,7 @@ jobs:
 
       - name: Run installation
         run: |
-          yarn add -g firebase-tools
+          yarn global add firebase-tools
           yarn install
 
       - name: Run deployment

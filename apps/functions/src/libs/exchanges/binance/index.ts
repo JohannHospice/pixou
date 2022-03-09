@@ -1,5 +1,5 @@
 import { Spot } from "@binance/connector";
-import fs from "fs";
+import * as fs from "fs";
 import Exchange from "..";
 export enum TIME_PERIOD {
   ONE_MINUTE = "1m",

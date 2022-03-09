@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
-import crypto from 'crypto';
+import axios, { AxiosInstance } from "axios";
+import * as crypto from "crypto";
 
 class Binance {
   apiKey: string;
@@ -19,18 +19,18 @@ class Binance {
     this.instance = axios.create({
       baseURL: baseUrl,
     });
-    this.instance.defaults.headers.common['X-MBX-APIKEY'] = this.apiKey;
-    this.instance.defaults.headers.post['Content-Type'] =
-      'application/x-www-form-urlencoded';
+    this.instance.defaults.headers.common["X-MBX-APIKEY"] = this.apiKey;
+    this.instance.defaults.headers.post["Content-Type"] =
+      "application/x-www-form-urlencoded";
   }
 
   sign(queryString: string) {
     return (
-      '&signature=' +
+      "&signature=" +
       crypto
-        .createHmac('sha256', this.secretKey)
+        .createHmac("sha256", this.secretKey)
         .update(queryString)
-        .digest('hex')
+        .digest("hex")
     );
   }
 
@@ -61,7 +61,7 @@ class Binance {
     recvWindow: number;
     timestamp: number;
   }) {
-    return this.instance.get('order' + this.createSignedSearchParam(options));
+    return this.instance.get("order" + this.createSignedSearchParam(options));
   }
 
   // POST REQUEST TO PLACE AN ORDER options = {}
@@ -78,7 +78,7 @@ class Binance {
     recvWindow: number;
     timestamp: number;
   }) {
-    return this.instance.post('order', this.createSignedSearchParam(options));
+    return this.instance.post("order", this.createSignedSearchParam(options));
   }
 }
 

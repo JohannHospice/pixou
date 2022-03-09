@@ -69,6 +69,7 @@ const themeLight = createTheme({
     },
   },
   components: THEME_COMPONENTS,
+  // @ts-ignore
   typography: THEME_TYPOGRAPHY,
 });
 const themeDark = createTheme({
@@ -92,9 +93,10 @@ const themeDark = createTheme({
     },
   },
   components: THEME_COMPONENTS,
+  // @ts-ignore
   typography: THEME_TYPOGRAPHY,
 });
 
-export default function getTheme(mode) {
+export default function getTheme(mode: string) {
   return mode === "dark" ? themeDark : themeLight;
 }

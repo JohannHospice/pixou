@@ -7,7 +7,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function LayoutSplited({
   children,
-  vantaMode = "topology",
+  vantaMode = "fog",
 }: {
   children: any;
   vantaMode?: "fog" | "topology";

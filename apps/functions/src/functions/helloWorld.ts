@@ -1,5 +1,5 @@
-import functions from "firebase-functions";
-import admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 // This import is needed by admin.initializeApp() to get the project info (Database url, project id, etc)
 
 admin.initializeApp();

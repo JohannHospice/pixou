@@ -7,6 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { DASHBOARD_ROUTE, SETTINGS_ROUTE } from "../../constants/routes";
+// @ts-ignore
 import { ReactComponent as Logo } from "../../assets/logos/logo-img.svg";
 import {
   alpha,

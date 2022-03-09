@@ -10,6 +10,7 @@ import {
 } from "../../constants/routes";
 import RegisterForm from "../../components/Forms/RegisterForm";
 import ResetPasswordForm from "../../components/Forms/ResetPasswordForm";
+// @ts-ignore
 import img from "../../assets/illustrations/business-3d-290.png";
 
 export default function AuthentificationPage() {

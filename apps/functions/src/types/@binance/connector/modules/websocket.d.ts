@@ -71,7 +71,7 @@ declare function Websocket(superclass: any): {
          *
          * @param {string} [symbol]
          */
-        miniTickerWS(symbol?: string, callbacks: any): {
+        miniTickerWS(symbol: string, callbacks: any): {
             closeInitiated: boolean;
         };
         /**
@@ -90,7 +90,7 @@ declare function Websocket(superclass: any): {
          * @param {string} [symbol]
          *
          */
-        tickerWS(symbol?: string, callbacks: any): {
+        tickerWS(symbol: string, callbacks: any): {
             closeInitiated: boolean;
         };
         /**
@@ -107,7 +107,7 @@ declare function Websocket(superclass: any): {
          *
          * @param {string} [symbol]
          */
-        bookTickerWS(symbol?: string, callbacks: any): {
+        bookTickerWS(symbol: string, callbacks: any): {
             closeInitiated: boolean;
         };
         /**

@@ -8,6 +8,7 @@ import {
   CardContent,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -17,9 +18,10 @@ import { resetPassword } from "../../api/authentification";
 import { useState } from "react";
 import { LOGIN_ROUTE } from "../../constants/routes";
 import { toast } from "react-toastify";
+// @ts-ignore
 import { ReactComponent as LogoImg } from "../../assets/logos/logo-img.svg";
+// @ts-ignore
 import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
-import { useTheme } from "@emotion/react";
 
 export default function LoginForm() {
   const [error, setError] = useState<string | undefined>();
@@ -32,7 +34,7 @@ export default function LoginForm() {
         await resetPassword({ email });
         toast("Un e-mail contenant un code de validation vous a été envoyé.");
         navigate(LOGIN_ROUTE);
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
         if (err.code === "auth/user-not-found") {
           setError("Impossible de trouver votre compte Pixou");

@@ -25,7 +25,7 @@ describe("Stratégie Super Ichimoku", () => {
       {
         startTime: momentNow
           .clone()
-          .subtract(2 * 360 + 99 * 3, "days")
+          .subtract(0.5 * 360 + 99 * 3, "days")
           .toDate(),
         endTime: momentNow.toDate(),
         limit: 2000,
@@ -42,7 +42,7 @@ describe("Stratégie Super Ichimoku", () => {
 
   it("apply portfolio", () => {
     const portfolio = new Portfolio(ichimokuStrategy);
-    portfolio.apply(500);
+    portfolio.apply(100);
     const total = portfolio.getTotal(
       ichimokuStrategy.klines[ichimokuStrategy.klines.length - 1].close
     );

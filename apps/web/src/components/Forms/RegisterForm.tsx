@@ -16,10 +16,10 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { register } from "../../api/authentification";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
-import { useEffect } from "react";
 import { LOGIN_ROUTE } from "../../constants/routes";
+// @ts-ignore
 import { ReactComponent as Logo } from "../../assets/logos/logo-text-img.svg";
 
 export default function RegisterForm() {
@@ -30,7 +30,7 @@ export default function RegisterForm() {
     onSubmit: async ({ email, password, firstName, lastName }) => {
       try {
         await register({ email, password, firstName, lastName });
-      } catch (err) {
+      } catch (err: any) {
         if (err.code === "auth/email-already-in-use") {
           formik.setFieldError(
             "email",

@@ -1,5 +1,5 @@
 import plotly from "plotly";
-import fs from "fs";
+import * as fs from "fs";
 import Strategy from "../strategies";
 
 export function plotRest(data: any[], layout: any) {

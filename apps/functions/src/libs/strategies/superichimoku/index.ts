@@ -1,4 +1,4 @@
-import moment from "moment";
+import * as moment from "moment";
 import { EMA, IchimokuCloud, MACD, RSI } from "technicalindicators";
 import Strategy, { uniformLength } from "..";
 import { CrinKline } from "../../exchanges/binance";

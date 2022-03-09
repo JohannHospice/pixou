@@ -891,13 +891,13 @@ export var Websocket: (superclass: any) => {
         klineWS(symbol: string, interval: string, callbacks: any): {
             closeInitiated: boolean;
         };
-        miniTickerWS(symbol?: string, callbacks: any): {
+        miniTickerWS(symbol: string, callbacks: any): {
             closeInitiated: boolean;
         };
-        tickerWS(symbol?: string, callbacks: any): {
+        tickerWS(symbol: string, callbacks: any): {
             closeInitiated: boolean;
         };
-        bookTickerWS(symbol?: string, callbacks: any): {
+        bookTickerWS(symbol: string, callbacks: any): {
             closeInitiated: boolean;
         };
         partialBookDepth(symbol: string, levels: string, speed: string, callbacks: any): {

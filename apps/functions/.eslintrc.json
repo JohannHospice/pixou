@@ -1,25 +1,24 @@
 {
   "root": true,
+  "parser": "@typescript-eslint/parser",
   "env": {
     "es6": true,
     "node": true,
-    "jest": true
+    "jest": true,
+    "es2021": true
   },
-  // "files": ["*.ts", "*.tsx", "*.js"],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "import"],
   "extends": [
     "prettier",
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended"
   ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "tsconfig.json",
-    "sourceType": "module",
-    "tsconfigRootDir": "."
-  },
-  "ignorePatterns": ["/lib/**/*", "src/types/**/*"],
-  "plugins": ["@typescript-eslint", "import"],
+  "ignorePatterns": ["build/**/*", "src/types/**/*", "src/**/*.tests.ts"],
   "rules": {
     "quotes": ["error", "double"],
     "import/no-unresolved": 0,

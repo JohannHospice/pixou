@@ -12,6 +12,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "files": ["./src"],
-  "include": []
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": ["node_modules", "build"]
 }

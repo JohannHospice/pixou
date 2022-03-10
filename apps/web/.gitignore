@@ -21,3 +21,5 @@ yarn-error.log*
 
 src/environments/**
 !environment.ts
+
+.firebase

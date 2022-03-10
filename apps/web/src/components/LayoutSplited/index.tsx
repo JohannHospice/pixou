@@ -56,7 +56,7 @@ export default function LayoutSplited({
     return () => {
       if (vantaEffect) vantaEffect.destroy();
     };
-  }, [vantaEffect, myRef, matches, theme, vantaMode]);
+  }, [vantaEffect, myRef, matches, theme, vantaMode, isFog]);
   return (
     <Box
       component="main"

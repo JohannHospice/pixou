@@ -9,5 +9,5 @@ export default function (
 ): void {
   console.log(functions.config());
   functions.logger.info("Hello logs!", { structuredData: true });
-  response.send("Hello from Firebase!");
+  response.send("Hello watch from Firebase!");
 }

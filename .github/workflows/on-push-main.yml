@@ -26,3 +26,4 @@ jobs:
           FIREBASE_PROJECT_ID: '${{ secrets.FIREBASE_TEST_PROJECT_ID }}'
 
           REACT_APP_FIREBASE_CONFIG: '${{ secrets.REACT_APP_FIREBASE_TEST_CONFIG }}'
+          NODE_ENV: 'production'

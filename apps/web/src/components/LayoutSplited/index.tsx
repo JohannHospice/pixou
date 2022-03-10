@@ -3,7 +3,6 @@ import { Box, useTheme } from "@mui/material";
 import Copyright from "../Copyright";
 import topology from "vanta/dist/vanta.topology.min";
 import fog from "vanta/dist/vanta.fog.min";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function LayoutSplited({
   children,
@@ -15,12 +14,12 @@ export default function LayoutSplited({
   const [vantaEffect, setVantaEffect] = useState<any>();
   const myRef = useRef(null);
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down("md"));
-
+  const isFog = vantaMode === "fog";
+  const matches = !isFog; // useMediaQuery(theme.breakpoints.down("md"))
   useEffect(() => {
     if (!vantaEffect && myRef && !matches && vantaMode) {
       setVantaEffect(
-        vantaMode === "fog"
+        isFog
           ? fog({
               el: myRef.current,
               mouseControls: false,

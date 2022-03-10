@@ -36,8 +36,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "firebase deploy",
-    "deploy:ci": "firebase deploy -P $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN",
-    "emulate": "firebase emulators:start"
+    "emulate": "npm run build && firebase emulators:start",
+    "deploy:ci": "firebase deploy -P $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN"
   },
   "eslintConfig": {
     "extends": [

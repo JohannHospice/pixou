@@ -10,7 +10,7 @@
       "port": 8085
     },
     "ui": {
-      "enabled": false
+      "enabled": true
     }
   }
 }

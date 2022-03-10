@@ -12,16 +12,10 @@
   "emulators": {
     "hosting": {
       "port": 3001,
-      "host": "0.0.0.0",
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "http://localhost:3000"
-        }
-      ]
+      "host": "0.0.0.0"
     },
     "ui": {
-      "enabled": false
+      "enabled": true
     }
   }
 }

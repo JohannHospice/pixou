@@ -75,9 +75,14 @@ export default function RegisterForm() {
 
   return (
     <CardContent
-      style={{
-        maxWidth: "748px",
-        padding: "48px 36px 0 36px",
+      sx={{
+        maxWidth: { md: "748px", sm: "100%" },
+        pt: "48px",
+        pb: "0",
+        px: {
+          sm: "24px",
+          md: "36px",
+        },
       }}
     >
       <Grid container spacing={5}>
@@ -299,9 +304,13 @@ export default function RegisterForm() {
             />
           </Box>
           <CardActions
-            style={{
-              padding: "28px 0 48px 0",
+            sx={{
               justifyContent: "space-between",
+              pt: "36px",
+              pb: "48px",
+              marginLeft: "-6px",
+              pr: "0",
+              pl: "0",
             }}
           >
             <Button component={Link} to={LOGIN_ROUTE} color="primary">

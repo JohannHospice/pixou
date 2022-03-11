@@ -28,6 +28,14 @@ export default function AuthentificationPage() {
           borderColor: alpha(theme.palette.primary.main, 0.08),
           backdropFilter: "blur(20px)",
           backgroundColor: alpha(theme.palette.background.paper, 0.7),
+          minHeight: {
+            md: "auto",
+            xs: "100vh",
+          },
+          minWidth: {
+            md: "auto",
+            sm: "100vw",
+          },
           ...(isRegister
             ? {
                 background: {

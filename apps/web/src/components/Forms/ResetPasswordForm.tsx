@@ -56,9 +56,14 @@ export default function LoginForm() {
   return (
     <>
       <CardContent
-        style={{
-          maxWidth: "400px",
-          padding: "48px 36px 0 36px ",
+        sx={{
+          maxWidth: { md: "400px", sm: "100%" },
+          pt: "48px",
+          pb: "0",
+          px: {
+            sm: "24px",
+            md: "36px",
+          },
         }}
       >
         <Box
@@ -128,9 +133,20 @@ export default function LoginForm() {
         </Box>
       </CardContent>
       <CardActions
-        style={{
-          padding: "28px 36px 48px 28px",
+        sx={{
           justifyContent: "space-between",
+          pt: "36px",
+          pb: "48px",
+          pr: {
+            xs: "18px",
+            sm: "24px",
+            md: "36px",
+          },
+          pl: {
+            xs: "12px",
+            sm: "18px",
+            md: "28px",
+          },
         }}
       >
         <Button component={Link} to={LOGIN_ROUTE} color="primary">

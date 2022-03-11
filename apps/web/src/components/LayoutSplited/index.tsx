@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Box, useTheme } from "@mui/material";
-import Copyright from "../Copyright";
 import topology from "vanta/dist/vanta.topology.min";
 import fog from "vanta/dist/vanta.fog.min";
+import Copyright from "../Copyright";
 
 export default function LayoutSplited({
   children,
@@ -73,7 +73,7 @@ export default function LayoutSplited({
       ref={myRef}
     >
       {children}
-      <Copyright sx={{ mt: 5 }} />
+      <Copyright sx={{ mt: 5, display: { xs: "none", md: "inherit" } }} />
     </Box>
   );
 }

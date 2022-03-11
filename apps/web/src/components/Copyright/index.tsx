@@ -1,5 +1,6 @@
 import { Link, Typography } from "@mui/material";
-
+import { HOME_ROUTE } from "../../constants/routes";
+import { Link as LinkRouter } from "react-router-dom";
 export default function Copyright(props: any) {
   return (
     <Typography
@@ -12,7 +13,7 @@ export default function Copyright(props: any) {
       {...props}
     >
       © {new Date().getFullYear()}{" "}
-      <Link color="inherit" href={process.env["PUBLIC_URL"]}>
+      <Link component={LinkRouter} to={HOME_ROUTE} color="inherit">
         Pixou.com
       </Link>
       . Tous droits réservés.

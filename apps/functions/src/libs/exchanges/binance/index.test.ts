@@ -2,12 +2,18 @@ import { describe, it } from "@jest/globals";
 import { getInstance, TIME_PERIOD } from "./index";
 import { RSI } from "technicalindicators";
 
+const clientTestnet = getInstance(
+  process.env.BINANCE_API_KEY,
+  process.env.BINANCE_SECRET_KEY,
+  process.env.BINANCE_API_URL
+);
+describe("New binance tests", () => {
+  it("withdraw", async () => {
+    const response = await clientTestnet.depositWithdrawalHistory(1);
+    console.log(response.data);
+  });
+});
 describe.skip("Test de l'api binance", () => {
-  const clientTestnet = getInstance(
-    process.env.BINANCE_API_KEY,
-    process.env.BINANCE_SECRET_KEY,
-    process.env.BINANCE_API_URL
-  );
   const clientBinance = getInstance();
   const SYMBOL = "BTCUSDT";
 

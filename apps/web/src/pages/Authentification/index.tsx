@@ -1,4 +1,4 @@
-import { Card, useMediaQuery, useTheme } from "@mui/material";
+import { alpha, Card, useMediaQuery, useTheme } from "@mui/material";
 import LayoutSplited from "../../components/LayoutSplited";
 import LoginForm from "../../components/Forms/LoginForm";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
@@ -24,24 +24,24 @@ export default function AuthentificationPage() {
       <Card
         square={matches}
         variant="outlined"
-        sx={
-          isRegister
+        sx={{
+          borderColor: alpha(theme.palette.primary.main, 0.08),
+          backdropFilter: "blur(20px)",
+          backgroundColor: alpha(theme.palette.background.paper, 0.7),
+          ...(isRegister
             ? {
                 background: {
-                  xs: theme.palette.background.paper,
-                  md: `${theme.palette.background.paper} url(${img}) no-repeat scroll 341px 17px`,
+                  md: `${alpha(
+                    theme.palette.background.paper,
+                    0.7
+                  )} url(${img}) no-repeat scroll 341px 17px`,
                 },
                 backgroundSize: {
                   md: "contain",
                 },
               }
-            : {
-                background: {
-                  xs: theme.palette.background.paper,
-                  md: theme.palette.background.paper,
-                },
-              }
-        }
+            : {}),
+        }}
       >
         <Routes location={pathname}>
           <Route

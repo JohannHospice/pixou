@@ -1,5 +1,5 @@
 import { describe, it, beforeAll } from "@jest/globals";
-import moment from "moment";
+import * as moment from "moment";
 import SuperIchimokuStrategy from "./index";
 import { plotStrategy } from "../../crinplot";
 import Portfolio from "../../portfolio";
@@ -10,13 +10,14 @@ import {
   TIME_PERIOD,
   BinanceSpot,
 } from "../../exchanges/binance";
+
 describe("Stratégie Super Ichimoku", () => {
   const SYMBOL = "BTCUSDT";
   let klines: CrinKline[];
   let ichimokuStrategy: SuperIchimokuStrategy;
 
   beforeAll(async () => {
-    const momentNow = moment().subtract(0, "years");
+    const momentNow = moment().subtract(1, "years");
     console.log(momentNow);
 
     const { data } = await getInstance().klines(

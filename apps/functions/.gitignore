@@ -14,7 +14,7 @@ node_modules/
 .env.production.local
 
 
-*.env
+*.env*
 
 *.log
 environments

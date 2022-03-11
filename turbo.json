@@ -14,13 +14,13 @@
       "outputs": []
     },
     "test": {
-      "dependsOn": ["build"]
-    },
-    "deploy": {
       "dependsOn": ["lint", "build"]
     },
+    "deploy": {
+      "dependsOn": ["build"]
+    },
     "deploy:ci": {
-      "dependsOn": ["lint", "build", "$FIREBASE_TOKEN", "$FIREBASE_PROJECT_ID"]
+      "dependsOn": ["build", "$FIREBASE_TOKEN", "$FIREBASE_PROJECT_ID"]
     },
     "dev": {
       "cache": false

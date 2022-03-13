@@ -19,8 +19,8 @@ import { register } from "../../api/authentification";
 import React, { useState, useEffect } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { LOGIN_ROUTE } from "../../constants/routes";
-// @ts-ignore
-import { ReactComponent as Logo } from "../../assets/logos/logo-text-img.svg";
+import { ReactComponent as LogoImg } from "../../assets/logos/logo-img.svg";
+import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
 export default function RegisterForm() {
   const [passwordFieldType, setPasswordFieldType] = useState("password");
@@ -88,14 +88,16 @@ export default function RegisterForm() {
       <Grid container spacing={5}>
         <Grid item xs={false} sm={12} md={7}>
           <Box display={"flex"} flexDirection="column">
-            <Logo
-              style={{
-                fill: theme.palette.primary.main,
-                width: "fit-content",
-                height: "32px",
-                marginBottom: "16px",
-              }}
-            />
+            <Box display="flex" flexDirection="row">
+              <LogoText
+                fill={theme.palette.primary.main}
+                style={{
+                  width: "fit-content",
+                  height: "32px",
+                  marginBottom: "16px",
+                }}
+              />
+            </Box>
             <Typography component="h1" variant="h5">
               Créer votre compte Pixou
             </Typography>

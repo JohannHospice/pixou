@@ -63,17 +63,9 @@ export default function LoginForm() {
           display={"flex"}
           flexDirection="column"
         >
-          <LogoImg
-            style={{
-              fill: theme.palette.primary.main,
-              width: "fit-content",
-              height: "32px",
-              marginBottom: "8px",
-            }}
-          />
           <LogoText
+            fill={theme.palette.primary.main}
             style={{
-              fill: theme.palette.primary.main,
               width: "fit-content",
               height: "24px",
               marginBottom: "16px",

@@ -89,30 +89,28 @@ export default function NavigationBar({
               width: "36px",
             }}
           >
-            <Logo height="36px" width="36px" />
+            <Logo
+              height="36px"
+              width="36px"
+              fill={theme.palette.primary.main}
+            />
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>
           <Tooltip title="Déposer">
-            <IconButton
-              size="large"
-              color="inherit"
-              onClick={() => {}}
-              sx={{ ml: 2 }}
-            >
-              <AddOutlinedIcon width="100%" />
+            <IconButton size="large" onClick={() => {}} sx={{ ml: 2 }}>
+              <AddOutlinedIcon width="100%" color="primary" />
             </IconButton>
           </Tooltip>
           <IconButton
             size="large"
             aria-label="account of current user"
-            color="inherit"
             onClick={handleClick}
             sx={{ ml: 2 }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <AccountCircle width="100%" />
+            <AccountCircle width="100%" color="primary" />
           </IconButton>
         </Toolbar>
       </AppBar>

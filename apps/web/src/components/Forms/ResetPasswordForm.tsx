@@ -18,9 +18,6 @@ import { resetPassword } from "../../api/authentification";
 import { useState } from "react";
 import { LOGIN_ROUTE } from "../../constants/routes";
 import { toast } from "react-toastify";
-// @ts-ignore
-import { ReactComponent as LogoImg } from "../../assets/logos/logo-img.svg";
-// @ts-ignore
 import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
 export default function LoginForm() {

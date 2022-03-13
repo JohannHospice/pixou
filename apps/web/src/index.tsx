@@ -7,7 +7,7 @@ import { ThemeProvider } from "@mui/material/styles";
 
 import "./polyfills";
 import "react-toastify/dist/ReactToastify.css";
-import getTheme, { THEME_MODE } from "./theme";
+import getTheme from "./theme";
 import AuthentificationPage from "./pages/Authentification";
 import {
   AuthentifiedOnlyRoute,
@@ -30,7 +30,7 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <StrictMode>
-    <ThemeProvider theme={getTheme(THEME_MODE)}>
+    <ThemeProvider theme={getTheme("dark")}>
       <CssBaseline />
       <BrowserRouter>
         <Routes>

@@ -130,7 +130,7 @@ export default class Strategy {
   }
 }
 
-export function uniformLength(arr: any[][]) {
+export function uniformLength(arr: any[][]): any[][] {
   const minLength = Math.min(...arr.map((a) => a.length));
   console.log(
     "Remain " +

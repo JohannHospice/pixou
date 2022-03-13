@@ -2,7 +2,11 @@
 // import app from "../app";
 // import { TransactionType } from "../libs/order";
 // import { ORDER_SIDE } from "../libs/exchanges";
-import { BinanceSpot, TIME_PERIOD } from "../libs/exchanges/binance";
+import {
+  BinanceSpot,
+  parseBinanceKlines,
+  TIME_PERIOD,
+} from "../libs/exchanges/binance";
 import SuperIchimokuStrategy from "../libs/strategies/superichimoku";
 interface Config {
   symbole: string;
@@ -13,28 +17,35 @@ interface Config {
   };
   Strategy: typeof SuperIchimokuStrategy;
   spot: BinanceSpot;
-  exchange: BinanceSpot;
+  exchange?: BinanceSpot;
 }
 
-export default async function (): Promise<void> {
+// exchange: new BinanceSpot(
+//   process.env.BINANCE_API_KEY,
+//   process.env.BINANCE_SECRET_KEY,
+//   process.env.BINANCE_API_URL
+// ),
+export default async function (): Promise<any> {
   const now = Date.now();
-
-  const cryptoConfigs: Config[] = [
-    {
-      symbole: "BTCUSDT",
+  function getConfig(symbole: string) {
+    return {
       interval: TIME_PERIOD.THREE_DAILY,
       options: {
-        startTime: now - 1000 * 3600 * 24 * 7,
+        startTime: now - 1000 * 3600 * 24 * 365,
         endTime: now,
       },
       Strategy: SuperIchimokuStrategy,
       spot: new BinanceSpot(),
-      exchange: new BinanceSpot(
-        process.env.BINANCE_API_KEY,
-        process.env.BINANCE_SECRET_KEY,
-        process.env.BINANCE_API_URL
-      ),
-    },
+      symbole,
+    };
+  }
+  const cryptoConfigs: Config[] = [
+    getConfig("BTCUSDT"),
+    getConfig("ETHUSDT"),
+    getConfig("ADAUSDT"),
+    getConfig("MATICUSDT"),
+    getConfig("AVAXUSDT"),
+    getConfig("ATOMUSDT"),
   ];
 
   // const fiatsCollection = await firestore(app)
@@ -42,12 +53,12 @@ export default async function (): Promise<void> {
   //   .get();
   // const cryptosCollection = firestore(app).collection(`/crypto-wallet/`);
 
-  await Promise.all(
+  return Promise.all(
     cryptoConfigs.map(async (config) => {
       const order = await getOrderFrom(config);
       console.log(order);
 
-      return;
+      return { symbole: config.symbole, order };
       // if (!order) return;
 
       // const { symbole, exchange } = config;
@@ -117,7 +128,8 @@ async function getOrderFrom({
   Strategy,
 }: Config) {
   const { data: klines } = await spot.klines(symbole, interval, options);
-  const strategy = new Strategy(klines);
+  const crinKlines = parseBinanceKlines(klines);
+  const strategy = new Strategy(crinKlines);
 
-  return strategy.getOrder(klines.length - 1);
+  return strategy.getLastOrder();
 }

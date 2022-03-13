@@ -22,9 +22,9 @@ const TIME_INTERVAL: { [x: string]: number } = {
   "3d": 3600 * 1000 * 24 * 3,
 };
 export class BinanceSpot extends Spot implements Exchange {
-  dirname: string = "./build/klines";
+  dirname = "./build/klines";
 
-  constructor(key: string = "", secret: string = "", baseURL?: string) {
+  constructor(key = "", secret = "", baseURL?: string) {
     super(key, secret, { baseURL });
     // this.exchangeInfo()
     //   .then(({ data }: { data: any }) =>
@@ -43,7 +43,9 @@ export class BinanceSpot extends Spot implements Exchange {
       startTime?: number | undefined;
       endTime?: number | undefined;
     }
-  ) {
+  ): Promise<{
+    data: any;
+  }> {
     try {
       const klines = await this.readKlines(symbol, interval, options);
       return klines;
@@ -60,7 +62,9 @@ export class BinanceSpot extends Spot implements Exchange {
       startTime?: number | undefined;
       endTime?: number | undefined;
     }
-  ) {
+  ): Promise<{
+    data: any;
+  }> {
     const { data } = await super.klines(symbol, interval, {
       ...options,
       limit: 1000,
@@ -75,7 +79,7 @@ export class BinanceSpot extends Spot implements Exchange {
     return { data };
   }
 
-  writeKlines(symbol: string, interval: string, data: any[]) {
+  writeKlines(symbol: string, interval: string, data: any[]): void {
     const filename = this.getFileName(symbol, interval);
     let dataToWrite = data;
     try {
@@ -101,7 +105,9 @@ export class BinanceSpot extends Spot implements Exchange {
       startTime?: number | undefined;
       endTime?: number | undefined;
     }
-  ) {
+  ): Promise<{
+    data: any;
+  }> {
     const klines = JSON.parse(
       fs.readFileSync(this.getFileName(symbol, interval), "utf-8")
     );
@@ -135,7 +141,7 @@ export class BinanceSpot extends Spot implements Exchange {
       (options?.startTime && options?.startTime < klines[0][0])
     );
   }
-  getFileName(symbol: string, interval: string) {
+  getFileName(symbol: string, interval: string): string {
     return `${this.dirname}/${symbol}-${interval}.json`;
   }
 
@@ -152,14 +158,14 @@ export class BinanceSpot extends Spot implements Exchange {
    * @param {Array} [options.symbols] - an array of symbols
    *
    */
-  products() {
+  products(): Promise<any> {
     return fetch(
       "https://www.binance.com/exchange-api/v2/public/asset-service/product/get-products",
       { method: "GET" }
     );
   }
 
-  async marketCap(symbol?: string) {
+  async marketCap(symbol?: string): Promise<number> {
     const { data: products } = await (await this.products()).json();
     const symbolMarket = products.find((product: any) => product.s === symbol);
     return symbolMarket.cs * symbolMarket.s;
@@ -167,8 +173,8 @@ export class BinanceSpot extends Spot implements Exchange {
 }
 
 export function getInstance(
-  key: string = "",
-  secret: string = "",
+  key = "",
+  secret = "",
   baseURL?: string
 ): Spot {
   return new BinanceSpot(key, secret, baseURL);

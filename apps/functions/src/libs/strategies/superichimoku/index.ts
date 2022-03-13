@@ -33,7 +33,7 @@ export default class SuperIchimokuStrategy extends Strategy {
     );
 
     const closes = klines.map(({ close }) => close);
-    this.rsi = RSI.calculate({
+    const rsi = RSI.calculate({
       values: closes,
       period: 14,
     });
@@ -42,8 +42,6 @@ export default class SuperIchimokuStrategy extends Strategy {
       macdUniform,
       ema21Uniform,
       ema50Uniform,
-      // ema100Uniform,
-      // ema200Uniform,
       ichimokuUniform,
       rsiUniform,
       ema14Uniform,
@@ -65,14 +63,6 @@ export default class SuperIchimokuStrategy extends Strategy {
         values: closes,
         period: 50,
       }),
-      // EMA.calculate({
-      //   values: closes,
-      //   period: 100,
-      // }),
-      // EMA.calculate({
-      //   values: closes,
-      //   period: 200,
-      // }),
       IchimokuCloud.calculate({
         high: this.klines.map((kline) => kline.high),
         low: this.klines.map((kline) => kline.low),
@@ -81,18 +71,15 @@ export default class SuperIchimokuStrategy extends Strategy {
         basePeriod: 26,
         spanPeriod: 52,
       }),
-      this.rsi,
+      rsi,
       EMA.calculate({
-        values: this.rsi,
+        values: rsi,
         period: 14,
       }),
     ]);
 
     this.ema21 = ema21Uniform;
     this.ema50 = ema50Uniform;
-    // this.ema100 = ema100Uniform;
-    // this.ema200 = ema200Uniform;
-
     this.klines = klinesUniform;
     this.macd = macdUniform;
     this.rsi = rsiUniform;
@@ -113,14 +100,10 @@ export default class SuperIchimokuStrategy extends Strategy {
   }
   getOrder(index: number): Order | undefined {
     const canLong = (i: number) =>
-      (index > 0 && canShort(index - 1)) ||
-      (i % (30 / this.dayInterval) === 0 &&
-        (this.ema21[i] < this.klines[i].close || this.isMACDAboveSignal(i)));
+      (index > 0 && canShort(index - 1)) || this.isMACDAboveSignal(i) || true;
 
     const canShort = (index: number) =>
       this.isMACDBehindSignal(index) &&
-      this.isRSIBehindEma(index) &&
-      // !this.isCloseOutsideTheCloud(index) &&
       this.rsi[index] > 35 &&
       this.ema21[index] > this.ema50[index];
 
@@ -133,6 +116,10 @@ export default class SuperIchimokuStrategy extends Strategy {
     }
 
     return undefined;
+  }
+
+  getLastOrder(): Order | undefined {
+    return this.getOrder(this.klines.length - 1);
   }
 
   // index
@@ -166,6 +153,9 @@ export default class SuperIchimokuStrategy extends Strategy {
 
   // macd
   isMACDBehindSignal(index: number): boolean {
+    if (index >= this.macd.length) {
+      throw new Error(`${index} above ${this.macd.length}`);
+    }
     const { MACD, signal } = this.macd[index];
     return MACD && signal ? MACD < signal : false;
   }

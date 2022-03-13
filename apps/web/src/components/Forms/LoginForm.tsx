@@ -16,7 +16,6 @@ import { Link } from "react-router-dom";
 import { login } from "../../api/authentification";
 import { useState } from "react";
 import { REGISTER_ROUTE, RESET_PASSWORD_ROUTE } from "../../constants/routes";
-import { ReactComponent as LogoImg } from "../../assets/logos/logo-img.svg";
 import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
 export default function LoginForm() {

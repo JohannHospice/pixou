@@ -19,7 +19,6 @@ import { register } from "../../api/authentification";
 import React, { useState, useEffect } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { LOGIN_ROUTE } from "../../constants/routes";
-import { ReactComponent as LogoImg } from "../../assets/logos/logo-img.svg";
 import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
 export default function RegisterForm() {

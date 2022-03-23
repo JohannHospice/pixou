@@ -6,3 +6,4 @@ export const DASHBOARD_ROUTE = "/dashboard";
 export const HOME_ROUTE = "/";
 export const ACCOUNT_ROUTE = "/account";
 export const SETTINGS_ROUTE = "/settings";
+export const ORDERS_ROUTE = "ordres";

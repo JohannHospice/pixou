@@ -1,8 +1,0 @@
-{
-  "projects": {
-    "default": "pixou-dev",
-    "development": "pixou-dev",
-    "production": "pixou-test"
-  },
-  "targets": {}
-}

@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 import { alpha, PaletteMode } from "@mui/material";
 
-const PALETTE_PPRIMARY = "#00ADB5";
+const PALETTE_PPRIMARY = "#FFD369";
 const PALETTE_SECONDARY = "#D2E69C";
 const PALETTE_BACKGROUND_PAPER = "#393E46";
 const PALETTE_BACKGROUND_DEFAULT = "#222831";

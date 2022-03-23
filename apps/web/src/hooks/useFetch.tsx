@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 // Hook pour gerer la recuperation des donnees (chargement, erreurs...)
 export default function useFetch<T>(
   initialValue: T,
-  apiCall: () => Promise<T>,
-  deps: any[] = []
+  apiCall: () => Promise<T>
 ) {
   const [data, setData] = useState<T>(initialValue);
   const [loading, setLoading] = useState(true);
@@ -21,7 +20,7 @@ export default function useFetch<T>(
       }
       setLoading(false);
     })();
-  }, [apiCall, ...deps]);
+  }, [apiCall]);
 
   return { data, loading, error };
 }

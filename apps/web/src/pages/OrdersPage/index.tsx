@@ -5,14 +5,32 @@ import {
   LineElement,
   Tooltip,
   Legend,
+  LogarithmicScale,
+  TimeSeriesScale,
+  TimeScale,
 } from "chart.js";
 import { Scatter } from "react-chartjs-2";
-import useFetch from "../../hooks/useFetch";
 import { getStrategy } from "../../api/storage";
-import { useState } from "react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { useState, useEffect } from "react";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Container,
+  Box,
+} from "@mui/material";
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  LogarithmicScale,
+  TimeSeriesScale,
+  TimeScale
+);
 
 const SYMBOLES = [
   "BTCUSDT",
@@ -37,34 +55,49 @@ const SYMBOLES = [
   "DOGEUSDT",
   "NEARUSDT",
 ];
+
 export default function OrdersPage() {
-  const [symbol, setSymbol] = useState("");
-  const { data, loading, error } = useFetch(
-    { klines: {}, orders: {} },
-    async () => {
-      return getStrategy(symbol);
-    },
-    [symbol]
-  );
+  const [symbol, setSymbol] = useState(SYMBOLES[0]);
+  const [data, setData] = useState({ klines: {}, orders: {} });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        if (symbol) {
+          setData(await getStrategy(symbol));
+        }
+      } catch (error) {
+        console.error(error);
+        setError("An error as occured");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [symbol]);
 
   return (
-    <>
-      <FormControl fullWidth>
-        <InputLabel>Symbole</InputLabel>
-        <Select
-          label="Symbole"
-          value={symbol}
-          onChange={(e) => {
-            setSymbol(e.target.value);
-          }}
-        >
-          {SYMBOLES.map((c) => (
-            <MenuItem key={c} value={c}>
-              {c}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+    <Container>
+      <Box mt={2}>
+        <FormControl fullWidth>
+          <InputLabel>Symbole</InputLabel>
+          <Select
+            label="Symbole"
+            value={symbol}
+            onChange={(e) => {
+              setSymbol(e.target.value);
+            }}
+          >
+            {SYMBOLES.map((c) => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
       {loading ? (
         "is loading"
       ) : error ? (
@@ -72,39 +105,76 @@ export default function OrdersPage() {
       ) : (
         <OrderScatter klines={data.klines} orders={data.orders} />
       )}
-    </>
+    </Container>
   );
 }
 
-function OrderScatter({ klines, orders }) {
-  const longOrders = orders.filter((order) => order.type === "LONG");
-  const shortOrders = orders.filter((order) => order.type === "SHORT");
+function OrderScatter(strat) {
+  const [longOrders, setlongOrders] = useState([]);
+  const [shortOrders, setshortOrders] = useState([]);
+  const [klines, setklines] = useState([]);
+
+  useEffect(() => {
+    const { klines, orders } = strat;
+    setklines(klines);
+    setlongOrders(orders.filter((order) => order.type === "LONG"));
+    setshortOrders(orders.filter((order) => order.type === "SHORT"));
+  }, [strat]);
+
   return (
     <Scatter
+      style={{
+        height: "100%",
+      }}
       options={{
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Chart.js Line Chart - Logarithmic",
+          },
+        },
         scales: {
+          x: {
+            display: true,
+            // type: "timeseries",
+          },
           y: {
-            beginAtZero: true,
+            display: true,
+            type: "logarithmic",
           },
         },
       }}
       data={{
+        // labels: longOrders.map(({ closeTime }) => closeTime),
         datasets: [
           {
             label: "Long Orders",
-            data: Array.from({ length: 100 }, () => ({
-              x: longOrders.map((order) => order.closeTime),
-              y: longOrders.map((order) => order.price),
+            data: longOrders.map(({ closeTime, price }) => ({
+              x: closeTime,
+              y: price,
             })),
-            backgroundColor: "rgba(255, 99, 132, 1)",
+            borderColor: "rgba(99, 255, 132, 1)",
+            backgroundColor: "rgba(99, 255, 132, .5)",
           },
           {
             label: "Short Orders",
-            data: Array.from({ length: 100 }, () => ({
-              x: shortOrders.map((order) => order.closeTime),
-              y: shortOrders.map((order) => order.price),
+            data: shortOrders.map(({ closeTime, price }) => ({
+              x: closeTime,
+              y: price,
             })),
-            backgroundColor: "rgba(99, 132, 255, 1)",
+            borderColor: "rgba(255, 99, 132, 1)",
+            backgroundColor: "rgba(255, 99, 132, .5)",
+          },
+          {
+            label: "Klines",
+            data: klines.map(({ closeTime, close }) => ({
+              x: closeTime,
+              y: close,
+            })),
+            // color: "rgba(99, 132, 255, 1)",
+            type: "scatter",
+            fill: false,
           },
         ],
       }}

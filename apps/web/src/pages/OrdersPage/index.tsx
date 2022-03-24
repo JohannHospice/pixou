@@ -13,6 +13,9 @@ import {
   TableBody,
   Table,
   Paper,
+  Tooltip as MUITooltip,
+  Typography,
+  Box,
 } from "@mui/material";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 import {
@@ -74,7 +77,7 @@ export default function OrdersPage() {
   }, [symbolParam]);
 
   return (
-    <Container fixed>
+    <Container maxWidth="lg">
       <NavigationBar
         action={{
           Icon: ArrowBackIosNewOutlinedIcon,
@@ -116,11 +119,24 @@ export default function OrdersPage() {
 export function PortfolioTable({ portfolios }) {
   const navigate = useNavigate();
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table>
+    <Box
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <TableContainer
+        component={Paper}
+        sx={{
+          // maxHeight: 1000,
+          maxHeight: "calc(100vh - 100px)",
+        }}
+        // sx={{ width: "100%", overflow: "hidden" }}
+      >
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
+              <TableCell padding="checkbox"></TableCell>
               <TableCell>Name</TableCell>
               <TableCell align="right">Intervale</TableCell>
               <TableCell align="right">Nombre de mois</TableCell>
@@ -136,6 +152,7 @@ export function PortfolioTable({ portfolios }) {
           <TableBody>
             {portfolios.map((row, i) => (
               <TableRow
+                hover
                 onClick={() => navigate(`${STRATEGIES_ROUTE}/${row.filename}`)}
                 key={i}
                 sx={{
@@ -147,8 +164,27 @@ export function PortfolioTable({ portfolios }) {
                   },
                 }}
               >
-                <TableCell component="th" scope="row">
-                  {row.lastOrderType === "LONG" ? "🐸" : "🚨"} {row.name}
+                <TableCell padding="checkbox">
+                  <Box>
+                    <MUITooltip
+                      title={
+                        row.lastOrderType === "LONG"
+                          ? "Vous devriez acheter"
+                          : "Vous devriez vendre"
+                      }
+                    >
+                      <Typography>
+                        {row.lastOrderType === "LONG" ? "🐸" : "🚨"}
+                      </Typography>
+                    </MUITooltip>
+                  </Box>
+                </TableCell>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  style={{ position: "relative" }}
+                >
+                  {row.name}
                 </TableCell>
                 <TableCell align="right">{row.interval}</TableCell>
                 <TableCell align="right">
@@ -168,7 +204,7 @@ export function PortfolioTable({ portfolios }) {
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Box>
   );
 }
 

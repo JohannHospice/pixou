@@ -17,24 +17,28 @@ export default function HomePage() {
           <Box maxWidth="100%">
             <Logo width="100%" />
           </Box>
-          <Button
-            size="large"
-            component={Link}
-            to={LOGIN_ROUTE}
-            color="primary"
-            variant="contained"
-          >
-            Se connecter
-          </Button>
-          <Button
-            size="large"
-            component={Link}
-            to={STRATEGIES_ROUTE}
-            color="secondary"
-            variant="contained"
-          >
-            Voir la strategy
-          </Button>
+          <Box display="flex" width="100%" justifyContent="center">
+            <Button
+              size="large"
+              component={Link}
+              to={LOGIN_ROUTE}
+              color="primary"
+              variant="contained"
+            >
+              Se connecter
+            </Button>
+            <Box ml={2}>
+              <Button
+                size="large"
+                component={Link}
+                to={STRATEGIES_ROUTE}
+                color="secondary"
+                variant="contained"
+              >
+                Voir la strategy
+              </Button>
+            </Box>
+          </Box>
         </Box>
       </Container>
     </LayoutSplited>

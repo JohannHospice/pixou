@@ -96,74 +96,80 @@ export default function NavigationBar({
             />
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>
-          <Tooltip title="Déposer">
-            <IconButton size="large" onClick={() => {}} sx={{ ml: 2 }}>
-              <AddOutlinedIcon width="100%" color="primary" />
-            </IconButton>
-          </Tooltip>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            onClick={handleClick}
-            sx={{ ml: 2 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <AccountCircle width="100%" color="primary" />
-          </IconButton>
+          {user && (
+            <>
+              <Tooltip title="Déposer">
+                <IconButton size="large" onClick={() => {}} sx={{ ml: 2 }}>
+                  <AddOutlinedIcon width="100%" color="primary" />
+                </IconButton>
+              </Tooltip>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                onClick={handleClick}
+                sx={{ ml: 2 }}
+                aria-controls={open ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+              >
+                <AccountCircle width="100%" color="primary" />
+              </IconButton>
+            </>
+          )}
         </Toolbar>
       </AppBar>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem disabled>
-          <Box display={"inline-flex"}>
-            <Avatar
-              alt={user.userData.displayName}
-              src={user.userData.photoURL}
-            >
-              {user.userData.photoURL ||
-                getFirstCharUpperCase(user.userData.email)}
-            </Avatar>
-            <Box display={"flex"} flexDirection="column" ml={1}>
-              <Typography variant="body1">
-                {user.userData.displayName}
-              </Typography>
-              <Typography variant="body2" color="lightgrey">
-                {user.userData.email}
-              </Typography>
+      {user && (
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+          <MenuItem disabled>
+            <Box display={"inline-flex"}>
+              <Avatar
+                alt={user.userData.displayName}
+                src={user.userData.photoURL}
+              >
+                {user.userData.photoURL ||
+                  getFirstCharUpperCase(user.userData.email)}
+              </Avatar>
+              <Box display={"flex"} flexDirection="column" ml={1}>
+                <Typography variant="body1">
+                  {user.userData.displayName}
+                </Typography>
+                <Typography variant="body2" color="lightgrey">
+                  {user.userData.email}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem
-          onClick={() => {
-            navigate(SETTINGS_ROUTE);
-          }}
-        >
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Paramètres
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            logout();
-          }}
-        >
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Déconnexion
-        </MenuItem>
-      </Menu>
+          </MenuItem>
+          <Divider sx={{ my: 0.5 }} />
+          <MenuItem
+            onClick={() => {
+              navigate(SETTINGS_ROUTE);
+            }}
+          >
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Paramètres
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              logout();
+            }}
+          >
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Déconnexion
+          </MenuItem>
+        </Menu>
+      )}
     </Box>
   );
 }

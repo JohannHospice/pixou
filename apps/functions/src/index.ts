@@ -8,6 +8,7 @@ export const eachThreeDays = functions
     console.log("run", context);
 
     await eachThreeDaysHandler();
+
     console.log("end");
   });
 

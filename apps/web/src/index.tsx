@@ -7,7 +7,7 @@ import { ThemeProvider } from "@mui/material/styles";
 
 import "./polyfills";
 import "react-toastify/dist/ReactToastify.css";
-import getTheme, { THEME_MODE } from "./theme";
+import getTheme from "./theme";
 import AuthentificationPage from "./pages/Authentification";
 import {
   AuthentifiedOnlyRoute,
@@ -19,22 +19,31 @@ import {
   AUTH_ROUTE,
   ACCOUNT_ROUTE,
   SETTINGS_ROUTE,
+  ORDERS_ROUTE,
+  STRATEGIES_ROUTE,
 } from "./constants/routes";
 import DashboardPage from "./pages/DashboardPage";
 import AccountPage from "./pages/AccountPage";
 import SettingsPage from "./pages/SettingsPage";
 import HomePage from "./pages/HomePage";
+import OrdersPage from "./pages/OrdersPage";
+import StrategiesPage from "./pages/StrategiesPage";
 
 import * as serviceWorker from "./serviceWorker";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <StrictMode>
-    <ThemeProvider theme={getTheme(THEME_MODE)}>
+    <ThemeProvider theme={getTheme("dark")}>
       <CssBaseline />
       <BrowserRouter>
         <Routes>
           <Route path={HOME_ROUTE} element={<HomePage />} />
+          <Route
+            path={`${STRATEGIES_ROUTE}/:symbol`}
+            element={<OrdersPage />}
+          />
+          <Route path={STRATEGIES_ROUTE} element={<StrategiesPage />} />
 
           <Route path={"/"} element={<GuestOnlyRoute />}>
             <Route

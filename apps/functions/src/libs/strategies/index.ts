@@ -17,6 +17,10 @@ export default class Strategy {
     throw new Error("Function not implemented.");
   }
 
+  getLastOrder(): Order | undefined {
+    return this.getOrder(this.klines.length - 1);
+  }
+
   build() {
     this.orders = this.getOrders();
   }

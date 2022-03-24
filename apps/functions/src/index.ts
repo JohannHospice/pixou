@@ -2,23 +2,21 @@ import * as functions from "firebase-functions";
 import eachThreeDaysHandler from "./functions/eachThreeDays";
 import helloWorldHandler from "./functions/helloWorld";
 
-// export const eachThreeDays = functions
-//   .region("europe-west1")
-//   .pubsub.schedule("every 3 days")
-//   .onRun(eachThreeDaysHandler);
+export const eachThreeDays = functions
+  .region("europe-west1")
+  .pubsub.schedule("every 1 days")
+  .onRun(async (context) => {
+    console.log("run", context);
 
-export const todayOrder = functions
+    await eachThreeDaysHandler();
+    console.log("end");
+  });
+
+export const refreshOrders = functions
   .region("europe-west1")
   .https.onRequest(
-    async (
-      request: functions.https.Request,
-      response: functions.Response<any>
-    ) => {
-      const orders = await eachThreeDaysHandler();
-      response.send(JSON.stringify(orders));
+    async (request: functions.https.Request, response: functions.Response) => {
+      await eachThreeDaysHandler();
+      response.send("done");
     }
   );
-
-export const helloWorld = functions
-  .region("europe-west1")
-  .https.onRequest(helloWorldHandler);

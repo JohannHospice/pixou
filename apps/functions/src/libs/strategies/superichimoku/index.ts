@@ -118,10 +118,6 @@ export default class SuperIchimokuStrategy extends Strategy {
     return undefined;
   }
 
-  getLastOrder(): Order | undefined {
-    return this.getOrder(this.klines.length - 1);
-  }
-
   // index
   isIndexMod(index: number, n: number): boolean {
     return index % n === 0;

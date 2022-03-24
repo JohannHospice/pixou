@@ -25,9 +25,6 @@ export default function AuthentificationPage() {
         square={matches}
         variant="outlined"
         sx={{
-          borderColor: alpha(theme.palette.primary.main, 0.08),
-          backdropFilter: "blur(20px)",
-          backgroundColor: alpha(theme.palette.background.paper, 0.7),
           minHeight: {
             md: "auto",
             xs: "100vh",

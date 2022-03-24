@@ -5,7 +5,12 @@ import helloWorldHandler from "./functions/helloWorld";
 export const eachThreeDays = functions
   .region("europe-west1")
   .pubsub.schedule("every 1 days")
-  .onRun(eachThreeDaysHandler);
+  .onRun(async (context) => {
+    console.log("run", context);
+
+    await eachThreeDaysHandler();
+    console.log("end");
+  });
 
 export const refreshOrders = functions
   .region("europe-west1")
@@ -15,7 +20,3 @@ export const refreshOrders = functions
       response.send("done");
     }
   );
-
-export const helloWorld = functions
-  .region("europe-west1")
-  .https.onRequest(helloWorldHandler);

@@ -20,12 +20,14 @@ import {
   ACCOUNT_ROUTE,
   SETTINGS_ROUTE,
   ORDERS_ROUTE,
+  STRATEGIES_ROUTE,
 } from "./constants/routes";
 import DashboardPage from "./pages/DashboardPage";
 import AccountPage from "./pages/AccountPage";
 import SettingsPage from "./pages/SettingsPage";
 import HomePage from "./pages/HomePage";
 import OrdersPage from "./pages/OrdersPage";
+import StrategiesPage from "./pages/StrategiesPage";
 
 import * as serviceWorker from "./serviceWorker";
 import reportWebVitals from "./reportWebVitals";
@@ -37,7 +39,11 @@ ReactDOM.render(
       <BrowserRouter>
         <Routes>
           <Route path={HOME_ROUTE} element={<HomePage />} />
-          <Route path={ORDERS_ROUTE} element={<OrdersPage />} />
+          <Route
+            path={`${STRATEGIES_ROUTE}/:symbol`}
+            element={<OrdersPage />}
+          />
+          <Route path={STRATEGIES_ROUTE} element={<StrategiesPage />} />
 
           <Route path={"/"} element={<GuestOnlyRoute />}>
             <Route

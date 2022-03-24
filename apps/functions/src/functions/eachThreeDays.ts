@@ -36,8 +36,11 @@ export default async function (): Promise<void> {
   admin.initializeApp();
   const bucket = admin.storage().bucket();
 
-  const cryptoConfigs: Config[] = SYMBOLES.map((symbol) => getConfig(symbol));
-
+  const cryptoConfigs: Config[] = SYMBOLES.reduce(
+    (acc, symbol) => [...acc, getConfig(symbol, TIME_PERIOD.THREE_DAILY)],
+    []
+  );
+  const lastOrders = {};
   await Promise.all(
     cryptoConfigs.map(async (config) => {
       try {
@@ -46,30 +49,40 @@ export default async function (): Promise<void> {
         const strategy = await runStrategy(config);
         console.log(`[strategy ${config.symbole}] solved`);
 
-        const data = JSON.stringify({
-          klines: strategy.klines,
-          orders: strategy.orders,
-        });
+        bucket.file(`/strategy/symbols/${config.symbole}`).save(
+          JSON.stringify({
+            klines: strategy.klines,
+            orders: strategy.orders,
+            symbol: config.symbole,
+            interval: config.interval,
+          })
+        );
+        lastOrders[config.symbole] = {
+          order: strategy.getLastOrder(),
+          symbol: config.symbole,
+          interval: config.interval,
+        };
 
-        bucket.file(`/strategy/${config.symbole}`).save(data);
         console.log(`[strategy ${config.symbole}] saved`);
       } catch (error) {
-        console.log(`[strategy ${config.symbole}] failed`);
+        console.error(`[strategy ${config.symbole}] error: `, error.message);
       }
     })
   );
+  await bucket.file("/strategy/lastOrders").save(JSON.stringify(lastOrders));
 }
 
-function getConfig(symbole: string) {
+const spot = new BinanceSpot();
+function getConfig(symbole: string, interval: any) {
   const now = Date.now();
   return {
-    interval: TIME_PERIOD.THREE_DAILY,
+    interval: interval,
     options: {
       startTime: now - 1000 * 3600 * 24 * 365 * 10,
       endTime: now,
     },
     Strategy: SuperIchimokuStrategy,
-    spot: new BinanceSpot(),
+    spot,
     symbole,
   };
 }

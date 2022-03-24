@@ -70,11 +70,11 @@ export class BinanceSpot extends Spot implements Exchange {
       limit: 1000,
     });
 
-    if (!fs.existsSync(this.dirname)) {
-      fs.mkdirSync(this.dirname);
-    }
+    // if (!fs.existsSync(this.dirname)) {
+    //   fs.mkdirSync(this.dirname);
+    // }
 
-    this.writeKlines(symbol, interval, data);
+    // this.writeKlines(symbol, interval, data);
 
     return { data };
   }
@@ -172,11 +172,7 @@ export class BinanceSpot extends Spot implements Exchange {
   }
 }
 
-export function getInstance(
-  key = "",
-  secret = "",
-  baseURL?: string
-): Spot {
+export function getInstance(key = "", secret = "", baseURL?: string): Spot {
   return new BinanceSpot(key, secret, baseURL);
 }
 

@@ -16,7 +16,7 @@ export const GuestOnlyRoute = withUser(() => (
   />
 ));
 
-function Loading() {
+export function Loading() {
   return (
     <Box
       sx={{

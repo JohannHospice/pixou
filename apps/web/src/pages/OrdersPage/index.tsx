@@ -14,6 +14,7 @@ import {
   Table,
   Paper,
 } from "@mui/material";
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 import {
   Chart as ChartJS,
   LinearScale,
@@ -30,8 +31,9 @@ import "chartjs-adapter-moment";
 import "chartjs-plugin-zoom";
 import { getStrategy, listStrategy } from "../../api/storage";
 import useFetch from "../../hooks/useFetch";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { STRATEGIES_ROUTE } from "../../constants/routes";
+import NavigationBar from "../../components/NavigationBar";
 
 export default function OrdersPage() {
   const [symbol, setSymbol] = useState("");
@@ -52,7 +54,7 @@ export default function OrdersPage() {
         setLoading(true);
         if (symbol) {
           const strat = await getStrategy(symbol);
-          setPortfolio(buildPortfolio(strat, 1000, 30 / 3));
+          setPortfolio(buildPortfolio(strat, 100, 30 / 3));
           setData(strat);
         }
       } catch (error) {
@@ -73,6 +75,12 @@ export default function OrdersPage() {
 
   return (
     <Container fixed>
+      <NavigationBar
+        action={{
+          Icon: ArrowBackIosNewOutlinedIcon,
+          onClick: () => navigate(STRATEGIES_ROUTE),
+        }}
+      />
       <Stack spacing={2} mt={2}>
         <FormControl fullWidth>
           <InputLabel>Symbole</InputLabel>
@@ -108,51 +116,59 @@ export default function OrdersPage() {
 export function PortfolioTable({ portfolios }) {
   const navigate = useNavigate();
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Interval</TableCell>
-            <TableCell align="right">Coin wallet</TableCell>
-            <TableCell align="right">Coin stablecoin wallet</TableCell>
-            <TableCell align="right">Money injected</TableCell>
-            <TableCell align="right">Nombre d'injection</TableCell>
-            <TableCell align="right">Money now</TableCell>
-            <TableCell align="right">Performance</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {portfolios.map((row, i) => (
-            <TableRow
-              onClick={() => navigate(`${STRATEGIES_ROUTE}/${row.filename}`)}
-              key={i}
-              sx={{
-                "&:last-child td, &:last-child th": { border: 0 },
-              }}
-              css={{
-                ":hover": {
-                  background: "red",
-                },
-              }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.interval}</TableCell>
-              <TableCell align="right">{row.coin}</TableCell>
-              <TableCell align="right">{row.reserve}</TableCell>
-              <TableCell align="right">{row.indexInjected}</TableCell>
-              <TableCell align="right">{row.injected}</TableCell>
-              <TableCell align="right">{row.total}</TableCell>
-              <TableCell align="right">
-                {Number(row.ratio).toFixed(2)}
-              </TableCell>
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell align="right">Intervale</TableCell>
+              <TableCell align="right">Nombre de mois</TableCell>
+              <TableCell align="right">Nombre de coin</TableCell>
+              <TableCell align="right">Nombre de stablecoin</TableCell>
+              <TableCell align="right">Apport tout les mois</TableCell>
+              <TableCell align="right">Nombre d'apport</TableCell>
+              <TableCell align="right">Total apport</TableCell>
+              <TableCell align="right">Total géré </TableCell>
+              <TableCell align="right">Performance</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {portfolios.map((row, i) => (
+              <TableRow
+                onClick={() => navigate(`${STRATEGIES_ROUTE}/${row.filename}`)}
+                key={i}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                }}
+                css={{
+                  ":hover": {
+                    background: "red",
+                  },
+                }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.lastOrderType === "LONG" ? "🐸" : "🚨"} {row.name}
+                </TableCell>
+                <TableCell align="right">{row.interval}</TableCell>
+                <TableCell align="right">
+                  {Number(row.months).toFixed(2)}
+                </TableCell>
+                <TableCell align="right">{row.coin} ¤</TableCell>
+                <TableCell align="right">{row.reserve} €</TableCell>
+                <TableCell align="right">{row.injectPerKline} €</TableCell>
+                <TableCell align="right">{row.indexInjected}</TableCell>
+                <TableCell align="right">{row.injected} €</TableCell>
+                <TableCell align="right">{row.total} €</TableCell>
+                <TableCell align="right">
+                  {Number(row.ratio * 100).toFixed(2)} %
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
 
@@ -303,11 +319,14 @@ export function buildPortfolio(
     filename: strategy.filename,
     name: strategy.symbol,
     interval: strategy.interval,
+    months: indexInjected / 12,
     coin: Number(balance.coin).toFixed(2),
     reserve: Number(balance.reserve).toFixed(2),
     injected: Number(totalInjected).toFixed(2),
     total: Number(total).toFixed(2),
     ratio: Number(total / totalInjected).toFixed(2),
     indexInjected,
+    injectPerKline,
+    lastOrderType: strategy.orders[strategy.orders.length - 1].type,
   };
 }

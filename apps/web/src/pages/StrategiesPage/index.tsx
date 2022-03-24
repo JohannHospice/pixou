@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Container, Stack } from "@mui/material";
+import { Box, CircularProgress, Container, Stack } from "@mui/material";
 import { getStrategy, listStrategy } from "../../api/storage";
 import { buildPortfolio, PortfolioTable } from "../OrdersPage";
+import NavigationBar from "../../components/NavigationBar";
 
 export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ export default function OrdersPage() {
           strategyList.map(async (filename) => {
             try {
               const strategy = await getStrategy(filename);
-              return buildPortfolio(strategy, 1000, 30 / 3);
+              return buildPortfolio(strategy, 100, 30 / 3);
             } catch (err) {
               return undefined;
             }
@@ -38,11 +39,20 @@ export default function OrdersPage() {
 
   return (
     <Container fixed>
+      <NavigationBar />
       <Stack spacing={2} mt={2}>
         {loading ? (
-          "is loading"
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress />
+          </Box>
         ) : error ? (
-          "has error"
+          "has error: " + error
         ) : (
           <PortfolioTable portfolios={portfolios} />
         )}

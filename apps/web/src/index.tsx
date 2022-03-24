@@ -19,7 +19,6 @@ import {
   AUTH_ROUTE,
   ACCOUNT_ROUTE,
   SETTINGS_ROUTE,
-  ORDERS_ROUTE,
   STRATEGIES_ROUTE,
 } from "./constants/routes";
 import DashboardPage from "./pages/DashboardPage";

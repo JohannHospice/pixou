@@ -11,12 +11,3 @@ export const eachThreeDays = functions
 
     console.log("end");
   });
-
-export const refreshOrders = functions
-  .region("europe-west1")
-  .https.onRequest(
-    async (request: functions.https.Request, response: functions.Response) => {
-      await eachThreeDaysHandler();
-      response.send("done");
-    }
-  );

@@ -42,12 +42,20 @@ export default async function (): Promise<void> {
     []
   );
   const lastOrders = {};
+
   await Promise.all(
     cryptoConfigs.map(async (config) => {
       try {
         console.log(`[strategy ${config.symbole}] run`);
 
-        const strategy = await runStrategy(config);
+        const { data: klines } = await config.spot.klines(
+          config.symbole,
+          config.interval,
+          config.options
+        );
+
+        const strategy = new config.Strategy(parseBinanceKlines(klines));
+        strategy.build();
         console.log(`[strategy ${config.symbole}] solved`);
 
         bucket.file(`/strategy/symbols/${config.symbole}`).save(
@@ -85,24 +93,6 @@ function getConfig(symbole: string, interval: any, spot: any) {
     spot,
     symbole,
   };
-}
-
-async function runStrategy(config: Config) {
-  const strategy = await initStrategy(config);
-  strategy.build();
-  return strategy;
-}
-
-async function initStrategy({
-  spot,
-  symbole,
-  interval,
-  options,
-  Strategy,
-}: Config) {
-  const { data: klines } = await spot.klines(symbole, interval, options);
-  const crinKlines = parseBinanceKlines(klines);
-  return new Strategy(crinKlines);
 }
 
 interface Config {

@@ -137,7 +137,7 @@ export function PortfolioTable({ portfolios }) {
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox"></TableCell>
-              <TableCell>Name</TableCell>
+              <TableCell>Nom</TableCell>
               <TableCell align="right">Intervale</TableCell>
               <TableCell align="right">Nombre de mois</TableCell>
               <TableCell align="right">Nombre de coin</TableCell>

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import eachThreeDaysHandler from "./functions/eachThreeDays";
 
-export const eachThreeDays = functions
+export const updateStrategies = functions
   .region("europe-west1")
   .pubsub.schedule("every 1 days")
   .onRun(async (context) => {

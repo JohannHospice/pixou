@@ -58,7 +58,7 @@ export default async function (): Promise<void> {
         strategy.build();
         console.log(`[strategy ${config.symbole}] solved`);
 
-        bucket.file(`/strategy/symbols/${config.symbole}`).save(
+        bucket.file(`strategy/symbols/${config.symbole}`).save(
           JSON.stringify({
             klines: strategy.klines,
             orders: strategy.orders,
@@ -78,7 +78,7 @@ export default async function (): Promise<void> {
       }
     })
   );
-  await bucket.file("/strategy/lastOrders").save(JSON.stringify(lastOrders));
+  await bucket.file("strategy/lastOrders").save(JSON.stringify(lastOrders));
 }
 
 function getConfig(symbole: string, interval: any, spot: any) {

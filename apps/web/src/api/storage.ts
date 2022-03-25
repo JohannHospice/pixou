@@ -9,7 +9,7 @@ import app from "./app";
 
 const storage = getStorage(app);
 
-if (window.location.hostname === "localhost") {
+if (process.env["NODE_ENV"] === "localhost") {
   connectStorageEmulator(storage, "localhost", 9199);
 }
 

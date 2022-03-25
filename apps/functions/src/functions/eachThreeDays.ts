@@ -35,9 +35,10 @@ const SYMBOLES = [
 export default async function (): Promise<void> {
   admin.initializeApp();
   const bucket = admin.storage().bucket();
+  const spot = new BinanceSpot();
 
   const cryptoConfigs: Config[] = SYMBOLES.reduce(
-    (acc, symbol) => [...acc, getConfig(symbol, TIME_PERIOD.THREE_DAILY)],
+    (acc, symbol) => [...acc, getConfig(symbol, TIME_PERIOD.THREE_DAILY, spot)],
     []
   );
   const lastOrders = {};
@@ -72,8 +73,7 @@ export default async function (): Promise<void> {
   await bucket.file("/strategy/lastOrders").save(JSON.stringify(lastOrders));
 }
 
-const spot = new BinanceSpot();
-function getConfig(symbole: string, interval: any) {
+function getConfig(symbole: string, interval: any, spot: any) {
   const now = Date.now();
   return {
     interval: interval,

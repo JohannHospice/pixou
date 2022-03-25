@@ -46,6 +46,10 @@ export class BinanceSpot extends Spot implements Exchange {
   ): Promise<{
     data: any;
   }> {
+    return super.klines(symbol, interval, {
+      ...options,
+      limit: 1000,
+    });
     try {
       const klines = await this.readKlines(symbol, interval, options);
       return klines;

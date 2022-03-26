@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Container, Stack, Typography } from "@mui/material";
-import { getStrategy, listStrategy } from "../../api/storage";
-import { buildPortfolio } from "../OrdersPage";
+import { getResume, listStrategy } from "../../api/storage";
 import NavigationBar from "../../components/NavigationBar";
 import { PortfolioDataGrid } from "../../components/PortfolioTable/idnex";
 import Copyright from "../../components/Copyright";
@@ -17,17 +16,19 @@ export default function OrdersPage() {
         setLoading(true);
         const strategyList = await listStrategy();
         console.log({ strategyList });
-
-        const data = await Promise.all(
-          strategyList.map(async (filename) => {
-            try {
-              const strategy = await getStrategy(filename);
-              return buildPortfolio(strategy, 100, 30 / 3);
-            } catch (err) {
-              return undefined;
-            }
-          })
+        const data = await getResume().then((set) =>
+          Object.keys(set).map((key) => set[key])
         );
+        // const data = await Promise.all(
+        //   strategyList.map(async (filename) => {
+        //     try {
+        //       const strategy = await getStrategy(filename);
+        //       return buildPortfolio(strategy, 100, 30 / 3);
+        //     } catch (err) {
+        //       return undefined;
+        //     }
+        //   })
+        // );
 
         console.log({ data });
         setPortfolios(data.filter((strategy) => strategy !== undefined));

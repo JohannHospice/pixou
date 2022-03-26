@@ -15,8 +15,8 @@ if (hostEmulator) {
   const [host, port] = hostEmulator.split(":");
   connectStorageEmulator(storage, host, Number(port));
 }
-
-const BUCKET_STRATEGY_SYMBOLS_PATH = `strategies/long-term-btc/symbols`;
+const BUCKET_STRATEGY_PATH = "strategies/long-term-btc";
+const BUCKET_STRATEGY_SYMBOLS_PATH = `${BUCKET_STRATEGY_PATH}/symbols`;
 
 export async function getStrategy(symbol: string) {
   const strategyUrl = await getDownloadURL(
@@ -43,4 +43,11 @@ export async function listStrategy() {
   return listAll(ref(storage, BUCKET_STRATEGY_SYMBOLS_PATH)).then(({ items }) =>
     items.map(({ name }) => name)
   );
+}
+
+export async function getResume() {
+  const strategyUrl = await getDownloadURL(
+    ref(storage, `${BUCKET_STRATEGY_PATH}/lastorders`)
+  );
+  return fetch(strategyUrl).then((response) => response.json());
 }

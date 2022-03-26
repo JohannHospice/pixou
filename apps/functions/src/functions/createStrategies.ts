@@ -72,32 +72,101 @@ export default async function (): Promise<void> {
         strategy.build();
         console.log(`[strategy ${symbol}] solved`);
 
-        const detail = {
-          symbol: symbol,
-          interval: interval,
-        };
-
         bucket.file(`strategies/${strategyName}/symbols/${symbol}`).save(
           JSON.stringify({
             klines: strategy.klines,
             orders: strategy.orders,
-            ...detail,
+            symbol: symbol,
+            interval: interval,
           })
         );
-        lastOrders[symbol] = {
-          order: strategy.getLastOrder(),
-          ...detail,
-        };
+        lastOrders[symbol] = buildPortfolio(
+          {
+            klines: strategy.klines,
+            orders: strategy.orders,
+            filename: symbol,
+            symbol,
+            interval,
+          },
+          100,
+          30 / 3
+        );
 
         console.log(`[strategy ${symbol}] saved`);
       } catch (error) {
-        console.error(`[strategy ${symbol}] error: `, error);
+        console.error(`[strategy ${symbol}] error: `, error.message);
       }
     })
   );
 
+  console.log("[strategy lastOrders] prepare");
   await bucket
     .file(`strategies/${strategyName}/lastorders`)
     .save(JSON.stringify(lastOrders));
   console.log("[strategy lastOrders] saved");
+}
+
+export function buildPortfolio(
+  strategy: any,
+  injectPerKline: number,
+  eachKlines: number
+): any {
+  let balance = {
+    coin: 0,
+    reserve: 0,
+  };
+  let totalInjected = 0;
+  let indexInjected = 0;
+  let buyAndHoldCoin = 0;
+  for (let index = 0; index < strategy.klines.length; index++) {
+    if (index % eachKlines === 0) {
+      balance.reserve += injectPerKline;
+      totalInjected += injectPerKline;
+      indexInjected++;
+      buyAndHoldCoin += injectPerKline / strategy.klines[index].close;
+    }
+    const order = strategy.orders[index];
+    if (order) {
+      balance =
+        order.type === "LONG"
+          ? {
+              coin: balance.coin + balance.reserve / order.price,
+              reserve: 0,
+            }
+          : {
+              coin: 0,
+              reserve: balance.reserve + order.price * balance.coin,
+            };
+    }
+  }
+  let total = 0;
+  let buyAndHoldTotal = 0;
+  if (strategy.klines[strategy.klines.length - 1]) {
+    total =
+      strategy.klines[strategy.klines.length - 1].close * balance.coin +
+      balance.reserve;
+    buyAndHoldTotal =
+      strategy.klines[strategy.klines.length - 1].close * buyAndHoldCoin;
+  }
+  const ratio = total / totalInjected;
+
+  return {
+    filename: strategy.filename,
+    name: strategy.symbol,
+    interval: strategy.interval,
+    coin: balance.coin,
+    reserve: balance.reserve,
+    injected: totalInjected,
+    total: total,
+    ratio: ratio,
+    ratioInPercent: ratio,
+    performanceHODL: total / buyAndHoldTotal,
+    indexInjected,
+    injectPerKline,
+    lastOrderType: strategy.orders[strategy.orders.length - 1].type,
+    buyAndHoldCoin,
+    buyAndHoldTotal,
+    buyAndHoldRatio: buyAndHoldTotal / totalInjected,
+    yearly: indexInjected / 12,
+  };
 }

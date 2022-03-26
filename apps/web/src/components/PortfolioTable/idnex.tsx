@@ -130,6 +130,12 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
         density="comfortable"
         pagination
         disableColumnSelector
+        localeText={{
+          footerTotalVisibleRows: (visibleCount, totalCount) =>
+            `${visibleCount.toLocaleString()} sur ${totalCount.toLocaleString()}`,
+          errorOverlayDefaultLabel:
+            "Une erreur s'est produite lors du chargement des données. Contactez nous à cette adresse johannhospice.dev@gmail.com",
+        }}
         initialState={{
           // pinnedColumns: { left: ["lastOrderType", "name"] },
           sorting: {

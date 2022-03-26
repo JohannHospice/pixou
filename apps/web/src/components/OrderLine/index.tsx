@@ -57,7 +57,7 @@ ChartJS.register(
   Tooltip,
   SubTitle
 );
-export default function OrderLine({ klines: klinesProps, orders }) {
+export default function OrderLine({ symbol, klines: klinesProps, orders }) {
   const [longOrders, setlongOrders] = useState([]);
   const [shortOrders, setshortOrders] = useState([]);
   const [klines, setklines] = useState([]);
@@ -86,7 +86,7 @@ export default function OrderLine({ klines: klinesProps, orders }) {
           plugins: {
             title: {
               display: true,
-              text: "Chart.js Line Chart - Logarithmic",
+              text: "Stratégie appliqué sur le " + symbol,
             },
             // @ts-ignore
             zoom: {
@@ -120,27 +120,30 @@ export default function OrderLine({ klines: klinesProps, orders }) {
           // labels: longOrders.map(({ closeTime }) => closeTime),
           datasets: [
             {
-              label: "Long Orders",
+              label: "Période d'accumulation",
+              showLine: false,
               data: longOrders.map(({ closeTime, price }) => ({
                 x: closeTime,
                 y: price,
               })),
-              type: "scatter",
+              type: "line",
               borderColor: "rgba(99, 255, 132, 1)",
               backgroundColor: "rgba(99, 255, 132, .5)",
             },
             {
-              label: "Short Orders",
+              label: "Période de vente",
+              showLine: false,
               data: shortOrders.map(({ closeTime, price }) => ({
                 x: closeTime,
                 y: price,
               })),
-              type: "scatter",
+              type: "line",
               borderColor: "rgba(255, 99, 132, 1)",
               backgroundColor: "rgba(255, 99, 132, .5)",
             },
             {
-              label: "Klines",
+              label: "Prix du " + symbol,
+              showLine: true,
               data: klines.map(({ closeTime, close }) => ({
                 x: closeTime,
                 y: close,

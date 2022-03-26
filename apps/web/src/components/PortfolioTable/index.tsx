@@ -33,9 +33,9 @@ export default function PortfolioTable({ portfolios }) {
               <TableCell align="right">Nombre d'années</TableCell>
               <TableCell align="right">Total apport</TableCell>
               <TableCell align="right">Total géré </TableCell>
-              <TableCell align="right">Performance de la strategie</TableCell>
+              <TableCell align="right">Gain/Perte avec la strategie</TableCell>
               <TableCell align="right">
-                Performance par rapport à HODL
+                Gain/Perte comparé à AverageInvestment
               </TableCell>
             </TableRow>
           </TableHead>
@@ -85,17 +85,18 @@ export default function PortfolioTable({ portfolios }) {
                   {Number(row.total).toFixed(2)} €
                 </TableCell>
                 <TableCell align="right">
-                  {Number(row.ratio * 100).toFixed(2)} %
+                  {Number((row.ratio - 1) * 100).toFixed(2)} %
                 </TableCell>
                 <TableCell align="right">
                   <Typography
+                    variant="body2"
                     color={
                       row.total - row.buyAndHoldTotal >= 1
                         ? "rgba(99, 255, 132, 1)"
                         : "rgba(255, 99, 132, 1)"
                     }
                   >
-                    {Number(row.performanceHODL * 100).toFixed(2)} %
+                    {Number((row.performanceHODL - 1) * 100).toFixed(2)} %
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -130,6 +131,8 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
         density="comfortable"
         pagination
         disableColumnSelector
+        hideFooterPagination
+        hideFooter
         localeText={{
           footerTotalVisibleRows: (visibleCount, totalCount) =>
             `${visibleCount.toLocaleString()} sur ${totalCount.toLocaleString()}`,
@@ -137,54 +140,71 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
             "Une erreur s'est produite lors du chargement des données. Contactez nous à cette adresse johannhospice.dev@gmail.com",
         }}
         initialState={{
-          // pinnedColumns: { left: ["lastOrderType", "name"] },
           sorting: {
             sortModel: [{ field: "performanceHODL", sort: "desc" }],
           },
         }}
         columns={[
           {
-            field: "lastOrderType",
-            headerName: "",
-            flex: 0,
-            maxWidth: 67,
-            align: "center",
-            renderCell: ({ value: params }) => (
-              <MUITooltip
-                title={
-                  params === "LONG"
-                    ? "Vous devriez acheter"
-                    : "Vous devriez vendre"
-                }
-              >
-                <Typography>{params === "LONG" ? "🐸" : "🚨"}</Typography>
-              </MUITooltip>
-            ),
-          },
-          {
             field: "name",
             headerName: "Cryptomonnaie",
-            minWidth: 140,
+            // minWidth: 140,
             flex: 1,
             renderCell: ({ value: name, row }) => (
-              <Box display={"flex"} flexDirection="column">
-                <Box>
-                  <Typography variant="body2">{name}</Typography>{" "}
-                  <Typography variant="caption">
-                    {`${Number(row.yearly).toFixed(2)} ans`}
+              <Box display={"flex"} flexDirection="row">
+                <MUITooltip
+                  title={
+                    row.lastOrderType === "LONG"
+                      ? "Vous devriez acheter"
+                      : "Vous devriez vendre"
+                  }
+                >
+                  <Typography>
+                    {row.lastOrderType === "LONG" ? "🐸" : "🚨"}
+                  </Typography>
+                </MUITooltip>
+
+                <Box display={"flex"} flexDirection="column" ml={1}>
+                  <Box display={"flex"} flexDirection="row">
+                    <Typography variant="body2">{name}</Typography>{" "}
+                    <Typography variant="body2" component={"strong"} ml={1}>
+                      {`${Number(row.yearly).toFixed(2).replace(".", ",")} ans`}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2">
+                    {moneyFormat(Number(row.injected))}
                   </Typography>
                 </Box>
-                <Typography variant="body2">
-                  {moneyFormat(Number(row.injected))}
-                </Typography>
               </Box>
             ),
           },
           {
             field: "total",
-            headerName: "Profits avec stratégie",
-            minWidth: 140,
-            align: "right",
+            headerName: "Gain/Perte avec strategie",
+            // minWidth: 140,
+            align: "left",
+            flex: 1,
+            renderCell: ({ value: params, row }) => (
+              <Typography
+                variant="body2"
+                color={
+                  params - row.injected >= 0
+                    ? "rgba(99, 255, 132, 1)"
+                    : "rgba(255, 99, 132, 1)"
+                }
+              >
+                {moneyFormat(Number(params - row.injected))}
+                <br />
+                {(params - row.injected >= 0 ? "▴ " : "▾ ") +
+                  percentFormat(Number(row.ratioInPercent) - 1)}
+              </Typography>
+            ),
+          },
+          {
+            field: "performanceHODL",
+            headerName: "Gain/Perte comparé à AverageInvestment",
+            // minWidth: 200,
+            align: "left",
             flex: 1,
             renderCell: ({ value: params, row }) => (
               <Typography
@@ -195,28 +215,8 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
                     : "rgba(255, 99, 132, 1)"
                 }
               >
-                {moneyFormat(Number(params - row.injected))}
-                <br />
-                {percentFormat(Number(row.ratioInPercent - 1))}
-              </Typography>
-            ),
-          },
-          {
-            field: "performanceHODL",
-            headerName: "Performance par rapport à AverageInvestment",
-            minWidth: 200,
-            align: "right",
-            flex: 1,
-            renderCell: ({ value: params }) => (
-              <Typography
-                variant="body2"
-                color={
-                  params >= 1
-                    ? "rgba(99, 255, 132, 1)"
-                    : "rgba(255, 99, 132, 1)"
-                }
-              >
-                {percentFormat(Number(params))}
+                {(params - 1 >= 0 ? "▴ " : "▾ ") +
+                  percentFormat(Number(params) - 1)}
               </Typography>
             ),
           },
@@ -235,6 +235,8 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
                     total: data.total,
                     ratioInPercent: data.ratio,
                     performanceHODL: data.performanceHODL,
+                    buyAndHoldTotal: data.buyAndHoldTotal,
+                    buyAndHoldRatio: data.buyAndHoldRatio,
                   },
                 ]
               : acc,

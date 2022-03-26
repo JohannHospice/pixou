@@ -65,8 +65,8 @@ export default function LayoutSplited({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: { xs: "start", sm: "center" },
-
-        // width: "100vw",
+        flex: 1,
+        width: "100vw",
         // minHeight: "-webkit-fill-available",
         minHeight: "100vh",
       }}

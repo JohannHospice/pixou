@@ -25,8 +25,8 @@ import DashboardPage from "./pages/DashboardPage";
 import AccountPage from "./pages/AccountPage";
 import SettingsPage from "./pages/SettingsPage";
 import HomePage from "./pages/HomePage";
-import OrdersPage from "./pages/OrdersPage";
-import StrategiesPage from "./pages/StrategiesPage";
+import StrategyPage from "./pages/StrategyPage";
+import StrategyDashboardPage from "./pages/StrategyDashboardPage";
 
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
@@ -40,6 +40,7 @@ ReactDOM.render(
         sx={{
           minHeight: "100vh",
           display: "flex",
+          width: "100%",
         }}
       >
         <CssBaseline />
@@ -49,9 +50,12 @@ ReactDOM.render(
               <Route path={HOME_ROUTE} element={<HomePage />} />
               <Route
                 path={`${STRATEGIES_ROUTE}/:symbol`}
-                element={<OrdersPage />}
+                element={<StrategyPage />}
               />
-              <Route path={STRATEGIES_ROUTE} element={<StrategiesPage />} />
+              <Route
+                path={STRATEGIES_ROUTE}
+                element={<StrategyDashboardPage />}
+              />
 
               <Route path={"/"} element={<GuestOnlyRoute />}>
                 <Route
@@ -92,6 +96,16 @@ serviceWorkerRegistration.register({
       progress: undefined,
     });
     console.log("onUpdate", registration);
+    registration.showNotification("hey", {
+      body: "Did you make a $1,000,000 purchase at Dr. Evil...",
+      icon: "images/ccard.png",
+      vibrate: [200, 100, 200, 100, 200, 100, 400],
+      tag: "request",
+      actions: [
+        { action: "yes", title: "Yes" },
+        { action: "no", title: "No" },
+      ],
+    });
   },
   onSuccess: (registration: any) => {
     console.log("onSuccess", registration);

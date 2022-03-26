@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { Container, Stack, Typography } from "@mui/material";
 import { getResume } from "../../api/storage";
 import NavigationBar from "../../components/NavigationBar";
-import { PortfolioDataGrid } from "../../components/PortfolioTable/idnex";
+import { PortfolioDataGrid } from "../../components/PortfolioTable";
 import Copyright from "../../components/Copyright";
 
-export default function OrdersPage() {
+export default function StrategyDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
   const [portfolios, setPortfolios] = useState<any>([]);

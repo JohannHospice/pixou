@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import { Box, CircularProgress, Container, Stack } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import { getStrategy, listStrategy } from "../../api/storage";
 import { buildPortfolio } from "../OrdersPage";
 import NavigationBar from "../../components/NavigationBar";
-import PortfolioTable, {
-  PortfolioDataGrid,
-} from "../../components/PortfolioTable/idnex";
+import { PortfolioDataGrid } from "../../components/PortfolioTable/idnex";
 
 export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
@@ -44,7 +42,11 @@ export default function OrdersPage() {
     <Container fixed>
       <NavigationBar />
       <Stack spacing={2} mt={2}>
-        <PortfolioDataGrid portfolios={portfolios} loading={loading} />
+        <PortfolioDataGrid
+          portfolios={portfolios}
+          loading={loading}
+          error={error}
+        />
         {/* {loading ? (
           <Box
             sx={{

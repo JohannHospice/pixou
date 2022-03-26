@@ -10,7 +10,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { STRATEGIES_ROUTE } from "../../constants/routes";
 
@@ -81,7 +81,9 @@ export default function PortfolioTable({ portfolios }) {
                   {Number(row.indexInjected / 12).toFixed(2)}
                 </TableCell>
                 <TableCell align="right">{row.injected} €</TableCell>
-                <TableCell align="right">{row.total} €</TableCell>
+                <TableCell align="right">
+                  {Number(row.total).toFixed(2)} €
+                </TableCell>
                 <TableCell align="right">
                   {Number(row.ratio * 100).toFixed(2)} %
                 </TableCell>
@@ -93,7 +95,7 @@ export default function PortfolioTable({ portfolios }) {
                         : "rgba(255, 99, 132, 1)"
                     }
                   >
-                    {row.performanceHODL} %
+                    {Number(row.performanceHODL).toFixed(2)} %
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -105,11 +107,12 @@ export default function PortfolioTable({ portfolios }) {
   );
 }
 
-export function PortfolioDataGrid({ portfolios, loading }) {
+export function PortfolioDataGrid({ portfolios, loading, error }) {
   const navigate = useNavigate();
   return (
-    <Paper style={{ height: "100vh", width: "100%" }}>
+    <Paper style={{ height: "calc(100vh - 124px)", width: "100%" }}>
       <DataGrid
+        error={error}
         columns={[
           {
             field: "lastOrderType",

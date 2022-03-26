@@ -33,7 +33,7 @@ export default function OrdersPage() {
     <Container fixed>
       <NavigationBar />
       <Stack spacing={2} mt={2}>
-        <Typography variant="h3" component={"h1"}>
+        <Typography variant="h4" component={"h1"}>
           Indice d'achat de cryptomonnaies
         </Typography>
         <Typography variant="body1" maxWidth="800px">

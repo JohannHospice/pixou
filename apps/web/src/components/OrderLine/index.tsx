@@ -74,9 +74,11 @@ export default function OrderLine({ klines: klinesProps, orders }) {
     <Chart
       type="scatter"
       style={{
+        flex: 1,
         height: "100%",
       }}
       options={{
+        maintainAspectRatio: false,
         responsive: true,
         plugins: {
           title: {

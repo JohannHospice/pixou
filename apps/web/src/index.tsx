@@ -31,38 +31,46 @@ import StrategiesPage from "./pages/StrategiesPage";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { UserProvider } from "./contexts/UserContext";
+import { Box } from "@mui/material";
 
 ReactDOM.render(
   <StrictMode>
     <ThemeProvider theme={getTheme("dark")}>
-      <CssBaseline />
-      <UserProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path={HOME_ROUTE} element={<HomePage />} />
-            <Route
-              path={`${STRATEGIES_ROUTE}/:symbol`}
-              element={<OrdersPage />}
-            />
-            <Route path={STRATEGIES_ROUTE} element={<StrategiesPage />} />
-
-            <Route path={"/"} element={<GuestOnlyRoute />}>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+        }}
+      >
+        <CssBaseline />
+        <UserProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path={HOME_ROUTE} element={<HomePage />} />
               <Route
-                path={`${AUTH_ROUTE}/*`}
-                element={<AuthentificationPage />}
+                path={`${STRATEGIES_ROUTE}/:symbol`}
+                element={<OrdersPage />}
               />
-            </Route>
+              <Route path={STRATEGIES_ROUTE} element={<StrategiesPage />} />
 
-            <Route path={"/"} element={<AuthentifiedOnlyRoute />}>
-              <Route path={DASHBOARD_ROUTE} element={<DashboardPage />} />
-              <Route path={ACCOUNT_ROUTE} element={<AccountPage />} />
-              <Route path={SETTINGS_ROUTE} element={<SettingsPage />} />
-            </Route>
+              <Route path={"/"} element={<GuestOnlyRoute />}>
+                <Route
+                  path={`${AUTH_ROUTE}/*`}
+                  element={<AuthentificationPage />}
+                />
+              </Route>
 
-            <Route path={"*"} element={<Navigate to={HOME_ROUTE} />} />
-          </Routes>
-        </BrowserRouter>
-      </UserProvider>
+              <Route path={"/"} element={<AuthentifiedOnlyRoute />}>
+                <Route path={DASHBOARD_ROUTE} element={<DashboardPage />} />
+                <Route path={ACCOUNT_ROUTE} element={<AccountPage />} />
+                <Route path={SETTINGS_ROUTE} element={<SettingsPage />} />
+              </Route>
+
+              <Route path={"*"} element={<Navigate to={HOME_ROUTE} />} />
+            </Routes>
+          </BrowserRouter>
+        </UserProvider>
+      </Box>
     </ThemeProvider>
     <ToastContainer position="bottom-right" pauseOnFocusLoss={false} />
   </StrictMode>,

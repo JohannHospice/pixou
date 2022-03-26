@@ -50,7 +50,9 @@ export default function NavigationBar({
   };
 
   return (
-    <Box sx={{ flexGrow: 1, height: "81px" }}>
+    <Box
+      sx={{ flexGrow: 1, height: "81px", flex: "initial", display: "block" }}
+    >
       <AppBar
         style={{
           display: "flex",

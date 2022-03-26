@@ -49,7 +49,14 @@ export default function OrdersPage() {
   }, [symbolParam]);
 
   return (
-    <Container maxWidth="lg">
+    <Container
+      maxWidth="lg"
+      style={{
+        flex: "1",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <NavigationBar
         action={{
           Icon: ArrowBackIosNewOutlinedIcon,
@@ -70,22 +77,6 @@ export default function OrdersPage() {
           }}
           renderInput={(params) => <TextField {...params} label="Symbole" />}
         />
-        {/* <FormControl fullWidth>
-          <InputLabel>Symbole</InputLabel>
-          <Select
-            label="Symbole"
-            value={symbol}
-            onChange={(e) => {
-              navigate(`${STRATEGIES_ROUTE}/${e.target.value}`);
-            }}
-          >
-            {strategies.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl> */}
         {loading || loadingStrategies
           ? "is loading"
           : error || errorStrategies

@@ -3,18 +3,18 @@ import { Navigate, Outlet } from "react-router-dom";
 import { DASHBOARD_ROUTE, LOGIN_ROUTE } from "../constants/routes";
 import { useUser, withUser } from "../contexts/UserContext";
 
-export const AuthentifiedOnlyRoute = withUser(() => (
+export const AuthentifiedOnlyRoute = () => (
   <RenderByUser
     componentLogged={<Outlet />}
     componentLoaded={<Navigate to={LOGIN_ROUTE} />}
   />
-));
-export const GuestOnlyRoute = withUser(() => (
+);
+export const GuestOnlyRoute = () => (
   <RenderByUser
     componentLogged={<Navigate to={DASHBOARD_ROUTE} />}
     componentLoaded={<Outlet />}
   />
-));
+);
 
 export function Loading() {
   return (

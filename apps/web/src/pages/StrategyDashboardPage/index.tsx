@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Container, Stack, Typography } from "@mui/material";
 import { getResume } from "../../api/storage";
 import NavigationBar from "../../components/NavigationBar";
-import { PortfolioDataGrid } from "../../components/PortfolioTable";
 import Copyright from "../../components/Copyright";
+import PortfolioDataGrid from "../../components/PortfolioDataGrid";
 
 export default function StrategyDashboardPage() {
   const [loading, setLoading] = useState(true);

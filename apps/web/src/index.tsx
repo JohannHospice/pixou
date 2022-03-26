@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { Box } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-
 import "./polyfills";
 import getTheme from "./theme";
 import {
@@ -29,6 +28,9 @@ import SettingsPage from "./pages/SettingsPage";
 import HomePage from "./pages/HomePage";
 import StrategyPage from "./pages/StrategyPage";
 import StrategyDashboardPage from "./pages/StrategyDashboardPage";
+
+import "./api/analytics";
+import "./api/performace";
 
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";

@@ -18,7 +18,9 @@ auth.setPersistence(browserSessionPersistence);
 
 const hostEmulator = process.env["REACT_APP_FIREBASE_AUTH_EMULATOR_HOST"];
 if (hostEmulator) {
-  connectAuthEmulator(auth, hostEmulator);
+  console.log(hostEmulator);
+
+  connectAuthEmulator(auth, `http://${hostEmulator}`);
 }
 
 export async function login(email: string, password: string) {

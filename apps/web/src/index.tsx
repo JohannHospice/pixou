@@ -2,13 +2,13 @@ import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Box } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 
 import "./polyfills";
-import "react-toastify/dist/ReactToastify.css";
 import getTheme from "./theme";
-import AuthentificationPage from "./pages/Authentification";
 import {
   AuthentifiedOnlyRoute,
   GuestOnlyRoute,
@@ -21,6 +21,8 @@ import {
   SETTINGS_ROUTE,
   STRATEGIES_ROUTE,
 } from "./constants/routes";
+import { UserProvider } from "./contexts/UserContext";
+import AuthentificationPage from "./pages/Authentification";
 import DashboardPage from "./pages/DashboardPage";
 import AccountPage from "./pages/AccountPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -30,8 +32,6 @@ import StrategyDashboardPage from "./pages/StrategyDashboardPage";
 
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { UserProvider } from "./contexts/UserContext";
-import { Box } from "@mui/material";
 
 ReactDOM.render(
   <StrictMode>
@@ -85,7 +85,16 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.register({
-  onUpdate: (registration: any) => {
+  onUpdate: async (registration: ServiceWorkerRegistration) => {
+    console.log("onUpdate", registration);
+    await registration.unregister();
+    // await caches
+    //   .keys()
+    //   .then((names) => names.map((name) => caches.delete(name)));
+    window.location.reload();
+  },
+  onSuccess: (registration: any) => {
+    console.log("onSuccess", registration);
     toast.dark("🐤 Il y a du nouveau sur Pixou !", {
       position: "bottom-right",
       autoClose: 5000,
@@ -95,20 +104,6 @@ serviceWorkerRegistration.register({
       draggable: true,
       progress: undefined,
     });
-    console.log("onUpdate", registration);
-    registration.showNotification("hey", {
-      body: "Did you make a $1,000,000 purchase at Dr. Evil...",
-      icon: "images/ccard.png",
-      vibrate: [200, 100, 200, 100, 200, 100, 400],
-      tag: "request",
-      actions: [
-        { action: "yes", title: "Yes" },
-        { action: "no", title: "No" },
-      ],
-    });
-  },
-  onSuccess: (registration: any) => {
-    console.log("onSuccess", registration);
   },
 });
 

@@ -56,21 +56,6 @@ export default function OrdersPage() {
             mt: "12px",
           }}
         />
-        {/* {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        ) : error ? (
-          "has error: " + error
-        ) : (
-             <PortfolioTable portfolios={portfolios} /> 
-        )} */}
       </Stack>
     </Container>
   );

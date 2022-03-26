@@ -67,7 +67,7 @@ export default function StrategyPage() {
           onClick: () => navigate(STRATEGIES_ROUTE),
         }}
       />
-      <Stack spacing={2} flex={1}>
+      <Stack spacing={2} mt={2} flex={1}>
         <Autocomplete
           fullWidth
           disablePortal

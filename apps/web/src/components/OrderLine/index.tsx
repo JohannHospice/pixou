@@ -76,6 +76,7 @@ export default function OrderLine({ symbol, klines: klinesProps, orders }) {
       style={{
         flex: 1,
         maxHeight: "100vh",
+        margin: 0,
       }}
     >
       <Chart

@@ -6,30 +6,8 @@ import {
   MenuItem,
   Container,
   Stack,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Table,
-  Paper,
-  Tooltip as MUITooltip,
-  Typography,
-  Box,
 } from "@mui/material";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
-import {
-  Chart as ChartJS,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  LogarithmicScale,
-  TimeSeriesScale,
-  TimeScale,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
 import "chartjs-adapter-moment";
 import "chartjs-plugin-zoom";
 import { getStrategy, listStrategy } from "../../api/storage";
@@ -37,6 +15,8 @@ import useFetch from "../../hooks/useFetch";
 import { useParams, useNavigate } from "react-router-dom";
 import { STRATEGIES_ROUTE } from "../../constants/routes";
 import NavigationBar from "../../components/NavigationBar";
+import PortfolioTable from "../../components/PortfolioTable/idnex";
+import OrderLine from "../../components/OrderLine";
 
 export default function OrdersPage() {
   const [symbol, setSymbol] = useState("");
@@ -116,203 +96,6 @@ export default function OrdersPage() {
   );
 }
 
-export function PortfolioTable({ portfolios }) {
-  const navigate = useNavigate();
-  return (
-    <Box
-      sx={{
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox"></TableCell>
-              <TableCell>Nom</TableCell>
-              <TableCell align="right">Apport tout les mois</TableCell>
-              <TableCell align="right">Nombre d'années</TableCell>
-              <TableCell align="right">Total apport</TableCell>
-              <TableCell align="right">Total géré </TableCell>
-              <TableCell align="right">Performance de la strategie</TableCell>
-              <TableCell align="right">
-                Performance par rapport à HODL
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {portfolios.map((row, i) => (
-              <TableRow
-                hover
-                onClick={() => navigate(`${STRATEGIES_ROUTE}/${row.filename}`)}
-                key={i}
-                sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                }}
-                css={{
-                  ":hover": {
-                    background: "red",
-                  },
-                }}
-              >
-                <TableCell padding="checkbox">
-                  <Box>
-                    <MUITooltip
-                      title={
-                        row.lastOrderType === "LONG"
-                          ? "Vous devriez acheter"
-                          : "Vous devriez vendre"
-                      }
-                    >
-                      <Typography>
-                        {row.lastOrderType === "LONG" ? "🐸" : "🚨"}
-                      </Typography>
-                    </MUITooltip>
-                  </Box>
-                </TableCell>
-                <TableCell
-                  component="th"
-                  scope="row"
-                  style={{ position: "relative" }}
-                >
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.injectPerKline} €</TableCell>
-                <TableCell align="right">
-                  {Number(row.indexInjected / 12).toFixed(2)}
-                </TableCell>
-                <TableCell align="right">{row.injected} €</TableCell>
-                <TableCell align="right">{row.total} €</TableCell>
-                <TableCell align="right">
-                  {Number(row.ratio * 100).toFixed(2)} %
-                </TableCell>
-                <TableCell align="right">
-                  <Typography
-                    color={
-                      row.total - row.buyAndHoldTotal >= 0
-                        ? "rgba(99, 255, 132, 1)"
-                        : "rgba(255, 99, 132, 1)"
-                    }
-                  >
-                    {Number((row.total - row.buyAndHoldTotal) / 100).toFixed(2)}{" "}
-                    %
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
-  );
-}
-
-ChartJS.register(
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  LogarithmicScale,
-  TimeSeriesScale,
-  TimeScale
-);
-export function OrderLine({ klines: klinesProps, orders }) {
-  const [longOrders, setlongOrders] = useState([]);
-  const [shortOrders, setshortOrders] = useState([]);
-  const [klines, setklines] = useState([]);
-
-  useEffect(() => {
-    if (klinesProps && orders) {
-      setklines(klinesProps);
-
-      setlongOrders(orders.filter((order) => order.type === "LONG"));
-      setshortOrders(orders.filter((order) => order.type === "SHORT"));
-    }
-  }, [klinesProps, orders]);
-
-  return (
-    <Line
-      style={{
-        height: "100%",
-      }}
-      options={{
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: "Chart.js Line Chart - Logarithmic",
-          },
-          // @ts-ignore
-          zoom: {
-            pan: {
-              enabled: true,
-              mode: "xy",
-            },
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true,
-              },
-              mode: "xy",
-            },
-          },
-        },
-        scales: {
-          x: {
-            display: true,
-            type: "time",
-          },
-          y: {
-            display: true,
-            type: "logarithmic",
-          },
-        },
-      }}
-      data={{
-        // labels: longOrders.map(({ closeTime }) => closeTime),
-        datasets: [
-          {
-            label: "Long Orders",
-            data: longOrders.map(({ closeTime, price }) => ({
-              x: closeTime,
-              y: price,
-            })),
-            //@ts-ignore
-            type: "scatter",
-            borderColor: "rgba(99, 255, 132, 1)",
-            backgroundColor: "rgba(99, 255, 132, .5)",
-          },
-          {
-            label: "Short Orders",
-            data: shortOrders.map(({ closeTime, price }) => ({
-              x: closeTime,
-              y: price,
-            })),
-            //@ts-ignore
-            type: "scatter",
-            borderColor: "rgba(255, 99, 132, 1)",
-            backgroundColor: "rgba(255, 99, 132, .5)",
-          },
-          {
-            label: "Klines",
-            data: klines.map(({ closeTime, close }) => ({
-              x: closeTime,
-              y: close,
-            })),
-            borderColor: "rgba(99, 132, 255, .5)",
-            type: "line",
-            borderCapStyle: "round",
-          },
-        ],
-      }}
-    />
-  );
-}
-
 export function buildPortfolio(
   strategy: any,
   injectPerKline: number,
@@ -355,21 +138,25 @@ export function buildPortfolio(
     buyAndHoldTotal =
       strategy.klines[strategy.klines.length - 1].close * buyAndHoldCoin;
   }
+  const ratio = total / totalInjected;
 
   return {
     filename: strategy.filename,
     name: strategy.symbol,
     interval: strategy.interval,
-    coin: Number(balance.coin).toFixed(2),
-    reserve: Number(balance.reserve).toFixed(2),
-    injected: Number(totalInjected).toFixed(2),
-    total: Number(total).toFixed(2),
-    ratio: Number(total / totalInjected).toFixed(2),
+    coin: balance.coin,
+    reserve: balance.reserve,
+    injected: totalInjected,
+    total: total,
+    ratio: ratio,
+    ratioInPercent: ratio * 100,
+    performanceHODL: (total - buyAndHoldTotal) / 100,
     indexInjected,
     injectPerKline,
     lastOrderType: strategy.orders[strategy.orders.length - 1].type,
     buyAndHoldCoin,
     buyAndHoldTotal,
-    buyAndHoldRatio: Number(buyAndHoldTotal / totalInjected).toFixed(2),
+    buyAndHoldRatio: buyAndHoldTotal / totalInjected,
+    yearly: indexInjected / 12,
   };
 }

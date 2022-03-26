@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import createStrategies from "./functions/createStrategies";
 
-export const updateStrategies = functions
+export const functionsUpdateStrategies = functions
   .region("europe-west1")
   .pubsub.schedule("every 1 days")
   .onRun(async (context) => {
@@ -12,7 +12,7 @@ export const updateStrategies = functions
     console.log("end");
   });
 
-export const refreshOrders = functions
+export const functionsRefreshOrders = functions
   .region("europe-west1")
   .https.onRequest(
     async (request: functions.https.Request, response: functions.Response) => {

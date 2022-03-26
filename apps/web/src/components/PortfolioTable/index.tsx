@@ -151,7 +151,7 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
             // minWidth: 140,
             flex: 1,
             renderCell: ({ value: name, row }) => (
-              <Box display={"flex"} flexDirection="row">
+              <Box display={"flex"} flexDirection="row" alignItems={"center"}>
                 <MUITooltip
                   title={
                     row.lastOrderType === "LONG"
@@ -166,12 +166,18 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
 
                 <Box display={"flex"} flexDirection="column" ml={1}>
                   <Box display={"flex"} flexDirection="row">
-                    <Typography variant="body2">{name}</Typography>{" "}
-                    <Typography variant="body2" component={"strong"} ml={1}>
+                    <Typography
+                      variant="body2"
+                      fontWeight={"700"}
+                      color="primary"
+                    >
+                      {name.replace("USDT", "")}
+                    </Typography>
+                    <Typography variant="body2" fontWeight={"700"} ml={1}>
                       {`${Number(row.yearly).toFixed(2).replace(".", ",")} ans`}
                     </Typography>
                   </Box>
-                  <Typography variant="body2">
+                  <Typography variant="body2" color="rgba(255, 255, 255, .5)">
                     {moneyFormat(Number(row.injected))}
                   </Typography>
                 </Box>

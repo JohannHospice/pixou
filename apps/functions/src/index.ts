@@ -4,6 +4,7 @@ import createStrategies from "./functions/createStrategies";
 export const updateStrategiesEveryDay = functions
   .region("europe-west1")
   .pubsub.schedule("0 0 */1 * *")
+  .timeZone("Europe/Paris")
   .onRun(async (context) => {
     console.log("run", context);
 

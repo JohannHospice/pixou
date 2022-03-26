@@ -161,39 +161,45 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
               </MUITooltip>
             ),
           },
-          { field: "name", headerName: "Nom", minWidth: 140 },
           {
-            field: "yearly",
-            headerName: "Nombre d'années",
+            field: "name",
+            headerName: "Cryptomonnaie",
             minWidth: 140,
-            align: "right",
             flex: 1,
-            valueFormatter: ({ value: params }) =>
-              `${Number(params).toFixed(2)} ans`,
-          },
-          {
-            field: "injected",
-            headerName: "Apport total",
-            minWidth: 140,
-            align: "right",
-            flex: 1,
-            valueFormatter: ({ value: params }) => moneyFormat(Number(params)),
+            renderCell: ({ value: name, row }) => (
+              <Box display={"flex"} flexDirection="column">
+                <Box>
+                  <Typography variant="body2">{name}</Typography>{" "}
+                  <Typography variant="caption">
+                    {`${Number(row.yearly).toFixed(2)} ans`}
+                  </Typography>
+                </Box>
+                <Typography variant="body2">
+                  {moneyFormat(Number(row.injected))}
+                </Typography>
+              </Box>
+            ),
           },
           {
             field: "total",
-            headerName: "Total géré par la strategie",
+            headerName: "Profits avec stratégie",
             minWidth: 140,
             align: "right",
             flex: 1,
-            valueFormatter: ({ value: params }) => moneyFormat(Number(params)),
-          },
-          {
-            field: "ratioInPercent",
-            headerName: "Performance de la strategie",
-            minWidth: 200,
-            align: "right",
-            valueFormatter: ({ value: params }) =>
-              percentFormat(Number(params)),
+            renderCell: ({ value: params, row }) => (
+              <Typography
+                variant="body2"
+                color={
+                  params >= 1
+                    ? "rgba(99, 255, 132, 1)"
+                    : "rgba(255, 99, 132, 1)"
+                }
+              >
+                {moneyFormat(Number(params - row.injected))}
+                <br />
+                {percentFormat(Number(row.ratioInPercent - 1))}
+              </Typography>
+            ),
           },
           {
             field: "performanceHODL",

@@ -110,15 +110,26 @@ export default function PortfolioTable({ portfolios }) {
 export function PortfolioDataGrid({ portfolios, loading, error }) {
   const navigate = useNavigate();
   return (
-    <Paper style={{ height: "calc(100vh - 124px)", width: "100%" }}>
+    <Paper
+      style={{
+        // height: "calc(100vh - 154px)",
+        width: "100%",
+      }}
+    >
       <DataGrid
         error={error}
+        density="comfortable"
+        rowThreshold={0}
+        initialState={{
+          pinnedColumns: { left: ["lastOrderType", "name"] },
+        }}
         columns={[
           {
             field: "lastOrderType",
             headerName: "",
             flex: 0,
-
+            maxWidth: 67,
+            align: "center",
             renderCell: ({ value: params }) => (
               <MUITooltip
                 title={
@@ -131,22 +142,21 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
               </MUITooltip>
             ),
           },
-          { field: "name", headerName: "Nom", flex: 1 },
-          // {
-          //   field: "injectPerKline",
-          //   headerName: "Apport tout les mois",
-          //   flex: 1,
-          //   valueFormatter: ({ value: params }) => `${params} €`,
-          // },
+          { field: "name", headerName: "Nom", minWidth: 140 },
           {
             field: "yearly",
             headerName: "Nombre d'années",
+            minWidth: 140,
+            align: "right",
             flex: 1,
-            valueFormatter: ({ value: params }) => Number(params).toFixed(2),
+            valueFormatter: ({ value: params }) =>
+              `${Number(params).toFixed(2)} ans`,
           },
           {
             field: "injected",
             headerName: "Total apport",
+            minWidth: 140,
+            align: "right",
             flex: 1,
             valueFormatter: ({ value: params }) =>
               `${Number(params).toFixed(2)} €`,
@@ -154,6 +164,8 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
           {
             field: "total",
             headerName: "Total géré",
+            minWidth: 140,
+            align: "right",
             flex: 1,
             valueFormatter: ({ value: params }) =>
               `${Number(params).toFixed(2)} €`,
@@ -161,16 +173,17 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
           {
             field: "ratioInPercent",
             headerName: "Performance de la strategie",
-            flex: 1,
+            minWidth: 200,
+            align: "right",
             valueFormatter: ({ value: params }) =>
               `${Number(params).toFixed(2)} %`,
           },
           {
             field: "performanceHODL",
             headerName: "Performance par rapport à AverageInvestment",
+            minWidth: 200,
+            align: "right",
             flex: 1,
-            // valueFormatter: ({ value: params }) =>
-            //   `${Number(params).toFixed(2)} %`,
             renderCell: ({ value: params }) => (
               <Typography
                 color={
@@ -184,32 +197,37 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
             ),
           },
         ]}
-        rows={portfolios.reduce((acc, data, i) => {
-          console.log(data);
-          if (data) {
-            return [
-              ...acc,
-              {
-                id: i,
-                name: data.name,
-                lastOrderType: data.lastOrderType,
-                // injectPerKline: data.injectPerKline,
-                yearly: data.yearly,
-                injected: data.injected,
-                total: data.total,
-                ratioInPercent: data.ratioInPercent,
-                performanceHODL: data.performanceHODL,
-              },
-            ];
-          }
-          return acc;
-        }, [])}
+        rows={portfolios.reduce(
+          (acc, data, i) =>
+            data
+              ? [
+                  ...acc,
+                  {
+                    id: i,
+                    name: data.name,
+                    lastOrderType: data.lastOrderType,
+                    yearly: data.yearly,
+                    injected: data.injected,
+                    total: data.total,
+                    ratioInPercent: data.ratioInPercent,
+                    performanceHODL: data.performanceHODL,
+                  },
+                ]
+              : acc,
+          []
+        )}
+        autoHeight
         pageSize={100}
         rowsPerPageOptions={[5]}
         onCellClick={(param) =>
           navigate(`${STRATEGIES_ROUTE}/${param.row.name}`)
         }
         loading={loading}
+        sx={{
+          "& .MuiDataGrid-row:hover": {
+            cursor: "pointer",
+          },
+        }}
       />
     </Paper>
   );

@@ -16,7 +16,7 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { Link, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../api/authentification";
 import { useState } from "react";
-import { LOGIN_ROUTE } from "../../constants/routes";
+import { HOME_ROUTE, LOGIN_ROUTE } from "../../constants/routes";
 import { toast } from "react-toastify";
 import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
@@ -69,14 +69,17 @@ export default function LoginForm() {
           display={"flex"}
           flexDirection="column"
         >
-          <LogoText
-            fill={theme.palette.primary.main}
-            style={{
-              width: "fit-content",
-              height: "24px",
-              marginBottom: "16px",
-            }}
-          />
+          {" "}
+          <Link to={HOME_ROUTE}>
+            <LogoText
+              fill={theme.palette.primary.main}
+              style={{
+                width: "fit-content",
+                height: "24px",
+                marginBottom: "16px",
+              }}
+            />{" "}
+          </Link>
           <Typography component="h1" variant="h5">
             Récupération de compte
           </Typography>

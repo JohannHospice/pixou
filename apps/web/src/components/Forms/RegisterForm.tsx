@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import { register } from "../../api/authentification";
 import React, { useState, useEffect } from "react";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
-import { LOGIN_ROUTE } from "../../constants/routes";
+import { LOGIN_ROUTE, HOME_ROUTE } from "../../constants/routes";
 import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
 export default function RegisterForm() {
@@ -88,14 +88,17 @@ export default function RegisterForm() {
         <Grid item xs={false} sm={12} md={7}>
           <Box display={"flex"} flexDirection="column">
             <Box display="flex" flexDirection="row">
-              <LogoText
-                fill={theme.palette.primary.main}
-                style={{
-                  width: "fit-content",
-                  height: "32px",
-                  marginBottom: "16px",
-                }}
-              />
+              {" "}
+              <Link to={HOME_ROUTE}>
+                <LogoText
+                  fill={theme.palette.primary.main}
+                  style={{
+                    width: "fit-content",
+                    height: "32px",
+                    marginBottom: "16px",
+                  }}
+                />{" "}
+              </Link>
             </Box>
             <Typography component="h1" variant="h5">
               Créer votre compte Pixou

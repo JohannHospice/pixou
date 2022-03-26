@@ -15,7 +15,11 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { Link } from "react-router-dom";
 import { login } from "../../api/authentification";
 import { useState } from "react";
-import { REGISTER_ROUTE, RESET_PASSWORD_ROUTE } from "../../constants/routes";
+import {
+  REGISTER_ROUTE,
+  RESET_PASSWORD_ROUTE,
+  HOME_ROUTE,
+} from "../../constants/routes";
 import { ReactComponent as LogoText } from "../../assets/logos/logo-text.svg";
 
 export default function LoginForm() {
@@ -62,14 +66,16 @@ export default function LoginForm() {
           display={"flex"}
           flexDirection="column"
         >
-          <LogoText
-            fill={theme.palette.primary.main}
-            style={{
-              width: "fit-content",
-              height: "24px",
-              marginBottom: "16px",
-            }}
-          />
+          <Link to={HOME_ROUTE}>
+            <LogoText
+              fill={theme.palette.primary.main}
+              style={{
+                width: "fit-content",
+                height: "24px",
+                marginBottom: "16px",
+              }}
+            />
+          </Link>
           <Typography component="h1" variant="h5">
             Connexion
           </Typography>

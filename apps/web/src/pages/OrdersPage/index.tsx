@@ -17,6 +17,7 @@ import { STRATEGIES_ROUTE } from "../../constants/routes";
 import NavigationBar from "../../components/NavigationBar";
 import PortfolioTable from "../../components/PortfolioTable/idnex";
 import OrderLine from "../../components/OrderLine";
+import Copyright from "../../components/Copyright";
 
 export default function OrdersPage() {
   const [symbol, setSymbol] = useState("");
@@ -92,6 +93,11 @@ export default function OrdersPage() {
               </>
             )}
       </Stack>
+      <Copyright
+        sx={{
+          mt: "12px",
+        }}
+      />
     </Container>
   );
 }

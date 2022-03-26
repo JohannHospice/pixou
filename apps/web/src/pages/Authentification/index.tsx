@@ -1,7 +1,7 @@
 import { alpha, Card, useMediaQuery, useTheme } from "@mui/material";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import LayoutSplited from "../../components/LayoutSplited";
 import LoginForm from "../../components/Forms/LoginForm";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import {
   AUTH_ROUTE,
   LOGIN_ROUTE,
@@ -18,7 +18,6 @@ export default function AuthentificationPage() {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
   const isRegister = pathname === REGISTER_ROUTE;
-
   return (
     <LayoutSplited>
       <Card

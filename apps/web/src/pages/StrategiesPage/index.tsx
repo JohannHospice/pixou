@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Container, Stack } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import { getStrategy, listStrategy } from "../../api/storage";
 import { buildPortfolio } from "../OrdersPage";
 import NavigationBar from "../../components/NavigationBar";
 import { PortfolioDataGrid } from "../../components/PortfolioTable/idnex";
+import Copyright from "../../components/Copyright";
 
 export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
@@ -42,10 +43,18 @@ export default function OrdersPage() {
     <Container fixed>
       <NavigationBar />
       <Stack spacing={2} mt={2}>
+        <Typography variant="h3" component={"h1"}>
+          Indice d'achat de cryptomonnaies
+        </Typography>
         <PortfolioDataGrid
           portfolios={portfolios}
           loading={loading}
           error={error}
+        />
+        <Copyright
+          sx={{
+            mt: "12px",
+          }}
         />
         {/* {loading ? (
           <Box

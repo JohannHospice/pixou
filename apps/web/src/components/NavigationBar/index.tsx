@@ -6,12 +6,17 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
-import { DASHBOARD_ROUTE, SETTINGS_ROUTE } from "../../constants/routes";
+import {
+  HOME_ROUTE,
+  LOGIN_ROUTE,
+  SETTINGS_ROUTE,
+} from "../../constants/routes";
 // @ts-ignore
 import { ReactComponent as Logo } from "../../assets/logos/old/logo-img.svg";
 import {
   alpha,
   Avatar,
+  Button,
   Divider,
   ListItemIcon,
   Menu,
@@ -74,7 +79,7 @@ export default function NavigationBar({
             <IconButton
               size="large"
               edge="start"
-              color="inherit"
+              color="primary"
               aria-label="menu"
               sx={{ mr: 2 }}
               onClick={action.onClick}
@@ -83,7 +88,7 @@ export default function NavigationBar({
             </IconButton>
           )}
           <Link
-            to={DASHBOARD_ROUTE}
+            to={HOME_ROUTE}
             style={{
               height: "36px",
               width: "36px",
@@ -96,7 +101,7 @@ export default function NavigationBar({
             />
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>
-          {user.userStatus.logged && (
+          {user.userStatus.logged ? (
             <>
               <Tooltip title="Déposer">
                 <IconButton size="large" onClick={() => {}} sx={{ ml: 2 }}>
@@ -115,6 +120,10 @@ export default function NavigationBar({
                 <AccountCircle width="100%" color="primary" />
               </IconButton>
             </>
+          ) : (
+            <Button component={Link} to={LOGIN_ROUTE} sx={{ ml: 2 }}>
+              Se connecter
+            </Button>
           )}
         </Toolbar>
       </AppBar>

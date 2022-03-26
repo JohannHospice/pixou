@@ -12,9 +12,9 @@ export default function Copyright(props: any) {
       }}
       {...props}
     >
-      {`© ${new Date().getFullYear()} `}
+      © {new Date().getFullYear()}{" "}
       <Link component={LinkRouter} to={HOME_ROUTE} color="inherit">
-        {"Pixou.com"}
+        Pixou.com
       </Link>
       {". Tous droits réservés."}
     </Typography>

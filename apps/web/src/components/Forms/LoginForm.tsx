@@ -205,7 +205,6 @@ export default function LoginForm() {
           Se connecter
         </Button>
       </CardActions>
-      {/* <Copyright sx={{ mt: { sx: 5 }, display: { sx: "block", md: "none" } }} /> */}
     </>
   );
 }

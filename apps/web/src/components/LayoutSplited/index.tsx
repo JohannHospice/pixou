@@ -73,7 +73,7 @@ export default function LayoutSplited({
       ref={myRef}
     >
       {children}
-      <Copyright sx={{ mt: 5, display: { xs: "none", md: "inherit" } }} />
+      <Copyright sx={{ mt: 5, display: { xs: "none", md: "block" } }} />
     </Box>
   );
 }

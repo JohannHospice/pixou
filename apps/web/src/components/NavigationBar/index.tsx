@@ -106,20 +106,27 @@ export default function NavigationBar({
           {user.userStatus.logged ? (
             <>
               <Tooltip title="Déposer">
-                <IconButton size="large" onClick={() => {}} sx={{ ml: 2 }}>
-                  <AddOutlinedIcon width="100%" color="primary" />
+                <IconButton
+                  disabled
+                  size="large"
+                  color="primary"
+                  onClick={() => {}}
+                  sx={{ ml: 2 }}
+                >
+                  <AddOutlinedIcon width="100%" />
                 </IconButton>
               </Tooltip>
               <IconButton
                 size="large"
                 aria-label="account of current user"
                 onClick={handleClick}
+                color="primary"
                 sx={{ ml: 2 }}
                 aria-controls={open ? "account-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
               >
-                <AccountCircle width="100%" color="primary" />
+                <AccountCircle width="100%" />
               </IconButton>
             </>
           ) : (

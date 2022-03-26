@@ -29,6 +29,7 @@ import {
 import { Chart } from "react-chartjs-2";
 import "chartjs-adapter-moment";
 import "chartjs-plugin-zoom";
+import { Box } from "@mui/material";
 
 ChartJS.register(
   ArcElement,
@@ -71,83 +72,86 @@ export default function OrderLine({ klines: klinesProps, orders }) {
   }, [klinesProps, orders]);
 
   return (
-    <Chart
-      type="scatter"
+    <Box
       style={{
         flex: 1,
-        height: "100%",
+        maxHeight: "100vh",
       }}
-      options={{
-        maintainAspectRatio: false,
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: "Chart.js Line Chart - Logarithmic",
-          },
-          // @ts-ignore
-          zoom: {
-            pan: {
-              enabled: true,
-              mode: "xy",
+    >
+      <Chart
+        type="scatter"
+        options={{
+          maintainAspectRatio: false,
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: "Chart.js Line Chart - Logarithmic",
             },
+            // @ts-ignore
             zoom: {
-              wheel: {
+              pan: {
                 enabled: true,
+                mode: "xy",
               },
-              pinch: {
-                enabled: true,
+              zoom: {
+                wheel: {
+                  enabled: true,
+                },
+                pinch: {
+                  enabled: true,
+                },
+                mode: "xy",
               },
-              mode: "xy",
             },
           },
-        },
-        scales: {
-          x: {
-            display: true,
-            type: "time",
+          scales: {
+            x: {
+              display: true,
+              type: "time",
+            },
+            y: {
+              display: true,
+              type: "logarithmic",
+            },
           },
-          y: {
-            display: true,
-            type: "logarithmic",
-          },
-        },
-      }}
-      data={{
-        // labels: longOrders.map(({ closeTime }) => closeTime),
-        datasets: [
-          {
-            label: "Long Orders",
-            data: longOrders.map(({ closeTime, price }) => ({
-              x: closeTime,
-              y: price,
-            })),
-            type: "scatter",
-            borderColor: "rgba(99, 255, 132, 1)",
-            backgroundColor: "rgba(99, 255, 132, .5)",
-          },
-          {
-            label: "Short Orders",
-            data: shortOrders.map(({ closeTime, price }) => ({
-              x: closeTime,
-              y: price,
-            })),
-            type: "scatter",
-            borderColor: "rgba(255, 99, 132, 1)",
-            backgroundColor: "rgba(255, 99, 132, .5)",
-          },
-          {
-            label: "Klines",
-            data: klines.map(({ closeTime, close }) => ({
-              x: closeTime,
-              y: close,
-            })),
-            borderColor: "rgba(99, 132, 255, .5)",
-            type: "line",
-            borderCapStyle: "round",
-          },
-        ],
-      }}
-    />
+        }}
+        data={{
+          // labels: longOrders.map(({ closeTime }) => closeTime),
+          datasets: [
+            {
+              label: "Long Orders",
+              data: longOrders.map(({ closeTime, price }) => ({
+                x: closeTime,
+                y: price,
+              })),
+              type: "scatter",
+              borderColor: "rgba(99, 255, 132, 1)",
+              backgroundColor: "rgba(99, 255, 132, .5)",
+            },
+            {
+              label: "Short Orders",
+              data: shortOrders.map(({ closeTime, price }) => ({
+                x: closeTime,
+                y: price,
+              })),
+              type: "scatter",
+              borderColor: "rgba(255, 99, 132, 1)",
+              backgroundColor: "rgba(255, 99, 132, .5)",
+            },
+            {
+              label: "Klines",
+              data: klines.map(({ closeTime, close }) => ({
+                x: closeTime,
+                y: close,
+              })),
+              borderColor: "rgba(99, 132, 255, .5)",
+              type: "line",
+              borderCapStyle: "round",
+            },
+          ],
+        }}
+      />
+    </Box>
   );
 }

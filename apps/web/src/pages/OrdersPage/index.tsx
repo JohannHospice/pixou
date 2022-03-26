@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Container,
-  Stack,
-} from "@mui/material";
+import { Container, Stack, Autocomplete, TextField } from "@mui/material";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
-import "chartjs-adapter-moment";
-import "chartjs-plugin-zoom";
 import { getStrategy, listStrategy } from "../../api/storage";
 import useFetch from "../../hooks/useFetch";
 import { useParams, useNavigate } from "react-router-dom";
@@ -66,7 +57,20 @@ export default function OrdersPage() {
         }}
       />
       <Stack spacing={2} mt={2}>
-        <FormControl fullWidth>
+        <Autocomplete
+          fullWidth
+          disablePortal
+          options={strategies}
+          loading={loadingStrategies}
+          noOptionsText="Aucune option"
+          loadingText="Chargement..."
+          openText="Ouvert"
+          onChange={(e, value) => {
+            navigate(`${STRATEGIES_ROUTE}/${value}`);
+          }}
+          renderInput={(params) => <TextField {...params} label="Symbole" />}
+        />
+        {/* <FormControl fullWidth>
           <InputLabel>Symbole</InputLabel>
           <Select
             label="Symbole"
@@ -81,7 +85,7 @@ export default function OrdersPage() {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
         {loading || loadingStrategies
           ? "is loading"
           : error || errorStrategies

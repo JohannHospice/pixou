@@ -27,6 +27,8 @@ import {
   SubTitle,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
+import "chartjs-adapter-moment";
+import "chartjs-plugin-zoom";
 
 ChartJS.register(
   ArcElement,

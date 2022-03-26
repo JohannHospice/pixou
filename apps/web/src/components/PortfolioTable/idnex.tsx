@@ -90,12 +90,12 @@ export default function PortfolioTable({ portfolios }) {
                 <TableCell align="right">
                   <Typography
                     color={
-                      row.total - row.buyAndHoldTotal >= 0
+                      row.total - row.buyAndHoldTotal >= 1
                         ? "rgba(99, 255, 132, 1)"
                         : "rgba(255, 99, 132, 1)"
                     }
                   >
-                    {Number(row.performanceHODL).toFixed(2)} %
+                    {Number(row.performanceHODL * 100).toFixed(2)} %
                   </Typography>
                 </TableCell>
               </TableRow>

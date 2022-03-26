@@ -63,6 +63,16 @@ export default function getTheme(mode: PaletteMode) {
         },
         defaultProps: {},
       },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderWidth: "2px",
+            "&:hover": {
+              borderWidth: "2px",
+            },
+          },
+        },
+      },
     },
     typography: {
       button: {

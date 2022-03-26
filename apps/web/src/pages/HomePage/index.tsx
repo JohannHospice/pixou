@@ -32,8 +32,8 @@ export default function HomePage() {
                 size="large"
                 component={Link}
                 to={STRATEGIES_ROUTE}
-                color="secondary"
-                variant="contained"
+                color="primary"
+                variant="outlined"
               >
                 Voir la strategy
               </Button>

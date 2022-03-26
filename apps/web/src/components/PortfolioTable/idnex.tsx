@@ -109,6 +109,15 @@ export default function PortfolioTable({ portfolios }) {
 
 export function PortfolioDataGrid({ portfolios, loading, error }) {
   const navigate = useNavigate();
+  const moneyFormat = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format;
+  var percentFormat = new Intl.NumberFormat("fr-FR", {
+    style: "percent",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format;
   return (
     <Paper
       style={{
@@ -119,9 +128,13 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
       <DataGrid
         error={error}
         density="comfortable"
-        rowThreshold={0}
+        pagination
+        disableColumnSelector
         initialState={{
-          pinnedColumns: { left: ["lastOrderType", "name"] },
+          // pinnedColumns: { left: ["lastOrderType", "name"] },
+          sorting: {
+            sortModel: [{ field: "performanceHODL", sort: "desc" }],
+          },
         }}
         columns={[
           {
@@ -154,21 +167,19 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
           },
           {
             field: "injected",
-            headerName: "Total apport",
+            headerName: "Apport total",
             minWidth: 140,
             align: "right",
             flex: 1,
-            valueFormatter: ({ value: params }) =>
-              `${Number(params).toFixed(2)} €`,
+            valueFormatter: ({ value: params }) => moneyFormat(Number(params)),
           },
           {
             field: "total",
-            headerName: "Total géré",
+            headerName: "Total géré par la strategie",
             minWidth: 140,
             align: "right",
             flex: 1,
-            valueFormatter: ({ value: params }) =>
-              `${Number(params).toFixed(2)} €`,
+            valueFormatter: ({ value: params }) => moneyFormat(Number(params)),
           },
           {
             field: "ratioInPercent",
@@ -176,7 +187,7 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
             minWidth: 200,
             align: "right",
             valueFormatter: ({ value: params }) =>
-              `${Number(params).toFixed(2)} %`,
+              percentFormat(Number(params)),
           },
           {
             field: "performanceHODL",
@@ -186,13 +197,14 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
             flex: 1,
             renderCell: ({ value: params }) => (
               <Typography
+                variant="body2"
                 color={
-                  params >= 0
+                  params >= 1
                     ? "rgba(99, 255, 132, 1)"
                     : "rgba(255, 99, 132, 1)"
                 }
               >
-                {`${Number(params).toFixed(2)} %`}
+                {percentFormat(Number(params))}
               </Typography>
             ),
           },
@@ -209,7 +221,7 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
                     yearly: data.yearly,
                     injected: data.injected,
                     total: data.total,
-                    ratioInPercent: data.ratioInPercent,
+                    ratioInPercent: data.ratio,
                     performanceHODL: data.performanceHODL,
                   },
                 ]
@@ -218,7 +230,6 @@ export function PortfolioDataGrid({ portfolios, loading, error }) {
         )}
         autoHeight
         pageSize={100}
-        rowsPerPageOptions={[5]}
         onCellClick={(param) =>
           navigate(`${STRATEGIES_ROUTE}/${param.row.name}`)
         }

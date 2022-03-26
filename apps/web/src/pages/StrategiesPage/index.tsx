@@ -46,6 +46,14 @@ export default function OrdersPage() {
         <Typography variant="h3" component={"h1"}>
           Indice d'achat de cryptomonnaies
         </Typography>
+        <Typography variant="body1" maxWidth="800px">
+          Pour ces simulations nous prennons un utilisateur investissant tous
+          les mois 100 € dans la crypto.
+          <br />
+          Notre strategie constitue une reserve en stablecoin lorsque le marché
+          en baissié ou en cas de crise puis le réinvestie lorsqu'il est à la
+          hausse.
+        </Typography>
         <PortfolioDataGrid
           portfolios={portfolios}
           loading={loading}

@@ -30,7 +30,16 @@ const SYMBOLS = [
   "MATICUSDT",
   "DOGEUSDT",
   "NEARUSDT",
-  // "CROUSDT",
+  "UNIUSDT",
+  "ALGOUSDT",
+  "XLMUSDT",
+  "EOSUSDT",
+  "NEOUSDT",
+  "TFUELUSDT",
+  "HOTUSDT",
+  "QTUMUSDT",
+  "AAVEUSDT",
+  "CROUSDT",
 ];
 export default async function (): Promise<void> {
   admin.initializeApp();

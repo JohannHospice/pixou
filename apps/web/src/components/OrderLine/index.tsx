@@ -10,7 +10,7 @@ import {
   TimeSeriesScale,
   TimeScale,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
+import { Chart } from "react-chartjs-2";
 
 ChartJS.register(
   LinearScale,
@@ -37,7 +37,8 @@ export default function OrderLine({ klines: klinesProps, orders }) {
   }, [klinesProps, orders]);
 
   return (
-    <Line
+    <Chart
+      type="scatter"
       style={{
         height: "100%",
       }}
@@ -85,7 +86,6 @@ export default function OrderLine({ klines: klinesProps, orders }) {
               x: closeTime,
               y: price,
             })),
-            //@ts-ignore
             type: "scatter",
             borderColor: "rgba(99, 255, 132, 1)",
             backgroundColor: "rgba(99, 255, 132, .5)",
@@ -96,7 +96,6 @@ export default function OrderLine({ klines: klinesProps, orders }) {
               x: closeTime,
               y: price,
             })),
-            //@ts-ignore
             type: "scatter",
             borderColor: "rgba(255, 99, 132, 1)",
             backgroundColor: "rgba(255, 99, 132, .5)",

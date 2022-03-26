@@ -31,7 +31,7 @@ export default function PortfolioTable({ portfolios }) {
               <TableCell align="right">Apport tout les mois</TableCell>
               <TableCell align="right">Nombre d'années</TableCell>
               <TableCell align="right">Total apport</TableCell>
-              <TableCell align="right">Total géré </TableCell>
+              <TableCell align="right">Total généré</TableCell>
               <TableCell align="right">Gain/Perte avec la strategie</TableCell>
               <TableCell align="right">
                 Gain/Perte comparé à AverageInvestment

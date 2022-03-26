@@ -28,7 +28,7 @@ import HomePage from "./pages/HomePage";
 import OrdersPage from "./pages/OrdersPage";
 import StrategiesPage from "./pages/StrategiesPage";
 
-import * as serviceWorker from "./serviceWorkerRegistration";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { UserProvider } from "./contexts/UserContext";
 
@@ -72,7 +72,7 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
-serviceWorker.register({
+serviceWorkerRegistration.register({
   onUpdate: (registration: any) => {
     toast("onUpdate");
     console.log("onUpdate", registration);

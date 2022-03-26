@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from "@mui/material";
 import { Navigate, Outlet } from "react-router-dom";
 import { DASHBOARD_ROUTE, LOGIN_ROUTE } from "../constants/routes";
-import { useUser, withUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/UserContext";
 
 export const AuthentifiedOnlyRoute = () => (
   <RenderByUser

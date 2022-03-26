@@ -73,6 +73,11 @@ export default function getTheme(mode: PaletteMode) {
           },
         },
       },
+      MuiTableCell: {
+        styleOverrides: {
+          root: { whiteSpace: "nowrap" },
+        },
+      },
     },
     typography: {
       button: {

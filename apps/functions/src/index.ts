@@ -12,11 +12,11 @@ export const updateStrategiesEveryDay = functions
     console.log("end");
   });
 
-export const updateStrategiesOnRequest = functions
-  .region("europe-west1")
-  .https.onRequest(
-    async (request: functions.https.Request, response: functions.Response) => {
-      await createStrategies();
-      response.send("done");
-    }
-  );
+// export const updateStrategiesOnRequest = functions
+//   .region("europe-west1")
+//   .https.onRequest(
+//     async (request: functions.https.Request, response: functions.Response) => {
+//       await createStrategies();
+//       response.send("done");
+//     }
+//   );

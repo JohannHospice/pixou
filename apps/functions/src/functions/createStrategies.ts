@@ -68,7 +68,7 @@ export default async function (): Promise<void> {
           interval: interval,
         };
 
-        bucket.file(`/strategies/${strategyName}/symbols/${symbol}`).save(
+        bucket.file(`strategies/${strategyName}/symbols/${symbol}`).save(
           JSON.stringify({
             klines: strategy.klines,
             orders: strategy.orders,
@@ -88,7 +88,7 @@ export default async function (): Promise<void> {
   );
 
   await bucket
-    .file(`/strategies/${strategyName}/lastorders`)
+    .file(`strategies/${strategyName}/lastorders`)
     .save(JSON.stringify(lastOrders));
   console.log("[strategy lastOrders] saved");
 }

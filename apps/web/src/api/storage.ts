@@ -16,7 +16,7 @@ if (hostEmulator) {
   connectStorageEmulator(storage, host, Number(port));
 }
 
-const BUCKET_STRATEGY_SYMBOLS_PATH = `/strategies/long-term-btc/symbols`;
+const BUCKET_STRATEGY_SYMBOLS_PATH = `strategies/long-term-btc/symbols`;
 
 export async function getStrategy(symbol: string) {
   const strategyUrl = await getDownloadURL(

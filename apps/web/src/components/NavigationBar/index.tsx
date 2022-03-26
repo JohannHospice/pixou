@@ -8,7 +8,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { DASHBOARD_ROUTE, SETTINGS_ROUTE } from "../../constants/routes";
 // @ts-ignore
-import { ReactComponent as Logo } from "../../assets/logos/logo-img.svg";
+import { ReactComponent as Logo } from "../../assets/logos/old/logo-img.svg";
 import {
   alpha,
   Avatar,
@@ -96,7 +96,7 @@ export default function NavigationBar({
             />
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>
-          {user && (
+          {user.userStatus.logged && (
             <>
               <Tooltip title="Déposer">
                 <IconButton size="large" onClick={() => {}} sx={{ ml: 2 }}>
@@ -118,7 +118,7 @@ export default function NavigationBar({
           )}
         </Toolbar>
       </AppBar>
-      {user && (
+      {user.userStatus.logged && (
         <Menu
           anchorEl={anchorEl}
           id="account-menu"

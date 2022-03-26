@@ -40,7 +40,7 @@ export async function getStrategy(symbol: string) {
 }
 
 export async function listStrategy() {
-  return listAll(ref(storage, BUCKET_STRATEGY_SYMBOLS_PATH))
-    .then(({ items }) => items)
-    .then((list) => list.map(({ name }) => name));
+  return listAll(ref(storage, BUCKET_STRATEGY_SYMBOLS_PATH)).then(({ items }) =>
+    items.map(({ name }) => name)
+  );
 }

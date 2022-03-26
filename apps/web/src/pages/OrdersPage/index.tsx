@@ -125,28 +125,20 @@ export function PortfolioTable({ portfolios }) {
         overflow: "hidden",
       }}
     >
-      <TableContainer
-        component={Paper}
-        sx={{
-          // maxHeight: 1000,
-          maxHeight: "calc(100vh - 100px)",
-        }}
-        // sx={{ width: "100%", overflow: "hidden" }}
-      >
-        <Table stickyHeader>
+      <TableContainer component={Paper}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox"></TableCell>
               <TableCell>Nom</TableCell>
-              <TableCell align="right">Intervale</TableCell>
-              <TableCell align="right">Nombre de mois</TableCell>
-              <TableCell align="right">Nombre de coin</TableCell>
-              <TableCell align="right">Nombre de stablecoin</TableCell>
               <TableCell align="right">Apport tout les mois</TableCell>
-              <TableCell align="right">Nombre d'apport</TableCell>
+              <TableCell align="right">Nombre d'années</TableCell>
               <TableCell align="right">Total apport</TableCell>
               <TableCell align="right">Total géré </TableCell>
-              <TableCell align="right">Performance</TableCell>
+              <TableCell align="right">Performance de la strategie</TableCell>
+              <TableCell align="right">
+                Performance par rapport à HODL
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -186,18 +178,26 @@ export function PortfolioTable({ portfolios }) {
                 >
                   {row.name}
                 </TableCell>
-                <TableCell align="right">{row.interval}</TableCell>
-                <TableCell align="right">
-                  {Number(row.months).toFixed(2)}
-                </TableCell>
-                <TableCell align="right">{row.coin} ¤</TableCell>
-                <TableCell align="right">{row.reserve} €</TableCell>
                 <TableCell align="right">{row.injectPerKline} €</TableCell>
-                <TableCell align="right">{row.indexInjected}</TableCell>
+                <TableCell align="right">
+                  {Number(row.indexInjected / 12).toFixed(2)}
+                </TableCell>
                 <TableCell align="right">{row.injected} €</TableCell>
                 <TableCell align="right">{row.total} €</TableCell>
                 <TableCell align="right">
                   {Number(row.ratio * 100).toFixed(2)} %
+                </TableCell>
+                <TableCell align="right">
+                  <Typography
+                    color={
+                      row.total - row.buyAndHoldTotal >= 0
+                        ? "rgba(99, 255, 132, 1)"
+                        : "rgba(255, 99, 132, 1)"
+                    }
+                  >
+                    {Number((row.total - row.buyAndHoldTotal) / 100).toFixed(2)}{" "}
+                    %
+                  </Typography>
                 </TableCell>
               </TableRow>
             ))}
@@ -324,11 +324,13 @@ export function buildPortfolio(
   };
   let totalInjected = 0;
   let indexInjected = 0;
+  let buyAndHoldCoin = 0;
   for (let index = 0; index < strategy.klines.length; index++) {
     if (index % eachKlines === 0) {
       balance.reserve += injectPerKline;
       totalInjected += injectPerKline;
       indexInjected++;
+      buyAndHoldCoin += injectPerKline / strategy.klines[index].close;
     }
     const order = strategy.orders[index];
     if (order) {
@@ -345,17 +347,19 @@ export function buildPortfolio(
     }
   }
   let total = 0;
+  let buyAndHoldTotal = 0;
   if (strategy.klines[strategy.klines.length - 1]) {
     total =
       strategy.klines[strategy.klines.length - 1].close * balance.coin +
       balance.reserve;
+    buyAndHoldTotal =
+      strategy.klines[strategy.klines.length - 1].close * buyAndHoldCoin;
   }
 
   return {
     filename: strategy.filename,
     name: strategy.symbol,
     interval: strategy.interval,
-    months: indexInjected / 12,
     coin: Number(balance.coin).toFixed(2),
     reserve: Number(balance.reserve).toFixed(2),
     injected: Number(totalInjected).toFixed(2),
@@ -364,5 +368,8 @@ export function buildPortfolio(
     indexInjected,
     injectPerKline,
     lastOrderType: strategy.orders[strategy.orders.length - 1].type,
+    buyAndHoldCoin,
+    buyAndHoldTotal,
+    buyAndHoldRatio: Number(buyAndHoldTotal / totalInjected).toFixed(2),
   };
 }

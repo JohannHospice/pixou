@@ -74,11 +74,21 @@ ReactDOM.render(
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.register({
   onUpdate: (registration: any) => {
-    toast("onUpdate");
+    toast.info(
+      "🐤 Il y a du nouveau sur Pixou ! Je vous laisse le découvrir.",
+      {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }
+    );
     console.log("onUpdate", registration);
   },
   onSuccess: (registration: any) => {
-    toast("onSuccess");
     console.log("onSuccess", registration);
   },
 });

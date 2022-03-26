@@ -9,19 +9,25 @@ import app from "./app";
 
 const storage = getStorage(app);
 
-if (process.env["NODE_ENV"] === "localhost") {
-  connectStorageEmulator(storage, "localhost", 9199);
+const hostEmulator = process.env["REACT_APP_FIREBASE_STORAGE_EMULATOR_HOST"];
+
+if (hostEmulator) {
+  const [host, port] = hostEmulator.split(":");
+  connectStorageEmulator(storage, host, Number(port));
 }
 
-export async function getStrategy(file: string) {
-  const strategyRef = ref(storage, `/strategy/symbols/${file}`);
-  const strategyUrl = await getDownloadURL(strategyRef);
+const BUCKET_STRATEGY_SYMBOLS_PATH = `/strategies/long-term-btc/symbols`;
+
+export async function getStrategy(symbol: string) {
+  const strategyUrl = await getDownloadURL(
+    ref(storage, `${BUCKET_STRATEGY_SYMBOLS_PATH}/${symbol}`)
+  );
   return fetch(strategyUrl)
     .then((response) => response.json())
     .then(({ orders, klines, symbol, interval }) => ({
       symbol,
       interval,
-      filename: file,
+      filename: symbol,
       klines: klines.map((obj) => ({
         ...obj,
         closeTime: new Date(obj.closeTime),
@@ -34,8 +40,7 @@ export async function getStrategy(file: string) {
 }
 
 export async function listStrategy() {
-  const strategyRef = ref(storage, `/strategy/symbols`);
-  return listAll(strategyRef)
+  return listAll(ref(storage, BUCKET_STRATEGY_SYMBOLS_PATH))
     .then(({ items }) => items)
     .then((list) => list.map(({ name }) => name));
 }

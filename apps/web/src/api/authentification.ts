@@ -10,11 +10,16 @@ import {
 } from "firebase/auth";
 import app from "./app";
 import { createUser, getUser } from "./firestore";
-import { browserSessionPersistence } from "firebase/auth";
+import { browserSessionPersistence, connectAuthEmulator } from "firebase/auth";
 
 const auth = getAuth(app);
 auth.useDeviceLanguage();
 auth.setPersistence(browserSessionPersistence);
+
+const hostEmulator = process.env["REACT_APP_FIREBASE_AUTH_EMULATOR_HOST"];
+if (hostEmulator) {
+  connectAuthEmulator(auth, hostEmulator);
+}
 
 export async function login(email: string, password: string) {
   const userCredential = await signInWithEmailAndPassword(

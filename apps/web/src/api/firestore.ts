@@ -1,19 +1,21 @@
-import {
-  // getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore/lite";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore/lite";
 import app from "./app";
-import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
-
-// const firestore = getFirestore(app);
+import {
+  initializeFirestore,
+  CACHE_SIZE_UNLIMITED,
+  connectFirestoreEmulator,
+} from "firebase/firestore";
 
 const firestore = initializeFirestore(app, {
   cacheSizeBytes: CACHE_SIZE_UNLIMITED,
 });
-// user
+
+const hostEmulator = process.env["REACT_APP_FIRESTORE_EMULATOR_HOST"];
+
+if (hostEmulator) {
+  const [host, port] = hostEmulator.split(":");
+  connectFirestoreEmulator(firestore, host, Number(port));
+}
 
 export async function getUser(uid: string) {
   const docSnap = await getDoc(doc(firestore, "users", uid));

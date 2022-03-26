@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import eachThreeDaysHandler from "./functions/eachThreeDays";
+import createStrategies from "./functions/createStrategies";
 
 export const updateStrategies = functions
   .region("europe-west1")
@@ -7,7 +7,16 @@ export const updateStrategies = functions
   .onRun(async (context) => {
     console.log("run", context);
 
-    await eachThreeDaysHandler();
+    await createStrategies();
 
     console.log("end");
   });
+
+export const refreshOrders = functions
+  .region("europe-west1")
+  .https.onRequest(
+    async (request: functions.https.Request, response: functions.Response) => {
+      await createStrategies();
+      response.send("done");
+    }
+  );

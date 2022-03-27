@@ -193,15 +193,23 @@ export interface CrinKline {
 }
 
 export function parseBinanceKlines(data: BinanceKline[]): CrinKline[] {
-  return data.map((arr) => ({
-    open: Number(arr[1]),
-    close: Number(arr[4]),
-    high: Number(arr[2]),
-    low: Number(arr[3]),
-    volume: Number(arr[5]),
-    openTime: new Date(arr[0]),
-    closeTime: new Date(arr[6]),
-  }));
+  return data.reduce((acc, arr) => {
+    if (new Date(arr[6]).getMilliseconds() < Date.now()) {
+      return [
+        ...acc,
+        {
+          open: Number(arr[1]),
+          close: Number(arr[4]),
+          high: Number(arr[2]),
+          low: Number(arr[3]),
+          volume: Number(arr[5]),
+          openTime: new Date(arr[0]),
+          closeTime: new Date(arr[6]),
+        },
+      ];
+    }
+    return acc;
+  }, []);
 }
 
 export function getClosesFromBinanceKlines(data: BinanceKline[]): number[] {

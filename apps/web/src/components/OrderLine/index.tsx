@@ -28,7 +28,7 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import "chartjs-adapter-moment";
-import zoomPlugin from "chartjs-plugin-zoom";
+// import zoomPlugin from "chartjs-plugin-zoom";
 import { Box } from "@mui/material";
 
 ChartJS.register(
@@ -55,8 +55,8 @@ ChartJS.register(
   Legend,
   Title,
   Tooltip,
-  SubTitle,
-  zoomPlugin
+  SubTitle
+  // zoomPlugin
 );
 export default function OrderLine({ symbol, klines: klinesProps, orders }) {
   const [longOrders, setlongOrders] = useState([]);
@@ -78,6 +78,7 @@ export default function OrderLine({ symbol, klines: klinesProps, orders }) {
         flex: 1,
         maxHeight: "100vh",
         margin: 0,
+        minHeight: "200px",
       }}
     >
       <Chart

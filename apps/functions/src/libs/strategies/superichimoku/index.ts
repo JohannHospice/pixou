@@ -98,10 +98,8 @@ export default class SuperIchimokuStrategy extends Strategy {
     }
     return orders;
   }
-  getOrder(index: number): Order | undefined {
-    const canLong = (i: number) =>
-      (index > 0 && canShort(index - 1)) || this.isMACDAboveSignal(i) || true;
 
+  getOrder(index: number): Order | undefined {
     const canShort = (index: number) =>
       this.isMACDBehindSignal(index) &&
       this.rsi[index] > 35 &&
@@ -111,11 +109,7 @@ export default class SuperIchimokuStrategy extends Strategy {
       return this.createShort(index);
     }
 
-    if (canLong(index)) {
-      return this.createLong(index);
-    }
-
-    return undefined;
+    return this.createLong(index);
   }
 
   // index

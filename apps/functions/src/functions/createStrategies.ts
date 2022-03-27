@@ -7,7 +7,9 @@ import SuperIchimokuStrategy from "../libs/strategies/superichimoku";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const admin = require("firebase-admin");
+admin.initializeApp();
 
+const bucket = admin.storage().bucket();
 const SYMBOLS = [
   "BTCUSDT",
   "ETHUSDT",
@@ -42,9 +44,6 @@ const SYMBOLS = [
   "CROUSDT",
 ];
 export default async function (): Promise<void> {
-  admin.initializeApp();
-  const bucket = admin.storage().bucket();
-
   // config
   const spot = new BinanceSpot();
   const now = Date.now();

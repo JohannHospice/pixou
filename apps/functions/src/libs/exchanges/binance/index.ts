@@ -17,6 +17,49 @@ export enum TIME_PERIOD {
   WEEKLY = "1w",
   MONTHLY = "1M",
 }
+
+export async function klines(
+  symbol: string,
+  interval: string,
+  options?: {
+    startTime?: number | undefined;
+    endTime?: number | undefined;
+  }
+): Promise<{
+  data: any;
+}> {
+  function stringifyKeyValuePair([key, value]) {
+    const valueString = Array.isArray(value)
+      ? // eslint-disable-next-line quotes
+        `["${value.join('","')}"]`
+      : value;
+    return `${key}=${encodeURIComponent(valueString)}`;
+  }
+
+  const buildQueryString = (params) => {
+    if (!params) return "";
+    return Object.entries(params).map(stringifyKeyValuePair).join("&");
+  };
+
+  const queryParam = buildQueryString({
+    ...options,
+    symbol: symbol.toUpperCase(),
+    interval: interval,
+  });
+  return axios
+    .create({
+      baseURL: "https://api.binance.com",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "pixou-node/1.0.1",
+      },
+    })
+    .request({
+      method: "GET",
+      url: `/api/v3/klines?${queryParam}`,
+    });
+}
+
 // const TIME_INTERVAL: { [x: string]: number } = {
 //   "3d": 3600 * 1000 * 24 * 3,
 // };

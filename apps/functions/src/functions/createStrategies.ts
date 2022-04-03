@@ -1,49 +1,48 @@
 import {
-  BinanceSpot,
+  CrinKline,
+  klines,
   parseBinanceKlines,
   TIME_PERIOD,
 } from "../libs/exchanges/binance";
 import SuperIchimokuStrategy from "../libs/strategies/superichimoku";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { SYMBOLS } from "../libs/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const admin = require("firebase-admin");
 admin.initializeApp();
 
 const bucket = admin.storage().bucket();
-const SYMBOL_NAME = {
-  BTCUSDT: "bitcoin",
-  ETHUSDT: "ethereum",
-  ADAUSDT: "cardano",
-  MATICUSDT: "polygon",
-  AVAXUSDT: "avalanche",
-  ATOMUSDT: "cosmos",
-  BNBUSDT: "bnb",
-  LUNAUSDT: "terra-luna",
-  SOLUSDT: "solana",
-  DOTUSDT: "polkadot",
-  ICPUSDT: "internet-computer",
-  APEUSDT: "apecoin-ape",
-  LINKUSDT: "chainlink",
-  XRPUSDT: "xrp",
-  EGLDUSDT: "elrond-egld",
-  LTCUSDT: "litecoin",
-  VETUSDT: "vechain",
-  DOGEUSDT: "dogecoin",
-  NEARUSDT: "near-protocol",
-  UNIUSDT: "uniswap",
-  ALGOUSDT: "algorand",
-  XLMUSDT: "stellar",
-  EOSUSDT: "eos",
-  NEOUSDT: "neo",
-  TFUELUSDT: "",
-  HOTUSDT: "holo",
-  QTUMUSDT: "qtum",
-  AAVEUSDT: "aave",
-  CROUSDT: "cronos",
-};
+
+const GET_COINGEKO = gql`
+  query GetPixouCoin(
+    $coins: String!
+    $from: DateTime!
+    $interval: interval!
+    $withMarketcap: Boolean!
+  ) {
+    ohlc: ohlc(slug: $coins, from: $from, to: "utc_now", interval: $interval) {
+      highPriceUsd
+      lowPriceUsd
+      closePriceUsd
+      datetime
+    }
+    marketcap: getMetric(metric: "marketcap_usd") @include(if: $withMarketcap) {
+      timeseriesData(
+        slug: $coins
+        from: $from
+        to: "utc_now"
+        interval: $interval
+      ) {
+        datetime
+        value
+      }
+    }
+  }
+`;
+
 export default async function (): Promise<void> {
   // config
-  const spot = new BinanceSpot();
   const now = Date.now();
   const Strategy = SuperIchimokuStrategy;
   const interval = TIME_PERIOD.THREE_DAILY;
@@ -54,16 +53,34 @@ export default async function (): Promise<void> {
   const strategyName = "long-term-btc";
   const lastOrders = {};
   console.log("[config] prepared");
-
+  const client = new ApolloClient({
+    uri: "https://api.santiment.net/graphiql",
+    cache: new InMemoryCache(),
+  });
   // run
   await Promise.all(
-    Object.keys(SYMBOL_NAME).map(async (symbol) => {
+    Object.keys(SYMBOLS).map(async (symbol) => {
       try {
         console.log(`[strategy ${symbol}] run`);
 
-        const parsedKlines = await spot
-          .klines(symbol, interval, spotOptions)
-          .then(({ data }) => parseBinanceKlines(data));
+        const parsedKlines = await client
+          .query({
+            query: GET_COINGEKO,
+            variables: {
+              coins: SYMBOLS[symbol].coingeko,
+              from: "utc_now-365d",
+              interval: "3d",
+              withMarketcap: false,
+            },
+          })
+          .then((result): CrinKline[] =>
+            result.data.ohlc.map((ohlc) => ({
+              close: ohlc.closePriceUsd,
+              high: ohlc.highPriceUsd,
+              low: ohlc.lowPriceUsd,
+              closeTime: ohlc.datetime,
+            }))
+          );
 
         const strategy = new Strategy(parsedKlines);
         strategy.build();
@@ -75,7 +92,8 @@ export default async function (): Promise<void> {
             orders: strategy.orders,
             symbol: symbol,
             interval: interval,
-            fullName: SYMBOL_NAME[symbol],
+            fullName: SYMBOLS[symbol].title,
+            coinmarketcap: SYMBOLS[symbol].coinmarketcap,
           })
         );
         lastOrders[symbol] = buildPortfolio(

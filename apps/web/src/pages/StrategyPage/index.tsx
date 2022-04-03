@@ -160,6 +160,7 @@ export function buildPortfolio(
   const ratio = total / totalInjected;
 
   return {
+    coinmarketcap: strategy.coinmarketcap,
     fullName: strategy.fullName,
     filename: strategy.filename,
     name: strategy.symbol,
@@ -185,6 +186,7 @@ export function buildPortfolio(
 }
 
 export interface Portfolio {
+  coinmarketcap: string;
   fullName: string;
   filename: string;
   name: string;

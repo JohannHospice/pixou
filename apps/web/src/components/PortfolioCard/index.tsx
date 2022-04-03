@@ -27,9 +27,7 @@ export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
               <Chip
                 label={
                   <Typography variant="h5" textTransform={"uppercase"}>
-                    {portfolio.fullName
-                      ? portfolio.fullName.replace("-", " ")
-                      : portfolio.name.replace("USDT", "")}
+                    {portfolio.fullName || portfolio.name.replace("USDT", "")}
                   </Typography>
                 }
                 color="primary"
@@ -123,7 +121,7 @@ export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
             color="grey.500"
             display={"flex"}
             alignItems="center"
-            href={`https://coinmarketcap.com/fr/currencies/${portfolio.fullName}/`}
+            href={`https://coinmarketcap.com/fr/currencies/${portfolio.coinmarketcap}/`}
           >
             coinmarketcap.com
             <LinkIcon sx={{ ml: 1, fontSize: "inherit" }} />

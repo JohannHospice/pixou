@@ -1,6 +1,11 @@
 import { CrinKline, TIME_PERIOD } from "../libs/exchanges/binance";
 import SuperIchimokuStrategy from "../libs/strategies/superichimoku";
-import { ApolloClient, InMemoryCache, gql, HttpLink } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  gql,
+  HttpLink,
+} from "@apollo/client/core";
 import { SYMBOLS } from "../libs/constants";
 import fetch from "cross-fetch";
 

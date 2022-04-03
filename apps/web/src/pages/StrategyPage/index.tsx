@@ -12,7 +12,6 @@ import useFetch from "../../hooks/useFetch";
 import { useParams, useNavigate } from "react-router-dom";
 import { STRATEGIES_ROUTE } from "../../constants/routes";
 import NavigationBar from "../../components/NavigationBar";
-import PortfolioTable from "../../components/PortfolioTable";
 import OrderLine from "../../components/OrderLine";
 import Copyright from "../../components/Copyright";
 import PortfolioCard from "../../components/PortfolioCard";

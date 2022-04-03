@@ -11,7 +11,7 @@ import {
   BinanceSpot,
 } from "../../exchanges/binance";
 
-describe("Stratégie Super Ichimoku", () => {
+describe.skip("Stratégie Super Ichimoku", () => {
   const SYMBOL = "BTCUSDT";
   let klines: CrinKline[];
   let ichimokuStrategy: SuperIchimokuStrategy;

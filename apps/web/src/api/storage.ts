@@ -24,11 +24,12 @@ export async function getStrategy(symbol: string) {
   );
   return fetch(strategyUrl)
     .then((response) => response.json())
-    .then(({ orders, klines, symbol, interval, fullName }) => ({
+    .then(({ orders, klines, symbol, interval, fullName, coinmarketcap }) => ({
       symbol,
       interval,
       fullName,
       filename: symbol,
+      coinmarketcap: coinmarketcap,
       klines: klines.map((obj) => ({
         ...obj,
         closeTime: new Date(obj.closeTime),

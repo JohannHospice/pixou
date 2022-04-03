@@ -3,17 +3,20 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { STRATEGIES_ROUTE } from "../../constants/routes";
 
+export const moneyFormat = new Intl.NumberFormat("fr-FR", {
+  style: "currency",
+  currency: "EUR",
+}).format;
+
+export const percentFormat = new Intl.NumberFormat("fr-FR", {
+  style: "percent",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+}).format;
+
 export default function PortfolioDataGrid({ portfolios, loading, error }) {
   const navigate = useNavigate();
-  const moneyFormat = new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-  }).format;
-  var percentFormat = new Intl.NumberFormat("fr-FR", {
-    style: "percent",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format;
+
   return (
     <Paper
       style={{

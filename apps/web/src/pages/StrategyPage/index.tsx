@@ -15,6 +15,7 @@ import NavigationBar from "../../components/NavigationBar";
 import PortfolioTable from "../../components/PortfolioTable";
 import OrderLine from "../../components/OrderLine";
 import Copyright from "../../components/Copyright";
+import PortfolioCard from "../../components/PortfolioCard";
 
 export default function StrategyPage() {
   const [symbol, setSymbol] = useState("");
@@ -98,6 +99,7 @@ export default function StrategyPage() {
                 orders={data.orders}
               />
               <PortfolioTable portfolios={[portfolio]} />
+              <PortfolioCard portfolio={portfolio} />
             </>
           )
         )}
@@ -115,7 +117,7 @@ export function buildPortfolio(
   strategy: any,
   injectPerKline: number,
   eachKlines: number
-) {
+): Portfolio {
   let balance = {
     coin: 0,
     reserve: 0,
@@ -174,4 +176,24 @@ export function buildPortfolio(
     buyAndHoldRatio: buyAndHoldTotal / totalInjected,
     yearly: indexInjected / 12,
   };
+}
+
+export interface Portfolio {
+  filename: string;
+  name: string;
+  interval: string;
+  coin: number;
+  reserve: number;
+  injected: number;
+  total: number;
+  ratio: number;
+  ratioInPercent: number;
+  performanceHODL: number;
+  indexInjected: number;
+  injectPerKline: number;
+  lastOrderType: string;
+  buyAndHoldCoin: number;
+  buyAndHoldTotal: number;
+  buyAndHoldRatio: number;
+  yearly: number;
 }

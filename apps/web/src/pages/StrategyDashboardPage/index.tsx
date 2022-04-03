@@ -43,8 +43,8 @@ export default function StrategyDashboardPage() {
             les mois 100 € dans la crypto.
             <br />
             Notre stratégie constitue une réserve de <i>stablecoin</i> lorsque
-            le marché en baissier, puis le réinvestie dans le <i>token</i> en
-            question lorsque le marché est à la hausse.
+            le marché en baissier, puis le réinvestie dans le <i>token</i>{" "}
+            lorsque le marché est à la hausse.
           </Typography>
           <PortfolioDataGrid
             portfolios={portfolios}

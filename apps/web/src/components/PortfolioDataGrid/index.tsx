@@ -3,10 +3,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { STRATEGIES_ROUTE } from "../../constants/routes";
 
-export const moneyFormat = new Intl.NumberFormat("fr-FR", {
-  style: "currency",
-  currency: "EUR",
-}).format;
+export const moneyFormat = (value: number) =>
+  new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(usdToEur(value));
+
+const CHANGE_EUR_USD = 1.1;
+export const usdToEur = (value: number) => value / CHANGE_EUR_USD;
+export const eurToUsd = (value: number) => value * CHANGE_EUR_USD;
 
 export const percentFormat = new Intl.NumberFormat("fr-FR", {
   style: "percent",

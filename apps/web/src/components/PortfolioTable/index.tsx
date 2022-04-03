@@ -6,7 +6,7 @@ import {
   TableBody,
   Table,
   Paper,
-  Tooltip as MUITooltip,
+  Tooltip,
   Typography,
   Box,
 } from "@mui/material";
@@ -55,7 +55,7 @@ export default function PortfolioTable({ portfolios }) {
               >
                 <TableCell padding="checkbox">
                   <Box>
-                    <MUITooltip
+                    <Tooltip
                       title={
                         row.lastOrderType === "LONG"
                           ? "Vous devriez acheter"
@@ -65,7 +65,7 @@ export default function PortfolioTable({ portfolios }) {
                       <Typography>
                         {row.lastOrderType === "LONG" ? "🐸" : "🚨"}
                       </Typography>
-                    </MUITooltip>
+                    </Tooltip>
                   </Box>
                 </TableCell>
                 <TableCell align="left">{row.name}</TableCell>

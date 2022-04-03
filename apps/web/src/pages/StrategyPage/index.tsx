@@ -17,6 +17,7 @@ import OrderLine from "../../components/OrderLine";
 import Copyright from "../../components/Copyright";
 import PortfolioCard from "../../components/PortfolioCard";
 import { PageTitle } from "../../components/Page";
+import { eurToUsd } from "../../components/PortfolioDataGrid";
 
 export default function StrategyPage() {
   const [symbol, setSymbol] = useState("");
@@ -41,7 +42,7 @@ export default function StrategyPage() {
         try {
           setLoading(true);
           const strat = await getStrategy(symbolParam);
-          setPortfolio(buildPortfolio(strat, 100, 30 / 3));
+          setPortfolio(buildPortfolio(strat, eurToUsd(100), 30 / 3));
           setData(strat);
           setError(undefined);
         } catch (error) {
@@ -100,7 +101,6 @@ export default function StrategyPage() {
                   klines={data.klines}
                   orders={data.orders}
                 />
-                <PortfolioTable portfolios={[portfolio]} />
                 <PortfolioCard portfolio={portfolio} />
               </>
             )
@@ -167,6 +167,7 @@ export function buildPortfolio(
     coin: balance.coin,
     reserve: balance.reserve,
     injected: totalInjected,
+    gains: total - totalInjected,
     total: total,
     ratio: ratio,
     ratioInPercent: ratio,
@@ -177,6 +178,7 @@ export function buildPortfolio(
     buyAndHoldCoin,
     buyAndHoldTotal,
     buyAndHoldRatio: buyAndHoldTotal / totalInjected,
+    buyAndHoldGains: buyAndHoldTotal - totalInjected,
     yearly: indexInjected / 12,
   };
 }
@@ -188,6 +190,7 @@ export interface Portfolio {
   coin: number;
   reserve: number;
   injected: number;
+  gains: number;
   total: number;
   ratio: number;
   ratioInPercent: number;
@@ -198,5 +201,7 @@ export interface Portfolio {
   buyAndHoldCoin: number;
   buyAndHoldTotal: number;
   buyAndHoldRatio: number;
+  buyAndHoldGains: number;
+
   yearly: number;
 }

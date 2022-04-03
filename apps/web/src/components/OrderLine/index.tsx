@@ -89,7 +89,7 @@ export default function OrderLine({ symbol, klines: klinesProps, orders }) {
           plugins: {
             title: {
               display: true,
-              text: "Stratégie appliqué sur le " + symbol,
+              text: "Stratégie Pixou appliquée au " + symbol,
             },
             // @ts-ignore
             zoom: {

@@ -160,6 +160,7 @@ export function buildPortfolio(
   const ratio = total / totalInjected;
 
   return {
+    fullName: strategy.fullName,
     filename: strategy.filename,
     name: strategy.symbol,
     interval: strategy.interval,
@@ -170,6 +171,7 @@ export function buildPortfolio(
     total: total,
     ratio: ratio,
     ratioInPercent: ratio,
+    startDate: strategy.klines[0].closeTime,
     performanceHODL: total / buyAndHoldTotal,
     indexInjected,
     injectPerKline,
@@ -183,6 +185,7 @@ export function buildPortfolio(
 }
 
 export interface Portfolio {
+  fullName: string;
   filename: string;
   name: string;
   interval: string;
@@ -192,6 +195,7 @@ export interface Portfolio {
   gains: number;
   total: number;
   ratio: number;
+  startDate: Date;
   ratioInPercent: number;
   performanceHODL: number;
   indexInjected: number;

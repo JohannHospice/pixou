@@ -10,39 +10,37 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 const bucket = admin.storage().bucket();
-const SYMBOLS = [
-  "BTCUSDT",
-  "ETHUSDT",
-  "ADAUSDT",
-  "MATICUSDT",
-  "AVAXUSDT",
-  "ATOMUSDT",
-  "BNBUSDT",
-  "LUNAUSDT",
-  "SOLUSDT",
-  "DOTUSDT",
-  "ICPUSDT",
-  "APEUSDT",
-  "LINKUSDT",
-  "BNBUSDT",
-  "XRPUSDT",
-  "EGLDUSDT",
-  "LTCUSDT",
-  "VETUSDT",
-  "MATICUSDT",
-  "DOGEUSDT",
-  "NEARUSDT",
-  "UNIUSDT",
-  "ALGOUSDT",
-  "XLMUSDT",
-  "EOSUSDT",
-  "NEOUSDT",
-  "TFUELUSDT",
-  "HOTUSDT",
-  "QTUMUSDT",
-  "AAVEUSDT",
-  "CROUSDT",
-];
+const SYMBOL_NAME = {
+  BTCUSDT: "bitcoin",
+  ETHUSDT: "ethereum",
+  ADAUSDT: "cardano",
+  MATICUSDT: "polygon",
+  AVAXUSDT: "avalanche",
+  ATOMUSDT: "cosmos",
+  BNBUSDT: "bnb",
+  LUNAUSDT: "terra-luna",
+  SOLUSDT: "solana",
+  DOTUSDT: "polkadot",
+  ICPUSDT: "internet-computer",
+  APEUSDT: "apecoin-ape",
+  LINKUSDT: "chainlink",
+  XRPUSDT: "xrp",
+  EGLDUSDT: "elrond-egld",
+  LTCUSDT: "litecoin",
+  VETUSDT: "vechain",
+  DOGEUSDT: "dogecoin",
+  NEARUSDT: "near-protocol",
+  UNIUSDT: "uniswap",
+  ALGOUSDT: "algorand",
+  XLMUSDT: "stellar",
+  EOSUSDT: "eos",
+  NEOUSDT: "neo",
+  TFUELUSDT: "",
+  HOTUSDT: "holo",
+  QTUMUSDT: "qtum",
+  AAVEUSDT: "aave",
+  CROUSDT: "cronos",
+};
 export default async function (): Promise<void> {
   // config
   const spot = new BinanceSpot();
@@ -59,7 +57,7 @@ export default async function (): Promise<void> {
 
   // run
   await Promise.all(
-    SYMBOLS.map(async (symbol) => {
+    Object.keys(SYMBOL_NAME).map(async (symbol) => {
       try {
         console.log(`[strategy ${symbol}] run`);
 
@@ -77,6 +75,7 @@ export default async function (): Promise<void> {
             orders: strategy.orders,
             symbol: symbol,
             interval: interval,
+            fullName: SYMBOL_NAME[symbol],
           })
         );
         lastOrders[symbol] = buildPortfolio(

@@ -24,9 +24,10 @@ export async function getStrategy(symbol: string) {
   );
   return fetch(strategyUrl)
     .then((response) => response.json())
-    .then(({ orders, klines, symbol, interval }) => ({
+    .then(({ orders, klines, symbol, interval, fullName }) => ({
       symbol,
       interval,
+      fullName,
       filename: symbol,
       klines: klines.map((obj) => ({
         ...obj,

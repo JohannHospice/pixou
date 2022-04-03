@@ -11,24 +11,24 @@ export default class Exchange {
   }> {
     throw new Error("not implemented");
   }
-  newOrder(
-    symbole: string,
-    side: string,
-    type: string,
-    options?: {
-      price?: number;
-      quantity?: number;
-      timeInForce?: string;
-      quoteOrderQty?: number;
-      newClientOrderId?: string;
-      stopPrice?: number;
-      icebergQty?: number;
-      newOrderRespType?: string;
-      recvWindow?: number;
-    }
-  ): Promise<any> {
-    throw new Error("not implemented");
-  }
+  // newOrder(
+  //   symbole: string,
+  //   side: string,
+  //   type: string,
+  //   options?: {
+  //     price?: number;
+  //     quantity?: number;
+  //     timeInForce?: string;
+  //     quoteOrderQty?: number;
+  //     newClientOrderId?: string;
+  //     stopPrice?: number;
+  //     icebergQty?: number;
+  //     newOrderRespType?: string;
+  //     recvWindow?: number;
+  //   }
+  // ): Promise<any> {
+  //   throw new Error("not implemented");
+  // }
 }
 export enum ORDER_SIDE {
   MARKET = "MARKET",

@@ -4,6 +4,7 @@ import { getResume } from "../../api/storage";
 import NavigationBar from "../../components/NavigationBar";
 import Copyright from "../../components/Copyright";
 import PortfolioDataGrid from "../../components/PortfolioDataGrid";
+import { PageTitle } from "../../components/Page";
 
 export default function StrategyDashboardPage() {
   const [loading, setLoading] = useState(true);
@@ -30,31 +31,33 @@ export default function StrategyDashboardPage() {
   }, []);
 
   return (
-    <Container fixed>
-      <NavigationBar />
-      <Stack spacing={2} mt={2}>
-        <Typography variant="h4" component={"h1"}>
-          Indice d'achat de cryptomonnaies
-        </Typography>
-        <Typography variant="body1" maxWidth="800px">
-          Pour ces simulations nous prennons un utilisateur investissant tous
-          les mois 100 € dans la crypto.
-          <br />
-          Notre stratégie constitue une réserve de <i>stablecoin</i> lorsque le
-          marché en baissier, puis le réinvestie dans le <i>token</i> en
-          question lorsque le marché est à la hausse.
-        </Typography>
-        <PortfolioDataGrid
-          portfolios={portfolios}
-          loading={loading}
-          error={error}
-        />
-        <Copyright
-          sx={{
-            mt: "12px",
-          }}
-        />
-      </Stack>
-    </Container>
+    <PageTitle title="Stratégies - Pixou">
+      <Container fixed>
+        <NavigationBar />
+        <Stack spacing={2} mt={2}>
+          <Typography variant="h4" component={"h1"}>
+            Indice d'achat de cryptomonnaies
+          </Typography>
+          <Typography variant="body1" maxWidth="800px">
+            Pour ces simulations nous prennons un utilisateur investissant tous
+            les mois 100 € dans la crypto.
+            <br />
+            Notre stratégie constitue une réserve de <i>stablecoin</i> lorsque
+            le marché en baissier, puis le réinvestie dans le <i>token</i> en
+            question lorsque le marché est à la hausse.
+          </Typography>
+          <PortfolioDataGrid
+            portfolios={portfolios}
+            loading={loading}
+            error={error}
+          />
+          <Copyright
+            sx={{
+              mt: "12px",
+            }}
+          />
+        </Stack>
+      </Container>
+    </PageTitle>
   );
 }

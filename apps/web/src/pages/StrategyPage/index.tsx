@@ -16,6 +16,7 @@ import PortfolioTable from "../../components/PortfolioTable";
 import OrderLine from "../../components/OrderLine";
 import Copyright from "../../components/Copyright";
 import PortfolioCard from "../../components/PortfolioCard";
+import { PageTitle } from "../../components/Page";
 
 export default function StrategyPage() {
   const [symbol, setSymbol] = useState("");
@@ -54,62 +55,64 @@ export default function StrategyPage() {
   }, [symbol, symbolParam]);
 
   return (
-    <Container
-      maxWidth="lg"
-      style={{
-        flex: "1",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <NavigationBar
-        action={{
-          Icon: ArrowBackIosNewOutlinedIcon,
-          onClick: () => navigate(STRATEGIES_ROUTE),
+    <PageTitle title={`Stratégie ${symbol} - Pixou`}>
+      <Container
+        maxWidth="lg"
+        style={{
+          flex: "1",
+          display: "flex",
+          flexDirection: "column",
         }}
-      />
-      <Stack spacing={2} mt={2} flex={1}>
-        <Autocomplete
-          fullWidth
-          disablePortal
-          options={strategies}
-          loading={loading || loadingStrategies}
-          noOptionsText="Aucune option"
-          loadingText="Chargement..."
-          openText="Ouvert"
-          value={symbol}
-          onChange={(e, value) => {
-            navigate(`${STRATEGIES_ROUTE}/${value}`);
+      >
+        <NavigationBar
+          action={{
+            Icon: ArrowBackIosNewOutlinedIcon,
+            onClick: () => navigate(STRATEGIES_ROUTE),
           }}
-          renderInput={(params) => <TextField {...params} label="Symbole" />}
         />
-        <LinearProgress
-          sx={{ opacity: loading || loadingStrategies ? "1" : "0" }}
+        <Stack spacing={2} mt={2} flex={1}>
+          <Autocomplete
+            fullWidth
+            disablePortal
+            options={strategies}
+            loading={loading || loadingStrategies}
+            noOptionsText="Aucune option"
+            loadingText="Chargement..."
+            openText="Ouvert"
+            value={symbol}
+            onChange={(e, value) => {
+              navigate(`${STRATEGIES_ROUTE}/${value}`);
+            }}
+            renderInput={(params) => <TextField {...params} label="Symbole" />}
+          />
+          <LinearProgress
+            sx={{ opacity: loading || loadingStrategies ? "1" : "0" }}
+          />
+          {(loading || loadingStrategies) && !data ? (
+            <></>
+          ) : error || errorStrategies ? (
+            "has error"
+          ) : (
+            data && (
+              <>
+                <OrderLine
+                  symbol={data.symbol}
+                  klines={data.klines}
+                  orders={data.orders}
+                />
+                <PortfolioTable portfolios={[portfolio]} />
+                <PortfolioCard portfolio={portfolio} />
+              </>
+            )
+          )}
+        </Stack>
+        <Copyright
+          sx={{
+            mt: "12px",
+          }}
         />
-        {(loading || loadingStrategies) && !data ? (
-          <></>
-        ) : error || errorStrategies ? (
-          "has error"
-        ) : (
-          data && (
-            <>
-              <OrderLine
-                symbol={data.symbol}
-                klines={data.klines}
-                orders={data.orders}
-              />
-              <PortfolioTable portfolios={[portfolio]} />
-              <PortfolioCard portfolio={portfolio} />
-            </>
-          )
-        )}
-      </Stack>
-      <Copyright
-        sx={{
-          mt: "12px",
-        }}
-      />
-    </Container>
+      </Container>
+    </PageTitle>
   );
 }
 

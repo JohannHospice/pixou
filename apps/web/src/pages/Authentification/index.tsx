@@ -12,6 +12,7 @@ import RegisterForm from "../../components/Forms/RegisterForm";
 import ResetPasswordForm from "../../components/Forms/ResetPasswordForm";
 // @ts-ignore
 import img from "../../assets/illustrations/business-3d-290.png";
+import { PageTitle } from "../../components/Page";
 
 export default function AuthentificationPage() {
   let { pathname } = useLocation();
@@ -50,15 +51,27 @@ export default function AuthentificationPage() {
         <Routes location={pathname}>
           <Route
             path={LOGIN_ROUTE.split(AUTH_ROUTE)[1]}
-            element={<LoginForm />}
+            element={
+              <PageTitle title="Connexion - Pixou">
+                <LoginForm />
+              </PageTitle>
+            }
           />
           <Route
             path={REGISTER_ROUTE.split(AUTH_ROUTE)[1]}
-            element={<RegisterForm />}
+            element={
+              <PageTitle title="Créer votre compte - Pixou">
+                <RegisterForm />
+              </PageTitle>
+            }
           />
           <Route
             path={RESET_PASSWORD_ROUTE.split(AUTH_ROUTE)[1]}
-            element={<ResetPasswordForm />}
+            element={
+              <PageTitle title="Récupération de compte - Pixou">
+                <ResetPasswordForm />
+              </PageTitle>
+            }
           />
           <Route path="*" element={<Navigate to={LOGIN_ROUTE} />} />
         </Routes>

@@ -34,49 +34,52 @@ import "./api/performace";
 
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
+import Page from "./components/Page";
 
 ReactDOM.render(
   <StrictMode>
     <ThemeProvider theme={getTheme("dark")}>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          width: "100%",
-        }}
-      >
-        <CssBaseline />
-        <UserProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path={HOME_ROUTE} element={<HomePage />} />
-              <Route
-                path={`${STRATEGIES_ROUTE}/:symbol`}
-                element={<StrategyPage />}
-              />
-              <Route
-                path={STRATEGIES_ROUTE}
-                element={<StrategyDashboardPage />}
-              />
-
-              <Route path={"/"} element={<GuestOnlyRoute />}>
+      <Page>
+        <Box
+          sx={{
+            minHeight: "100vh",
+            display: "flex",
+            width: "100%",
+          }}
+        >
+          <CssBaseline />
+          <UserProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path={HOME_ROUTE} element={<HomePage />} />
                 <Route
-                  path={`${AUTH_ROUTE}/*`}
-                  element={<AuthentificationPage />}
+                  path={`${STRATEGIES_ROUTE}/:symbol`}
+                  element={<StrategyPage />}
                 />
-              </Route>
+                <Route
+                  path={STRATEGIES_ROUTE}
+                  element={<StrategyDashboardPage />}
+                />
 
-              <Route path={"/"} element={<AuthentifiedOnlyRoute />}>
-                <Route path={DASHBOARD_ROUTE} element={<DashboardPage />} />
-                <Route path={ACCOUNT_ROUTE} element={<AccountPage />} />
-                <Route path={SETTINGS_ROUTE} element={<SettingsPage />} />
-              </Route>
+                <Route path={"/"} element={<GuestOnlyRoute />}>
+                  <Route
+                    path={`${AUTH_ROUTE}/*`}
+                    element={<AuthentificationPage />}
+                  />
+                </Route>
 
-              <Route path={"*"} element={<Navigate to={HOME_ROUTE} />} />
-            </Routes>
-          </BrowserRouter>
-        </UserProvider>
-      </Box>
+                <Route path={"/"} element={<AuthentifiedOnlyRoute />}>
+                  <Route path={DASHBOARD_ROUTE} element={<DashboardPage />} />
+                  <Route path={ACCOUNT_ROUTE} element={<AccountPage />} />
+                  <Route path={SETTINGS_ROUTE} element={<SettingsPage />} />
+                </Route>
+
+                <Route path={"*"} element={<Navigate to={HOME_ROUTE} />} />
+              </Routes>
+            </BrowserRouter>
+          </UserProvider>
+        </Box>
+      </Page>
     </ThemeProvider>
     <ToastContainer position="bottom-right" pauseOnFocusLoss={false} />
   </StrictMode>,

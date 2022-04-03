@@ -3,6 +3,7 @@ import { Box, Typography, Link } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import constructionSrc from "../../assets/illustrations/construction-worker.gif";
 import { STRATEGIES_ROUTE } from "../../constants/routes";
+import { PageTitle } from "../../components/Page";
 
 // const wallets = [
 //   {
@@ -35,9 +36,10 @@ export const WorkInProgess = () => (
 );
 export default function DashboardPage() {
   return (
-    <Layout>
-      <WorkInProgess></WorkInProgess>
-      {/* <Card>
+    <PageTitle title="Tableau de bord - Pixou">
+      <Layout>
+        <WorkInProgess></WorkInProgess>
+        {/* <Card>
         <CardContent>
           <Box display="flex" flexDirection={"column"}>
             <Typography variant="h6">Portefeuille</Typography>
@@ -84,6 +86,7 @@ export default function DashboardPage() {
           </Card>
         ))}
       </Stack> */}
-    </Layout>
+      </Layout>
+    </PageTitle>
   );
 }

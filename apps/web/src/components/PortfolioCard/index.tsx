@@ -2,6 +2,7 @@ import { Card, CardContent, Chip, Divider, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Portfolio } from "../../pages/StrategyPage";
 import { percentFormat, moneyFormat } from "../PortfolioDataGrid";
+import moment from "moment";
 
 export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
   return (
@@ -35,13 +36,11 @@ export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
           />
           <Field
             title={"Durée de l'investissement"}
-            value={`${Number(portfolio.yearly)
-              .toFixed(2)
-              .replace(".", ",")} ans`}
+            value={moment().subtract(portfolio.yearly, "years").fromNow()}
           />
-          <Section title="Performance de la stratégie" />
+          <Section title="Resultat sur stratégie Pixou" />
           <Field
-            title={"Ordre du jour selon la stratégie"}
+            title={"Ordre du jour"}
             value={
               portfolio.lastOrderType === "LONG"
                 ? "Vous devriez acheter 🐸"
@@ -49,11 +48,11 @@ export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
             }
           />
           <Field
-            title={"Total sur stratégie"}
+            title={"Solde disponible"}
             value={moneyFormat(portfolio.total)}
           />
           <Field
-            title={"Gain/Perte en dollar"}
+            title={"Gain/Perte en euro"}
             value={moneyFormat(portfolio.gains)}
           />
           <Field
@@ -69,9 +68,7 @@ export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
             }
           />
           <Field
-            title={
-              "Performance de la stratégie par rapport à AverageInvestment"
-            }
+            title={"Performance par rapport à l'investissement programmé"}
             color={
               portfolio.performanceHODL >= 1
                 ? "rgba(99, 255, 132, 1)"
@@ -82,13 +79,13 @@ export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
               percentFormat(portfolio.performanceHODL - 1)
             }
           />
-          <Section title="Performance de la AverageInvestment" />
+          <Section title="Resultat sur investissement programmé" />
           <Field
-            title={"Total sur stratégie"}
+            title={"Solde disponible"}
             value={moneyFormat(portfolio.buyAndHoldTotal)}
           />
           <Field
-            title={"Gain/Perte en dollar"}
+            title={"Gain/Perte en euro"}
             value={moneyFormat(portfolio.buyAndHoldGains)}
           />
           <Field
@@ -135,7 +132,7 @@ function Field({ title, value, color = "" }) {
 function Section({ title, type = "t" }) {
   return (
     <Divider sx={{ mt: 3, mb: 2 }}>
-      <Typography variant="body2" textTransform={"uppercase"}>
+      <Typography variant="body2">
         {type === "chip" ? <Chip label={title} /> : title}
       </Typography>
     </Divider>

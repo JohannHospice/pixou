@@ -41,13 +41,13 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "firebase deploy",
-    "emulate": "react-scripts start",
+    "dev": "yarn start",
+    "emulate": "yarn start",
     "deploy:ci": "firebase deploy -P $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN"
   },
   "eslintConfig": {

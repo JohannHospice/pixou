@@ -63,7 +63,7 @@ export default async function (): Promise<void> {
             query: GET_COINGEKO,
             variables: {
               coins: SYMBOLS[symbol].santiment,
-              from: `utc_now-${365 * 10}d`,
+              from: `utc_now-${365 * 5}d`,
               interval: "3d",
               withMarketcap: false,
             },

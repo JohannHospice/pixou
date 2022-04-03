@@ -1,12 +1,8 @@
-import {
-  CrinKline,
-  klines,
-  parseBinanceKlines,
-  TIME_PERIOD,
-} from "../libs/exchanges/binance";
+import { CrinKline, TIME_PERIOD } from "../libs/exchanges/binance";
 import SuperIchimokuStrategy from "../libs/strategies/superichimoku";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { ApolloClient, InMemoryCache, gql, HttpLink } from "@apollo/client";
 import { SYMBOLS } from "../libs/constants";
+import fetch from "cross-fetch";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const admin = require("firebase-admin");
@@ -43,19 +39,13 @@ const GET_COINGEKO = gql`
 
 export default async function (): Promise<void> {
   // config
-  const now = Date.now();
-  const Strategy = SuperIchimokuStrategy;
   const interval = TIME_PERIOD.THREE_DAILY;
-  const spotOptions = {
-    // startTime: now - 1000 * 3600 * 24 * 365 * 10,
-    endTime: now,
-  };
   const strategyName = "long-term-btc";
   const lastOrders = {};
   console.log("[config] prepared");
   const client = new ApolloClient({
-    uri: "https://api.santiment.net/graphiql",
     cache: new InMemoryCache(),
+    link: new HttpLink({ uri: "https://api.santiment.net/graphiql", fetch }),
   });
   // run
   await Promise.all(
@@ -67,35 +57,23 @@ export default async function (): Promise<void> {
           .query({
             query: GET_COINGEKO,
             variables: {
-              coins: SYMBOLS[symbol].coingeko,
-              from: "utc_now-365d",
+              coins: SYMBOLS[symbol].santiment,
+              from: `utc_now-${365 * 10}d`,
               interval: "3d",
               withMarketcap: false,
             },
           })
-          .then((result): CrinKline[] =>
-            result.data.ohlc.map((ohlc) => ({
+          .then((result): CrinKline[] => {
+            return result.data.ohlc.map((ohlc) => ({
               close: ohlc.closePriceUsd,
               high: ohlc.highPriceUsd,
               low: ohlc.lowPriceUsd,
               closeTime: ohlc.datetime,
-            }))
-          );
+            }));
+          });
 
-        const strategy = new Strategy(parsedKlines);
+        const strategy = new SuperIchimokuStrategy(parsedKlines);
         strategy.build();
-        console.log(`[strategy ${symbol}] solved`);
-
-        bucket.file(`strategies/${strategyName}/symbols/${symbol}`).save(
-          JSON.stringify({
-            klines: strategy.klines,
-            orders: strategy.orders,
-            symbol: symbol,
-            interval: interval,
-            fullName: SYMBOLS[symbol].title,
-            coinmarketcap: SYMBOLS[symbol].coinmarketcap,
-          })
-        );
         lastOrders[symbol] = buildPortfolio(
           {
             klines: strategy.klines,
@@ -106,6 +84,18 @@ export default async function (): Promise<void> {
           },
           100,
           30 / 3
+        );
+        console.log(`[strategy ${symbol}] solved`);
+
+        await bucket.file(`strategies/${strategyName}/symbols/${symbol}`).save(
+          JSON.stringify({
+            klines: strategy.klines,
+            orders: strategy.orders,
+            symbol: symbol,
+            interval: interval,
+            fullName: SYMBOLS[symbol].title,
+            coinmarketcap: SYMBOLS[symbol].coinmarketcap,
+          })
         );
 
         console.log(`[strategy ${symbol}] saved`);
@@ -179,7 +169,9 @@ export function buildPortfolio(
     performanceHODL: total / buyAndHoldTotal,
     indexInjected,
     injectPerKline,
-    lastOrderType: strategy.orders[strategy.orders.length - 1].type,
+    lastOrderType: strategy.orders[strategy.orders.length - 1]
+      ? strategy.orders[strategy.orders.length - 1].type
+      : undefined,
     buyAndHoldCoin,
     buyAndHoldTotal,
     buyAndHoldRatio: buyAndHoldTotal / totalInjected,

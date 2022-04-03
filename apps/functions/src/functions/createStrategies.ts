@@ -50,7 +50,7 @@ export default async function (): Promise<void> {
   const Strategy = SuperIchimokuStrategy;
   const interval = TIME_PERIOD.THREE_DAILY;
   const spotOptions = {
-    startTime: now - 1000 * 3600 * 24 * 365 * 10,
+    // startTime: now - 1000 * 3600 * 24 * 365 * 10,
     endTime: now,
   };
   const strategyName = "long-term-btc";

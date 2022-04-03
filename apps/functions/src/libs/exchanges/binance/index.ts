@@ -57,6 +57,11 @@ export class BinanceSpot implements Exchange {
       return Object.entries(params).map(stringifyKeyValuePair).join("&");
     };
 
+    const queryParam = buildQueryString({
+      ...options,
+      symbol: symbol.toUpperCase(),
+      interval: interval,
+    });
     return axios
       .create({
         baseURL: "https://api.binance.com",
@@ -67,12 +72,7 @@ export class BinanceSpot implements Exchange {
       })
       .request({
         method: "GET",
-        url: `/api/v3/klines?${buildQueryString(
-          Object.assign(options, {
-            symbol: symbol.toUpperCase(),
-            interval: interval,
-          })
-        )}`,
+        url: `/api/v3/klines?${queryParam}`,
       });
   }
 

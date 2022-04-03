@@ -26,6 +26,8 @@ export default function PortfolioDataGrid({ portfolios, loading, error }) {
     <Paper
       style={{
         width: "100%",
+
+        backgroundImage: "none",
       }}
     >
       <DataGrid
@@ -159,6 +161,10 @@ export default function PortfolioDataGrid({ portfolios, loading, error }) {
         sx={{
           "& .MuiDataGrid-row:hover": {
             cursor: "pointer",
+          },
+          "& .MuiDataGrid-columnHeadersInner": {
+            backgroundImage:
+              "linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))",
           },
         }}
       />

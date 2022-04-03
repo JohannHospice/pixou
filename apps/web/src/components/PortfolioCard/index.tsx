@@ -2,7 +2,7 @@ import { Card, CardContent, Chip, Divider, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Portfolio } from "../../pages/StrategyPage";
 import { percentFormat, moneyFormat } from "../PortfolioDataGrid";
-import moment from "moment";
+import moment from "../../moment";
 
 export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
   return (
@@ -35,8 +35,29 @@ export default function PortfolioCard({ portfolio }: { portfolio: Portfolio }) {
             value={moneyFormat(portfolio.injected)}
           />
           <Field
-            title={"Durée de l'investissement"}
-            value={moment().subtract(portfolio.yearly, "years").fromNow()}
+            title={"Début de l'investissement"}
+            value={(() => {
+              const years = portfolio.yearly;
+              const mmmmMonthsAgo = years * 12 - 1;
+
+              const yyyy = moment().subtract(years - 1, "years");
+              const mmmm = moment().subtract(mmmmMonthsAgo % 12, "months");
+              const dddd = moment()
+                .subtract(years, "years")
+                .add(mmmmMonthsAgo, "months");
+
+              const yyyyText = yyyy.fromNow(false);
+              const mmmmText = mmmm.fromNow(true);
+
+              moment.relativeTimeThreshold("d", 32);
+              const ddddText = dddd.fromNow(true);
+
+              return (
+                (years > 1 ? yyyyText + " " : "") +
+                (mmmmMonthsAgo > 12 ? mmmmText + " et " : "") +
+                (years * 12 - mmmmMonthsAgo > 0 ? ddddText : "")
+              );
+            })()}
           />
           <Section title="Resultat sur stratégie Pixou" />
           <Field

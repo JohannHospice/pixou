@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { logPage } from "../../api/analytics";
 
 export const DEFAULT_TITLE = "Pixou - Investissez différement";
 
@@ -8,6 +10,12 @@ const PageContext = createContext({
 });
 
 export default function Page({ children }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    logPage(location.pathname + location.search);
+  }, [location]);
+
   return (
     <PageContext.Provider
       value={{

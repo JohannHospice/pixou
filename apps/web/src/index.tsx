@@ -39,17 +39,17 @@ import Page from "./components/Page";
 ReactDOM.render(
   <StrictMode>
     <ThemeProvider theme={getTheme("dark")}>
-      <Page>
-        <Box
-          sx={{
-            minHeight: "100vh",
-            display: "flex",
-            width: "100%",
-          }}
-        >
-          <CssBaseline />
-          <UserProvider>
-            <BrowserRouter>
+      <BrowserRouter>
+        <Page>
+          <Box
+            sx={{
+              minHeight: "100vh",
+              display: "flex",
+              width: "100%",
+            }}
+          >
+            <CssBaseline />
+            <UserProvider>
               <Routes>
                 <Route path={HOME_ROUTE} element={<HomePage />} />
                 <Route
@@ -76,10 +76,10 @@ ReactDOM.render(
 
                 <Route path={"*"} element={<Navigate to={HOME_ROUTE} />} />
               </Routes>
-            </BrowserRouter>
-          </UserProvider>
-        </Box>
-      </Page>
+            </UserProvider>
+          </Box>
+        </Page>
+      </BrowserRouter>
     </ThemeProvider>
     <ToastContainer position="bottom-right" pauseOnFocusLoss={false} />
   </StrictMode>,

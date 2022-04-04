@@ -27,3 +27,4 @@ jobs:
 
           REACT_APP_FIREBASE_CONFIG: '${{ secrets.REACT_APP_FIREBASE_TEST_CONFIG }}'
           NODE_ENV: 'production'
+          PUBLIC_URL: https://pixou-test.web.app

@@ -35,4 +35,5 @@ jobs:
           FIREBASE_PROJECT_ID: '${{ secrets.FIREBASE_DEV_PROJECT_ID }}'
 
           REACT_APP_FIREBASE_CONFIG: '${{ secrets.REACT_APP_FIREBASE_DEV_CONFIG }}'
-          NODE_ENV: 'development'
+          NODE_ENV: development
+          PUBLIC_URL: https://pixou-dev.web.app

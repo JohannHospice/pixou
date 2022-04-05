@@ -75,10 +75,11 @@ export default function OrderLine({ symbol, klines: klinesProps, orders }) {
   return (
     <Box
       style={{
-        flex: 1,
+        // flex: 1,
         maxHeight: "100vh",
         margin: 0,
-        minHeight: "300px",
+        minHeight: "355px",
+        height: "55vh",
       }}
     >
       <Chart
